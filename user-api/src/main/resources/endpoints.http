@@ -1,0 +1,27 @@
+POST localhost:8001/api/v1/public/auth/login
+Content-Type: application/json
+
+{
+  "userId": "dc48b782-f98a-4f49-81c1-16551a2f6389",
+  "transactionId": "foo",
+  "signature": "bar",
+  "publicAddress": "blabla"
+}
+###
+
+GET localhost:8001/api/v1/public/users?nickName=kimbo
+
+
+###
+POST localhost:8001/api/v1/public/users/test
+
+
+###
+POST http://localhost:3000/api/verifyTrxMessageSignature
+Content-Type: application/json
+
+{
+  "transactionId": "0x4d54597a4f544d794d7a6b324d444d774d513d3d",
+  "signature": "0xe866a815834dd93efb5c713c6482c301858ce268807936125733be9ae89cd0da733c1aedd8fc31d1c019724d38c5be80559c4e82c2646f2bb572abeb59b5cec21c",
+  "publicAddressTrx": "TWU9y4SLV17x1uuX7WT5pRaYrFgBwkycoQ"
+}

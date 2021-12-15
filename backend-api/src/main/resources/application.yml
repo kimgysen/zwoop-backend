@@ -1,0 +1,44 @@
+
+server:
+  port: 8002
+  error:
+    include-stacktrace: never
+
+spring:
+  main:
+    banner-mode: off
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: public
+  data:
+    web:
+      pageable:
+        default-page-size: 15
+
+  sql:
+    init:
+      mode: always
+      platform: postgres
+  liquibase:
+    enabled: false
+
+# Disable extensive logs
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: INFO
+      hibernate:
+        SQL: info
+
+jwt:
+  cookie-name: auth-cookie
+  cookie-secure: false
+  secret: fYAkt9a5b7v8XnXMG2jwp6HGMMCRNJXp
+

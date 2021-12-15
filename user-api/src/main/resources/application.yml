@@ -1,0 +1,39 @@
+
+server:
+  port: 8001
+  error:
+    include-stacktrace: never
+
+spring:
+  main:
+    banner-mode: off
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: public
+
+  sql:
+    init:
+      mode: always
+      platform: postgres
+  liquibase:
+    enabled: false
+
+# Disable extensive logs
+logging:
+  level:
+    root: INFO
+    org:
+      springframework: INFO
+      hibernate:
+        SQL: info
+
+jwt:
+  cookie-name: next-auth.session-token
+  cookie-secure: false
+

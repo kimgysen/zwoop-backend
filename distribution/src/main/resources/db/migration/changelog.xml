@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        objectQuotingStrategy="QUOTE_ALL_OBJECTS"
+>
+    <changeSet id="initial_setup" author="kgy">
+        <sqlFile path="db/migration/initial_setup.sql" />
+    </changeSet>
+    <changeSet id="10_populate_config_tables" author="kgy">
+        <sqlFile path="db/migration/10_populate_config_tables.sql" />
+    </changeSet>
+
+</databaseChangeLog>
