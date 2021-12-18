@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,6 +52,7 @@ public class PostEntity extends BaseEntity {
     private PostStatusEntity postStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(
             name = "\"Post_Tag\"",
             joinColumns = { @JoinColumn(name = "post_id") },
@@ -57,10 +60,11 @@ public class PostEntity extends BaseEntity {
     )
     private List<TagEntity> tags;
 
-    @OneToMany(mappedBy = "PostEntity", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<AnswerEntity> answers;
 
-    @OneToMany(mappedBy = "PostEntity", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<ApplicationEntity> applications;
 
 }

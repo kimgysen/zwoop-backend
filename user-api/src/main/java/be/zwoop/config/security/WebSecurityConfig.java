@@ -5,8 +5,11 @@ import be.zwoop.security.JwtAuthenticationProvider;
 import be.zwoop.security.TokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
 @Configuration
-@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
@@ -34,8 +36,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         "/api/v1/public/**", "/error"
     };
 
-    private TokenManager tokenManager;
-    private @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService;
+    @Value("${jwt.cookie-name}")
+    private String cookieName;
+
+    private final TokenManager tokenManager;
+    private final UserDetailsService userDetailsService;
+
+    public WebSecurityConfig(
+            TokenManager tokenManager,
+            @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService) {
+        this.tokenManager = tokenManager;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     @Bean
@@ -48,8 +60,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(new JwtAuthenticationProvider(tokenManager));
     }
 
-    public AccessTokenFilter accessTokenFilter() throws Exception {
-        return new AccessTokenFilter(tokenManager, userDetailsService, authenticationManager());
+    private AccessTokenFilter accessTokenFilter() throws Exception {
+        return new AccessTokenFilter(cookieName, tokenManager, userDetailsService, authenticationManagerBean());
     }
 
     @Override

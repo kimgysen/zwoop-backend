@@ -1,5 +1,6 @@
 package be.zwoop.repository.user;
 
+import be.zwoop.repository.role.RoleEntity;
 import be.zwoop.repository.tag.TagEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,6 +51,25 @@ public class UserEntity {
     )
     private Set<TagEntity> tags;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "\"User_Role\"",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+    private Set<RoleEntity> roles;
+
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
+
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 
 }

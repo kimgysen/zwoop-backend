@@ -25,7 +25,7 @@ public class AnswerEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", updatable = false, insertable = false)
     private PostEntity post;
 
     @NotNull

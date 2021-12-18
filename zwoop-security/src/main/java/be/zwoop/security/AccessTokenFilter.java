@@ -1,7 +1,9 @@
 package be.zwoop.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,17 +28,17 @@ import java.util.Optional;
 @Slf4j
 public class AccessTokenFilter extends AbstractAuthenticationProcessingFilter {
 
-    @Value("${jwt.cookie-name}")
-    private String cookieName;
-
+    private final String cookieName;
     private final TokenManager tokenManager;
     private final UserDetailsService userDetailsService;
 
     public AccessTokenFilter(
+            String cookieName,
             TokenManager tokenManager,
-            UserDetailsService userDetailsService,
+            @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService,
             AuthenticationManager authenticationManager) {
         super(AnyRequestMatcher.INSTANCE);
+        this.cookieName = cookieName;
         this.tokenManager = tokenManager;
         this.userDetailsService = userDetailsService;
         setAuthenticationManager(authenticationManager);

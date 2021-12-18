@@ -5,12 +5,6 @@ spring:
     username: postgres
     password: postgres
 
-api:
-  trx:
-    protocol: http
-    host: localhost
-    port: 3000
-
 jwt:
   secret: F0Xc+q1bwfUvThkfxzLzSkCCY0IYFCr4iXNms2S4wT+DnDv/IpS9MgEC9TaoyywhehTswtl3z+zn/WO4Bl2oZgLRufpSzs7Pui1mBTEejXX9db5ur6Q01g4z6j5MvALO81EL5HAyBrNMZg1yUwiB2Co/mMvd/kAe31BTglEbLxzA9J8ZYzbWxaIJFYzcJb7E8EZMoitNhxbWjQ3ML5GM4nZtguZPw/pryHxKww==
   expiration: 7200

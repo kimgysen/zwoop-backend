@@ -23,6 +23,6 @@ public class TagEntity {
     long tagId;
 
     @Column(name = "tag")
-    String tag;
+    String tagName;
 
 }

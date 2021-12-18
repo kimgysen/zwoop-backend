@@ -40,21 +40,4 @@ public class PostControllerValidationHelper {
         return validDto;
     }
 
-    ValidFeedParamDto validateTagIdList(Optional<List<Long>> tagIdListOpt) throws RequestParamException {
-        ValidFeedParamDto validDto = new ValidFeedParamDto(FEED_BY_TAGS_LIST);
-
-        if (tagIdListOpt.isEmpty()) {
-            throw new RequestParamException("Query parameter 'tagId' is missing for type 'FEED_BY_TAG'.");
-
-        } else if (tagIdListOpt.get().isEmpty()) {
-            throw new RequestParamException("Query parameter 'tags' list should not be empty 'FEED_BY_TAGS'.");
-
-        } else {
-            List<TagEntity> tagEntities = tagRepository.findAllByTagIdIn(tagIdListOpt.get());
-            validDto.setTagsEntityList(tagEntities);
-        }
-
-        return validDto;
-    }
-
 }

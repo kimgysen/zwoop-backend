@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,7 +52,6 @@ public class PostControllerPublicV1 {
     @GetMapping
     public Page<PostEntity> getPosts(
             @RequestParam(value = "feedType") PostFeedTypeEnum feedType,
-            @RequestParam(value = "tagIdsList") Optional<List<Long>> tagIdsListOpt,
             @RequestParam(value = "tagId") Optional<Long> tagIdOpt,
             @NotNull final Pageable pageable) {
 
@@ -66,14 +64,9 @@ public class PostControllerPublicV1 {
                 case FEED_BY_TAG -> {
                     ValidFeedParamDto byTagParams = validator.validateTagId(tagIdOpt);
                     postFeedPage = postRepository
-                            .findAllByTagEntitiesContainingAndPostStatusEntityEqualsOrderByCreatedAtDesc(byTagParams.getTagEntity(), openPostStatusEntity, pageable);
+                            .findAllByTagsContainingAndPostStatusEqualsOrderByCreatedAtDesc(byTagParams.getTagEntity(), openPostStatusEntity, pageable);
                 }
-                case FEED_BY_TAGS_LIST -> {
-                    ValidFeedParamDto byTagsListParams = validator.validateTagIdList(tagIdsListOpt);
-                    postFeedPage = postRepository
-                            .findAllByTagEntitiesContainingAndPostStatusEntityEqualsOrderByCreatedAtDesc(byTagsListParams.getTagsEntityList(), openPostStatusEntity, pageable);
-                }
-                default -> postFeedPage = postRepository.findAllByPostStatusEntityEqualsOrderByCreatedAtDesc(openPostStatusEntity, pageable);
+                default -> postFeedPage = postRepository.findAllByPostStatusEqualsOrderByCreatedAtDesc(openPostStatusEntity, pageable);
             }
 
         } catch (RequestParamException e) {

@@ -24,7 +24,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/public/users")
+@RequestMapping(value = "/api/v1/public/user")
 public class UserControllerPublicV1 {
 
     private final AuthProviderRepository authProviderRepository;

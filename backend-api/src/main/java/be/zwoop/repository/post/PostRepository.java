@@ -15,10 +15,8 @@ public interface PostRepository extends JpaRepository<PostEntity, UUID> {
 
     Optional<PostEntity> findByAskerAndPostTitle(UserEntity askerId, String title);
 
-    Page<PostEntity> findAllByPostStatusEntityEqualsOrderByCreatedAtDesc(PostStatusEntity postStatusEntity, Pageable pageable);
+    Page<PostEntity> findAllByPostStatusEqualsOrderByCreatedAtDesc(PostStatusEntity postStatusEntity, Pageable pageable);
 
-    Page<PostEntity> findAllByTagEntitiesContainingAndPostStatusEntityEqualsOrderByCreatedAtDesc(TagEntity tagEntity, PostStatusEntity postStatusEntity, Pageable pageable);
-
-    Page<PostEntity> findAllByTagEntitiesContainingAndPostStatusEntityEqualsOrderByCreatedAtDesc(List<TagEntity> tagEntityList, PostStatusEntity postStatusEntity, Pageable pageable);
+    Page<PostEntity> findAllByTagsContainingAndPostStatusEqualsOrderByCreatedAtDesc(TagEntity tagEntity, PostStatusEntity postStatusEntity, Pageable pageable);
 
 }

@@ -38,7 +38,6 @@ logging:
         SQL: info
 
 jwt:
-  cookie-name: auth-cookie
+  cookie-name: next-auth.session-token
   cookie-secure: false
-  secret: fYAkt9a5b7v8XnXMG2jwp6HGMMCRNJXp
 

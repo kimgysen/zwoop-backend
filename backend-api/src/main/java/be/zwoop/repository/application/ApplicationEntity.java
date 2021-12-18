@@ -27,7 +27,7 @@ public class ApplicationEntity extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private PostEntity postEntity;
+    private PostEntity post;
 
     @NotNull
     @ManyToOne
