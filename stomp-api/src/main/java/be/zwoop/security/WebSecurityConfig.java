@@ -1,11 +1,9 @@
-package be.zwoop.config.security;
+package be.zwoop.security;
 
-import be.zwoop.security.AccessTokenFilter;
-import be.zwoop.security.JwtAuthenticationProvider;
-import be.zwoop.security.TokenManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,20 +24,21 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] AUTH_WHITELIST = {
-        "/v2/api-docs", "/v3/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/actuator/**",
-        "/api/v1/public/**", "/error"
-    };
-
     private final TokenManager tokenManager;
     private final UserDetailsService userDetailsService;
 
+    @Lazy
     public WebSecurityConfig(
             TokenManager tokenManager,
             @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.tokenManager = tokenManager;
         this.userDetailsService = userDetailsService;
     }
+
+    private static final String[] AUTH_WHITELIST = {
+        "/v2/api-docs", "/v3/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/actuator/**",
+        "/api/v1/public/**", "/error"
+    };
 
     @Override
     @Bean
@@ -56,48 +55,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AccessTokenFilter(tokenManager, userDetailsService, authenticationManagerBean());
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Enable CORS and disable CSRF
         http
-            // Set session management to stateless
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .csrf().disable()
-            .cors()
-            .and()
-            .anonymous() // Allow anonymous access, SecurityContext does not need to be populated
-            .and()
-            // Set permissions on endpoints
-            .authorizeRequests()
+                // Set session management to stateless
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .csrf().disable()
+                .cors()
+                .and()
+                .anonymous() // Allow anonymous access, SecurityContext does not need to be populated
+                .and()
+                // Set permissions on endpoints
+                .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-            // Our private endpoints
-            // TODO: Verify user authorizations / roles
-            //.antMatchers("/api/*/user/**").hasRole(RoleEnum.USER.name())
-            .and()
-
-            // Set unauthorized requests exception handler
-            .exceptionHandling()
-            .authenticationEntryPoint(
-                    (request, response, ex) -> {
-                        response.sendError(
-                                HttpServletResponse.SC_UNAUTHORIZED,
-                                ex.getMessage()
-                        );
-                    }
-            )
-            .and()
-            // Add JWT token filter
-            .addFilterBefore(accessTokenFilter(), BasicAuthenticationFilter.class)
-            .anonymous() // Allow anonymous access, SecurityContext does not need to be populated
-        ;
+                // Our private endpoints
+                // TODO: Verify user authorizations / roles
+                //.antMatchers("/api/*/user/**").hasRole(RoleEnum.USER.name())
+                .and()
+                // Set unauthorized requests exception handler
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    ex.getMessage()
+                            );
+                        }
+                )
+                .and()
+                // Add JWT token filter
+                .addFilterBefore(accessTokenFilter(), BasicAuthenticationFilter.class);
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
-            .ignoring()
-            .antMatchers(AUTH_WHITELIST);
+                .ignoring()
+                .antMatchers(AUTH_WHITELIST);
     }
 
     @Bean

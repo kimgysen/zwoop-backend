@@ -32,8 +32,3 @@ logging:
       springframework: INFO
       hibernate:
         SQL: info
-
-jwt:
-  cookie-name: next-auth.session-token
-  cookie-secure: false
-

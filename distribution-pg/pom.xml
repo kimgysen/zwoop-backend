@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>distribution</artifactId>
+    <artifactId>distribution-pg</artifactId>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
@@ -17,6 +17,16 @@
         <liquibase-core.version>4.6.1</liquibase-core.version>
         <postgresql.version>42.3.1</postgresql.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <activatedProperties>local</activatedProperties>
+                <liquibase.url>jdbc:postgresql://localhost:5432/postgres</liquibase.url>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

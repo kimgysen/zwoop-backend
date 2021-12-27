@@ -4,7 +4,6 @@ import be.zwoop.security.AccessTokenFilter;
 import be.zwoop.security.JwtAuthenticationProvider;
 import be.zwoop.security.TokenManager;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -27,9 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${jwt.cookie-name}")
-    private String cookieName;
 
     private final TokenManager tokenManager;
     private final UserDetailsService userDetailsService;
@@ -59,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AccessTokenFilter accessTokenFilter() throws Exception {
-        return new AccessTokenFilter(cookieName, tokenManager, userDetailsService, authenticationManagerBean());
+        return new AccessTokenFilter(tokenManager, userDetailsService, authenticationManagerBean());
     }
 
 

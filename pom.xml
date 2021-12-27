@@ -8,14 +8,15 @@
         <module>user-api</module>
         <module>backend-api</module>
         <module>stomp-api</module>
-        <module>distribution</module>
+        <module>distribution-pg</module>
         <module>zwoop-security</module>
+        <module>distribution-cassandra</module>
     </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.0</version>
+        <version>2.6.2</version>
         <relativePath/>
     </parent>
 
@@ -35,7 +36,6 @@
             <id>local</id>
             <properties>
                 <activatedProperties>local</activatedProperties>
-                <liquibase.url>jdbc:postgresql://localhost:5432/postgres</liquibase.url>
             </properties>
         </profile>
     </profiles>

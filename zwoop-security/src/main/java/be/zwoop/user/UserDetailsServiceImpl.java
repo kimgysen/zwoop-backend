@@ -1,8 +1,7 @@
-package be.zwoop.config.security;
+package be.zwoop.user;
 
-import be.zwoop.repository.user.UserEntity;
-import be.zwoop.repository.user.UserRepository;
-import be.zwoop.repository.user_authprovider.UserAuthProviderEntity;
+import be.zwoop.user.UserEntity;
+import be.zwoop.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getRole()))
                     .collect(toList());
 
-            return new User(userEntity.getUserId().toString(), "", grantedAuthorities);
+            return new UserPrincipal(userEntity.getUserId().toString(), "", grantedAuthorities, userEntity.getNickName());
 
         } else {
             throw new UsernameNotFoundException(

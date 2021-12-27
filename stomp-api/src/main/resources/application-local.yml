@@ -1,0 +1,27 @@
+
+spring:
+  data:
+    cassandra:
+      local-datacenter: datacenter1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 60000
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+cassandra:
+  host: localhost
+  port: 9042
+  keyspace: zwoop_chat
+
+jwt:
+  secret: F0Xc+q1bwfUvThkfxzLzSkCCY0IYFCr4iXNms2S4wT+DnDv/IpS9MgEC9TaoyywhehTswtl3z+zn/WO4Bl2oZgLRufpSzs7Pui1mBTEejXX9db5ur6Q01g4z6j5MvALO81EL5HAyBrNMZg1yUwiB2Co/mMvd/kAe31BTglEbLxzA9J8ZYzbWxaIJFYzcJb7E8EZMoitNhxbWjQ3ML5GM4nZtguZPw/pryHxKww==
+  expiration: 7200
+

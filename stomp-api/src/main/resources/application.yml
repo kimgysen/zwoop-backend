@@ -1,12 +1,16 @@
 
 server:
-  port: 8002
+  port: 8003
   error:
     include-stacktrace: never
+  servlet:
+    session:
+      timeout: 600
 
 spring:
   main:
     banner-mode: off
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
       ddl-auto: none
@@ -16,19 +20,16 @@ spring:
     properties:
       hibernate:
         default_schema: public
-  data:
-    web:
-      pageable:
-        default-page-size: 15
-
   sql:
     init:
       mode: always
       platform: postgres
-  liquibase:
-    enabled: false
 
-# Disable extensive logs
+  data:
+    redis:
+      repositories:
+        enabled: true
+
 logging:
   level:
     root: INFO
