@@ -1,4 +1,4 @@
-package be.zwoop.user;
+package be.zwoop.repository.pg.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

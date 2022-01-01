@@ -1,4 +1,4 @@
-package be.zwoop.user;
+package be.zwoop.security;
 
 import lombok.Data;
 import lombok.Getter;

@@ -6,8 +6,9 @@ import org.springframework.data.domain.Slice;
 
 import java.util.Date;
 
-public interface PrivateMessageRepository extends CassandraRepository<PrivateMessage, MessagePrimaryKey> {
 
-    Slice<PrivateMessage> findAllByPkChatRoomIdEqualsAndPkUserIdEqualsAndFromUserIdEqualsOrToUserIdEqualsAndPkDateGreaterThan(Pageable pageable, String chatroomId, String userId, String chatPartnerUserFrom, String chatPartnerUserTo,Date date);
+public interface PrivateMessageRepository extends CassandraRepository<PrivateMessage, PublicMessagePrimaryKey> {
+
+    Slice<PrivateMessage> findAllByPkUserIdEqualsAndFromUserIdEqualsOrToUserIdEqualsAndPkDateGreaterThan(Pageable pageable, String userId, String chatPartnerUserFrom, String chatPartnerUserTo,Date date);
 
 }

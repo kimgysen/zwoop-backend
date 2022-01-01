@@ -1,12 +1,12 @@
-package be.zwoop.user;
+package be.zwoop.config.security;
 
-import be.zwoop.user.UserEntity;
-import be.zwoop.user.UserRepository;
+import be.zwoop.repository.user.UserEntity;
+import be.zwoop.repository.user.UserRepository;
+import be.zwoop.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

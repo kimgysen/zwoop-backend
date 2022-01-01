@@ -3,10 +3,10 @@ Run rabbitmq on docker locally:
 
 Pull container:  
 
-https://hub.docker.com/_/rabbitmq
+https://github.com/quangthe/docker-rabbitmq-stomp
 
     docker pull rabbitmq 
-    docker run --rm -it -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+    docker container run -it --name rabbitmq-stomp -p 15672:15672 -p 5672:5672 -p 61613:61613 pcloud/rabbitmq-stomp:3
 
 Run admin panel: 
 
@@ -14,6 +14,6 @@ Run admin panel:
 
 with credentials: 
 
-    user: guest 
-    password: guest 
+    user: admin 
+    password: admin  
 

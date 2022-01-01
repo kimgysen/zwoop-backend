@@ -11,7 +11,8 @@ import org.springframework.data.cassandra.core.mapping.Table;
 public class PrivateMessage {
 
     @PrimaryKey
-    private MessagePrimaryKey pk;
+    private PrivateMessagePrimaryKey pk;
+    private boolean isRead;
 
     private String fromUserId;
     private String fromNickName;

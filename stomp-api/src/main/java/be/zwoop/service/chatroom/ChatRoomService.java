@@ -1,9 +1,9 @@
 package be.zwoop.service.chatroom;
 
-import be.zwoop.repository.cassandra.PrivateMessage;
-import be.zwoop.repository.cassandra.PublicMessage;
 import be.zwoop.repository.redis.ChatRoom;
 import be.zwoop.repository.redis.ChatRoomUser;
+import be.zwoop.web.dto.PrivateMessageDto;
+import be.zwoop.web.dto.PublicMessageDto;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ public interface ChatRoomService {
     Optional<ChatRoom> findById(String chatRoomId);
     void join(ChatRoom chatRoom, ChatRoomUser joiningUser);
     void leave(ChatRoom chatRoom, ChatRoomUser leavingUser);
-    void sendPublicMessage(PublicMessage msg);
-    void sendPrivateMessage(PrivateMessage msg);
+    void sendPublicMessage(PublicMessageDto msg, String userId, String nickName);
+    void sendPrivateMessage(PrivateMessageDto msg, String userId, String nickName);
 
 }

@@ -43,6 +43,7 @@ public class UserEntity {
     @Column(name = "about_text")
     private String aboutText;
 
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "\"User_Tag\"",

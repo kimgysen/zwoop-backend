@@ -1,5 +1,6 @@
-package be.zwoop.user;
+package be.zwoop.repository.pg.user;
 
+import be.zwoop.repository.pg.role.RoleEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

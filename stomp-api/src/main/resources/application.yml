@@ -29,6 +29,8 @@ spring:
     redis:
       repositories:
         enabled: true
+    cassandra:
+      keyspace-name: zwoop_chat
 
 logging:
   level:

@@ -8,33 +8,35 @@ import be.zwoop.repository.redis.ChatRoomUser;
 import be.zwoop.security.facade.AuthenticationFacade;
 import be.zwoop.service.chatroom.ChatRoomService;
 import be.zwoop.service.message.MessageService;
-import be.zwoop.user.UserPrincipal;
+import be.zwoop.security.UserPrincipal;
+import be.zwoop.web.dto.PrivateMessageDto;
+import be.zwoop.web.dto.PublicMessageDto;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ChatRoomController {
 
-    private AuthenticationFacade authenticationFacade;
-    private ChatRoomService chatRoomService;
-    private MessageService messageService;
+    private final AuthenticationFacade authenticationFacade;
+    private final ChatRoomService chatRoomService;
+    private final MessageService messageService;
 
 
-    @GetMapping("/messages/public/{chatRoomId}")
+    @GetMapping("/chatroom/messages/public/{chatRoomId}")
     public Slice<PublicMessage> getOldPublicMessages(
             Pageable pageable,
             @PathVariable String chatRoomId,
@@ -44,7 +46,7 @@ public class ChatRoomController {
         return messageService.findPublicMessagesBefore(pageable, chatRoomId, date);
     }
 
-    @GetMapping("/messages/private/{chatRoomId}")
+    @GetMapping("/chatroom/messages/private/{chatRoomId}")
     public Slice<PrivateMessage> getOldPrivateMessages(
             Pageable pageable,
             @PathVariable String chatRoomId,
@@ -56,42 +58,52 @@ public class ChatRoomController {
         return messageService.findPrivateMessagesBefore(pageable, chatRoomId, userId, chatPartnerUserId, date);
     }
 
-    @MessageMapping("/chatroom/{chatRoomId}/join")
-    public void joinChatRoom(@DestinationVariable String chatRoomId, Principal principal) {
+
+    @SubscribeMapping("/old.public.messages")
+    public List<PublicMessage> getOldPublicMessagesOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+        String chatRoomId = headerAccessor
+                .getSessionAttributes()
+                .get("chatRoomId")
+                .toString();
+
+        return messageService.findFirst20ByPkChatRoomId(chatRoomId);
+    }
+
+    @SubscribeMapping("/connected.users")
+    public Set<ChatRoomUser> listChatRoomConnectedUsersOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+        String chatRoomId = headerAccessor
+                .getSessionAttributes()
+                .get("chatRoomId")
+                .toString();
+
         Optional<ChatRoom> chatRoomOpt = chatRoomService.findById(chatRoomId);
-        // TODO: What if chatroom doesn't exist
 
         if (chatRoomOpt.isPresent()) {
-            UserPrincipal userPrincipal = (UserPrincipal) principal;
-            ChatRoomUser chatRoomUser = ChatRoomUser.builder()
-                    .userId(userPrincipal.getUsername())
-                    .nickName(userPrincipal.getNickName())
-                    .build();
+            return chatRoomOpt.get()
+                    .getConnectedUsers();
 
-            chatRoomService.join(chatRoomOpt.get(), chatRoomUser);
+        } else {
+            return new HashSet<>();
+
         }
     }
 
-    @MessageMapping("/chatroom/{chatRoomId}/leave")
-    public void leaveChatRoom(@DestinationVariable String chatRoomId, Principal principal) {
-        Optional<ChatRoom> chatRoomOpt = chatRoomService.findById(chatRoomId);
-        if (chatRoomOpt.isPresent()) {
-            UserPrincipal userPrincipal = (UserPrincipal) principal;
-            ChatRoomUser chatRoomUser = ChatRoomUser.builder()
-                    .userId(userPrincipal.getUsername())
-                    .nickName(userPrincipal.getNickName())
-                    .build();
-
-            chatRoomService.leave(chatRoomOpt.get(), chatRoomUser);
-        }
+    @MessageMapping("/send.message.public")
+    public void sendPublicMessage(@Payload PublicMessageDto msgDto, SimpMessageHeaderAccessor headerAccessor) {
+        UserPrincipal principal = getPrincipal(headerAccessor);
+        chatRoomService.sendPublicMessage(msgDto, principal.getUsername(), principal.getNickName());
     }
 
     @MessageMapping("/send.message.private")
-    public void sendMessage(@Payload PrivateMessage msg, Principal principal) {
-        UserPrincipal userPrincipal = (UserPrincipal) principal;
-        msg.setFromUserId(userPrincipal.getUsername());
-        msg.setFromNickName(userPrincipal.getNickName());
-        chatRoomService.sendPrivateMessage(msg);
+    public void sendPrivateMessage(@Payload PrivateMessageDto msgDto, SimpMessageHeaderAccessor headerAccessor) {
+        UserPrincipal principal = getPrincipal(headerAccessor);
+        chatRoomService.sendPrivateMessage(msgDto, principal.getUsername(), principal.getNickName());
+    }
+
+    private UserPrincipal getPrincipal(SimpMessageHeaderAccessor headerAccessor) {
+        return (UserPrincipal) headerAccessor
+                .getSessionAttributes()
+                .get("userPrincipal");
     }
 
 }

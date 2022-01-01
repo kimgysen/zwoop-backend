@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,14 +47,16 @@ public class TokenManager {
 
     private String generateToken(Map<String, Object> claims, String username) {
         long expirationTimeLong = Long.parseLong(expirationTime); //in seconds
-        final Date createdDate = new Date();
-        final Date expirationDate = new Date(createdDate.getTime() + expirationTimeLong);
+        Instant expirationTs = Timestamp
+                .from(Instant.now())
+                .toInstant()
+                .plusSeconds(expirationTimeLong);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
-                .setIssuedAt(createdDate)
-                .setExpiration(expirationDate)
+                .setIssuedAt(new Date())
+                .setExpiration(Date.from(expirationTs))
                 .signWith(key, HS512)
                 .compact();
     }

@@ -44,7 +44,13 @@ public class PostControllerPrivateV1 {
     public ResponseEntity<Void> savePost(@Valid @RequestBody PostDto postDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         // TODO: Optional check if active and not blocked
-        UserEntity askerEntity = userRepository.getById(principalId);
+        Optional<UserEntity> askerEntityOpt = userRepository.findByUserId(principalId);
+
+        if (askerEntityOpt.isEmpty()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Asker doesn\'t exist for UUID: " + principalId.toString());
+        }
+
+        UserEntity askerEntity = askerEntityOpt.get();
 
         Optional<PostEntity> postEntityOpt = postRepository.findByAskerAndPostTitle(askerEntity, postDto.getTitle());
 
@@ -89,6 +95,16 @@ public class PostControllerPrivateV1 {
             postRepository.saveAndFlush(toUpdate);
 
             return noContent().build();
+        }
+    }
+
+    private void validateAsker(UserEntity askerEntity) {
+        if (!askerEntity.isActive()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Asker is not active: " + askerEntity.getUserId().toString());
+        }
+
+        if (askerEntity.isBlocked()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Asker is blocked: " + askerEntity.getUserId().toString());
         }
     }
 

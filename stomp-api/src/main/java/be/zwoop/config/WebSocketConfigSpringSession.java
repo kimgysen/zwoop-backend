@@ -20,16 +20,30 @@ public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessag
 	@Value("${spring.rabbitmq.port}")
 	private Integer relayPort;
 
+	@Value("${spring.rabbitmq.username}")
+	private String relayUsername;
+
+	@Value("${spring.rabbitmq.password}")
+	private String relayPassword;
+
+
 	protected void configureStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").withSockJS();
+		registry
+				.addEndpoint("/ws")
+				.setAllowedOrigins("*");
 	}
 
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		registry.enableStompBrokerRelay("/queue/", "/topic/")
-			.setUserDestinationBroadcast("/topic/unresolved.user.dest")
-			.setUserRegistryBroadcast("/topic/registry.broadcast")
-			.setRelayHost(relayHost)
-			.setRelayPort(relayPort);
+				.setAutoStartup(true)
+				.setUserDestinationBroadcast("/topic/unresolved.user.dest")
+				.setUserRegistryBroadcast("/topic/registry.broadcast")
+				.setRelayHost(relayHost)
+				.setRelayPort(relayPort)
+				.setSystemLogin(relayUsername)
+				.setSystemPasscode(relayPassword)
+				.setClientLogin(relayUsername)
+				.setClientPasscode(relayPassword);
 
 		registry.setApplicationDestinationPrefixes("/chatroom");
 	}

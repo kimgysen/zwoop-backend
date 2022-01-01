@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
         "/v2/api-docs", "/v3/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/actuator/**",
-        "/api/v1/public/**", "/error"
+        "/api/v1/public/**", "/error",
+        "/ws" // Websocket security gets handled by the inbound interceptor!
     };
 
     @Override
