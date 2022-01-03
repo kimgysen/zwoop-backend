@@ -3,6 +3,7 @@ package be.zwoop.repository.post;
 import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.application.ApplicationEntity;
+import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import lombok.Data;
@@ -27,12 +28,13 @@ import java.util.UUID;
 public class PostEntity extends BaseEntity {
 
     @Id
+    @GeneratedValue
     @Column(name = "post_id")
     private UUID postId;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "asker_id", updatable = false, insertable = false)
+    @JoinColumn(name = "asker_id")
     private UserEntity asker;
 
     @NotNull
@@ -43,9 +45,12 @@ public class PostEntity extends BaseEntity {
     @Column(name = "post_text")
     private String postText;
 
-    @NotNull
-    @Column(name = "bid_price")
-    private double bidPrice;
+    @Column(name = "offer_price")
+    private double offerPrice;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "currency_id", updatable = false, insertable = false)
+    private CurrencyEntity currency;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_status_id", updatable = false, insertable = false)

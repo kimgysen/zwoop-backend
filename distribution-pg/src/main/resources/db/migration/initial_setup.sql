@@ -69,13 +69,22 @@ CREATE TABLE IF NOT EXISTS "PostStatus"(
     PRIMARY KEY (post_status_id)
 );
 
--- Create Posts table
+-- Create Currency table
+CREATE TABLE IF NOT EXISTS "Currency"(
+    currency_id INT NOT NULL,
+    currency TEXT NOT NULL,
+
+    PRIMARY KEY (currency_id)
+);
+
+-- Create Post table
 CREATE TABLE IF NOT EXISTS "Post"(
     post_id UUID NOT NULL DEFAULT gen_random_uuid(),
     asker_id UUID NOT NULL,
     post_title TEXT NOT NULL,
     post_text TEXT NOT NULL,
-    bid_price REAL NOT NULL,
+    offer_price REAL,
+    currency_id INT,
     post_status_id INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL,
     created_by UUID NOT NULL,
@@ -85,7 +94,8 @@ CREATE TABLE IF NOT EXISTS "Post"(
     PRIMARY KEY (post_id),
     UNIQUE(asker_id, post_title),
     FOREIGN KEY(asker_id) REFERENCES "User"(user_id),
-    FOREIGN KEY(post_status_id) REFERENCES "PostStatus"(post_status_id)
+    FOREIGN KEY(post_status_id) REFERENCES "PostStatus"(post_status_id),
+    FOREIGN KEY(currency_id) REFERENCES "Currency"(currency_id)
 );
 
 -- Create Tag table

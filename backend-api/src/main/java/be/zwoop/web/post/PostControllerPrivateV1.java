@@ -2,14 +2,19 @@ package be.zwoop.web.post;
 
 
 import be.zwoop.config.security.facade.AuthenticationFacade;
+import be.zwoop.domain.enum_type.PostStatusEnum;
+import be.zwoop.repository.currency.CurrencyEntity;
+import be.zwoop.repository.currency.CurrencyRepository;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post.PostRepository;
+import be.zwoop.repository.post.PostStatusEntity;
+import be.zwoop.repository.post.PostStatusRepository;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
 import be.zwoop.web.post.dto.PostDto;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,15 +34,17 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/private/posts")
+@RequestMapping(value = "/api/v1/private/post")
 public class PostControllerPrivateV1 {
 
-    private AuthenticationFacade authenticationFacade;
-    private PostRepository postRepository;
-    private UserRepository userRepository;
-    private TagRepository tagRepository;
+    private final AuthenticationFacade authenticationFacade;
+    private final PostRepository postRepository;
+    private final PostStatusRepository postStatusRepository;
+    private final CurrencyRepository currencyRepository;
+    private final UserRepository userRepository;
+    private final TagRepository tagRepository;
 
     @PostMapping
     @Transactional
@@ -51,24 +58,46 @@ public class PostControllerPrivateV1 {
         }
 
         UserEntity askerEntity = askerEntityOpt.get();
-
         Optional<PostEntity> postEntityOpt = postRepository.findByAskerAndPostTitle(askerEntity, postDto.getTitle());
+
+        CurrencyEntity currencyEntity = null;
+        if (postDto.getOffer() != null) {
+            if (postDto.getCurrency() == null) {
+                throw new ResponseStatusException(BAD_REQUEST, "Currency is null while offer price is defined.");
+            } else {
+                Optional<CurrencyEntity> currencyEntityOpt = currencyRepository.findByCurrency(postDto.getCurrency());
+                if (currencyEntityOpt.isEmpty()) {
+                    throw new ResponseStatusException(BAD_REQUEST, "Currency not found");
+                } else {
+                    currencyEntity = currencyEntityOpt.get();
+                }
+            }
+
+        }
 
         if (postEntityOpt.isPresent()) {
             throw new ResponseStatusException(BAD_REQUEST, "Post already exists with id: " + postEntityOpt.get().getPostId());
 
         } else {
             List<TagEntity> tagEntities = tagRepository.findAllByTagIdIn(postDto.getTagIds());
+            PostStatusEntity postStatusEntity = postStatusRepository
+                    .findById(PostStatusEnum.OPEN.getValue())
+                    .orElse(null);
+
             PostEntity toSave = PostEntity.builder()
+                    .asker(askerEntity)
+                    .postStatus(postStatusEntity)
                     .postTitle(postDto.getTitle())
                     .postText(postDto.getText())
-                    .bidPrice(postDto.getBidPrice())
+                    .offerPrice(postDto.getOffer())
+                    .currency(currencyEntity)
+                    .postStatus(postStatusEntity)
                     .tags(tagEntities)
                     .build();
             PostEntity savedPost = postRepository.saveAndFlush(toSave);
 
             URI uri = UriComponentsBuilder
-                    .fromPath(("/{id}"))
+                    .fromPath(("/post/{id}"))
                     .buildAndExpand(savedPost.getPostId()).toUri();
             return created(uri).build();
         }

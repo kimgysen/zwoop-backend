@@ -74,10 +74,6 @@ public class TokenManager {
                 .getSubject();
     }
 
-    public Collection<GrantedAuthority> getRolesFromToken(String token) {
-        return (Collection<GrantedAuthority>) getAllClaimsFromToken(token).get("roles");
-    }
-
     public boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());

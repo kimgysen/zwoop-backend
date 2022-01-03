@@ -1,5 +1,6 @@
 package be.zwoop.config.security.facade;
 
+import be.zwoop.security.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     @Override
     public UUID getAuthenticatedUserId() {
         return UUID.fromString(
-                getAuthentication().getName());
+                ((UserPrincipal) getAuthentication().getDetails()).getUsername());
     }
 
 }

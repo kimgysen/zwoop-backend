@@ -18,7 +18,7 @@ public class AccessToken {
 
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return tokenManager.getRolesFromToken(jwt);
+        return userDetails.getAuthorities();
     }
 
 

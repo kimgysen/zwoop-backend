@@ -16,11 +16,10 @@ public class PostDto {
     @NotEmpty
     private String text;
 
-    @NotEmpty
-    @DecimalMin("1.0")
-    private double bidPrice;
+    private Double offer;
+    private String currency;
 
     @NotEmpty
-    @Size(min = 1, max = 5)
+    @Size(min = 1, max = 3)
     private List<Long> tagIds;
 }
