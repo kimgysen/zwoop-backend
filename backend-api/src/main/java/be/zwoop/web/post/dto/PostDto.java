@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class PostDto {
     @NotEmpty
     private String text;
 
-    private Double offer;
+    private BigDecimal offer;
     private String currency;
 
     @NotEmpty

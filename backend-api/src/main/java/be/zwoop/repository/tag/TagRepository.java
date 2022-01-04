@@ -6,10 +6,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface TagRepository extends JpaRepository<TagEntity, Long> {
+
+    Optional<TagEntity> findByTagName(String tag);
 
     @Query("FROM TagEntity t WHERE t.tagName LIKE :tagName%")
     List<TagEntity> findByTagNameLike(@Param("tagName") String tagName);

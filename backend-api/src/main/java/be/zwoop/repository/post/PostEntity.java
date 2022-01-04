@@ -15,6 +15,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,8 +46,8 @@ public class PostEntity extends BaseEntity {
     @Column(name = "post_text")
     private String postText;
 
-    @Column(name = "offer_price")
-    private double offerPrice;
+    @Column(name = "offer_price", scale = 3)
+    private BigDecimal offerPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "currency_id", updatable = false, insertable = false)

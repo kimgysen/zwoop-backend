@@ -20,7 +20,9 @@ spring:
     web:
       pageable:
         default-page-size: 15
-
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
   sql:
     init:
       mode: always

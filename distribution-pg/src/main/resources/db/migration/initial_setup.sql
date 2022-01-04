@@ -104,7 +104,8 @@ CREATE TABLE IF NOT EXISTS "Tag"(
    tag TEXT NOT NULL,
    description TEXT,
 
-   PRIMARY KEY (tag_id)
+   PRIMARY KEY (tag_id),
+   UNIQUE(tag)
 );
 
 -- Create Post_Tag table

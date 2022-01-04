@@ -9,7 +9,7 @@ import be.zwoop.repository.post.PostStatusEntity;
 import be.zwoop.repository.post.PostStatusRepository;
 import be.zwoop.web.exception.RequestParamException;
 import be.zwoop.web.post.dto.ValidFeedParamDto;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +26,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/public/posts")
+@RequestMapping(value = "/api/v1/public/post")
 public class PostControllerPublicV1 {
 
-    private PostRepository postRepository;
-    private PostControllerValidationHelper validator;
-    private PostStatusRepository postStatusRepository;
+    private final PostRepository postRepository;
+    private final PostControllerValidationHelper validator;
+    private final PostStatusRepository postStatusRepository;
 
 
     @GetMapping("/{postId}")
@@ -52,21 +52,22 @@ public class PostControllerPublicV1 {
     @GetMapping
     public Page<PostEntity> getPosts(
             @RequestParam(value = "feedType") PostFeedTypeEnum feedType,
-            @RequestParam(value = "tagId") Optional<Long> tagIdOpt,
+            @RequestParam(value = "postStatus") PostStatusEnum postStatusEnum,
+            @RequestParam(value = "tagName") Optional<String> tagNameOpt,
             @NotNull final Pageable pageable) {
 
         Page<PostEntity> postFeedPage;
 
-        PostStatusEntity openPostStatusEntity = postStatusRepository.getById(PostStatusEnum.OPEN.getValue());
+        PostStatusEntity postStatusEntity = postStatusRepository.getById(postStatusEnum.getValue());
 
         try {
             switch (feedType) {
                 case FEED_BY_TAG -> {
-                    ValidFeedParamDto byTagParams = validator.validateTagId(tagIdOpt);
+                    ValidFeedParamDto byTagParams = validator.validateTagName(tagNameOpt);
                     postFeedPage = postRepository
-                            .findAllByTagsContainingAndPostStatusEqualsOrderByCreatedAtDesc(byTagParams.getTagEntity(), openPostStatusEntity, pageable);
+                            .findAllByTagsContainingAndPostStatusEqualsOrderByCreatedAtDesc(byTagParams.getTagEntity(), postStatusEntity, pageable);
                 }
-                default -> postFeedPage = postRepository.findAllByPostStatusEqualsOrderByCreatedAtDesc(openPostStatusEntity, pageable);
+                default -> postFeedPage = postRepository.findAllByPostStatusEqualsOrderByCreatedAtDesc(postStatusEntity, pageable);
             }
 
         } catch (RequestParamException e) {
@@ -75,7 +76,4 @@ public class PostControllerPublicV1 {
 
         return postFeedPage;
     }
-
-
 }
-
