@@ -1,6 +1,7 @@
 package be.zwoop.repository.user;
 
 import be.zwoop.repository.role.RoleEntity;
+import be.zwoop.repository.tag.TagEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -46,17 +47,14 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "public_address_trx")
-    private String publicAddressTrx;
-
     @Column(name = "about_text")
     private String aboutText;
 
     @Column(name = "is_blocked")
-    private boolean isBlocked;
+    private boolean blocked;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -65,6 +63,15 @@ public class UserEntity {
             inverseJoinColumns = { @JoinColumn(name = "role_id") }
     )
     private Set<RoleEntity> roles;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "\"User_Tag\"",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+    )
+    private Set<TagEntity> tags;
 
     @CreatedDate
     @Column(name = "created_at")

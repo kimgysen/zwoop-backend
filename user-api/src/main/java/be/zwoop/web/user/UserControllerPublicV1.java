@@ -2,6 +2,7 @@ package be.zwoop.web.user;
 
 import be.zwoop.repository.authprovider.AuthProviderEntity;
 import be.zwoop.repository.authprovider.AuthProviderRepository;
+import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
 import be.zwoop.repository.user_authprovider.UserAuthProviderEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -61,14 +63,51 @@ public class UserControllerPublicV1 {
 
     @GetMapping(value = "/{userId}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable UUID userId) {
-        Optional<UserEntity> userEntityOpt = userRepository.findById(userId);
+        Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
 
         if (userEntityOpt.isEmpty()) {
             throw new ResponseStatusException(NOT_FOUND);
         } else {
-            return ok(userEntityOpt.get());
-
+            UserEntity userEntity = userEntityOpt.get();
+            userEntity.setEmail(null);
+            return ok(userEntity);
         }
+    }
+
+    @GetMapping(value = "/{userId}/tags")
+    public ResponseEntity<Set<TagEntity>> getTags(@PathVariable UUID userId) {
+        Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
+
+        if (userEntityOpt.isPresent()) {
+            UserEntity userEntity = userEntityOpt.get();
+
+            return ok(userEntity.getTags());
+        }
+
+        throw new ResponseStatusException(NOT_FOUND);
+    }
+
+    @GetMapping(value = "/{userId}/{tag}")
+    public ResponseEntity<TagEntity> tagExists(
+            @PathVariable UUID userId,
+            @PathVariable String tag) {
+        Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
+
+        if (userEntityOpt.isPresent()) {
+            UserEntity userEntity = userEntityOpt.get();
+            TagEntity foundTagEntity = userEntity
+                    .getTags()
+                    .stream()
+                    .filter(tagEntity -> tagEntity.getTagName().equals(tag))
+                    .findFirst()
+                    .orElse(null);
+
+            if (foundTagEntity != null) {
+                return ok(foundTagEntity);
+            }
+        }
+
+        throw new ResponseStatusException(NOT_FOUND);
     }
 
 }

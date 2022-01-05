@@ -45,17 +45,14 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "public_address_trx")
-    private String publicAddressTrx;
-
     @Column(name = "about_text")
     private String aboutText;
 
     @Column(name = "is_blocked")
-    private boolean isBlocked;
+    private boolean blocked;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

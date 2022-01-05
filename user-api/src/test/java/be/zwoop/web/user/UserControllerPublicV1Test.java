@@ -19,11 +19,7 @@ class UserControllerPublicV1Test {
 //    void testGetUserByPublicAddress() {
 //        UserEntity userEntity = UserEntity
 //                .builder()
-//                .trxWalletAddress("bogusAddress")
 //                .build();
-//
-//        given(userRepository.findByTrxWalletAddress("bogusAddress"))
-//                .willReturn(Mono.just(userEntity));
 //
 //        webTestClient.get()
 //                .uri("/public/api/v1/users")

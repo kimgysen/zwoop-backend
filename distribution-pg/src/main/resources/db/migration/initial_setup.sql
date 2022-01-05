@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS "User"(
     last_name TEXT NOT NULL,
     email CITEXT UNIQUE,
     profile_pic TEXT,
-    nick_name TEXT UNIQUE,
-    public_address_trx TEXT UNIQUE,
+    nick_name TEXT UNIQUE NOT NULL,
     about_text TEXT,
     is_blocked BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
@@ -101,11 +100,10 @@ CREATE TABLE IF NOT EXISTS "Post"(
 -- Create Tag table
 CREATE TABLE IF NOT EXISTS "Tag"(
    tag_id SERIAL NOT NULL,
-   tag TEXT NOT NULL,
+   tag TEXT NOT NULL UNIQUE,
    description TEXT,
 
-   PRIMARY KEY (tag_id),
-   UNIQUE(tag)
+   PRIMARY KEY (tag_id)
 );
 
 -- Create Post_Tag table
@@ -222,18 +220,3 @@ CREATE TABLE IF NOT EXISTS "Notification"(
     FOREIGN KEY (dest_user_id) REFERENCES "User"(user_id)
 );
 
--- Create ChatMessage table
-CREATE TABLE IF NOT EXISTS "ChatMessage"(
-    message_id UUID NOT NULL DEFAULT gen_random_uuid(),
-    src_user_id UUID NOT NULL,
-    dest_user_id UUID NOT NULL ,
-    message_text TEXT,
-    created_at TIMESTAMP NOT NULL,
-    created_by UUID NOT NULL,
-    updated_at TIMESTAMP,
-    updated_by UUID,
-
-    PRIMARY KEY (message_id),
-    FOREIGN KEY (src_user_id) REFERENCES "User"(user_id),
-    FOREIGN KEY (dest_user_id) REFERENCES "User"(user_id)
-);

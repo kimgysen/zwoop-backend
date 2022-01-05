@@ -31,6 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.ok;
@@ -92,15 +93,18 @@ public class AuthControllerV1 {
                             .findByOauthUserIdAndAuthProviderEntity(registerDto.getAuthId(), authProviderEntityOpt.get());
 
             UserEntity savedUser;
+            UUID userId = UUID.randomUUID();
             if (userAuthProviderEntityOpt.isEmpty()) {
                 RoleEntity roleEntity = roleRepository.getById(RoleEnum.USER.getValue());
                 UserEntity toSave = UserEntity.builder()
+                        .userId(userId)
+                        .nickName(userId.toString())
                         .firstName(registerDto.getFirstName())
                         .lastName(registerDto.getLastName())
                         .profilePic(registerDto.getProfilePic())
                         .email(registerDto.getEmail())
                         .roles(Set.of(roleEntity))
-                        .isActive(true)
+                        .active(true)
                         .build();
                 savedUser = userRepository.saveAndFlush(toSave);
 

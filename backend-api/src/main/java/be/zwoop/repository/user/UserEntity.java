@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -37,9 +36,6 @@ public class UserEntity {
     @Column(name = "nick_name")
     private String nickName;
 
-    @Column(name = "public_address_trx")
-    private String publicAddressTrx;
-
     @Column(name = "about_text")
     private String aboutText;
 
@@ -61,10 +57,10 @@ public class UserEntity {
     private Set<RoleEntity> roles;
 
     @Column(name = "is_blocked")
-    private boolean isBlocked;
+    private boolean blocked;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
