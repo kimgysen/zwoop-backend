@@ -5,14 +5,13 @@ import be.zwoop.repository.cassandra.PrivateMessage;
 import be.zwoop.repository.cassandra.PublicMessage;
 import be.zwoop.repository.redis.ChatRoom;
 import be.zwoop.repository.redis.ChatRoomUser;
-import be.zwoop.security.facade.AuthenticationFacade;
+import be.zwoop.security.AuthenticationFacade;
+import be.zwoop.security.UserPrincipal;
 import be.zwoop.service.chatroom.ChatRoomService;
 import be.zwoop.service.message.MessageService;
-import be.zwoop.security.UserPrincipal;
 import be.zwoop.web.dto.PrivateMessageDto;
 import be.zwoop.web.dto.PublicMessageDto;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.*;
 
 @RestController

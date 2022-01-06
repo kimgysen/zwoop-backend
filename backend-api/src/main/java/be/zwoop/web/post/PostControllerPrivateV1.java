@@ -1,7 +1,6 @@
 package be.zwoop.web.post;
 
 
-import be.zwoop.config.security.facade.AuthenticationFacade;
 import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.currency.CurrencyRepository;
@@ -13,6 +12,7 @@ import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
+import be.zwoop.security.AuthenticationFacade;
 import be.zwoop.web.post.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
