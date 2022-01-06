@@ -7,5 +7,6 @@ import java.util.UUID;
 
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+    Optional<UserEntity> findByUserIdAndBlockedAndActive(UUID userId, boolean isBlocked, boolean isActive);
     Optional<UserEntity> findByUserId(UUID userId);
 }

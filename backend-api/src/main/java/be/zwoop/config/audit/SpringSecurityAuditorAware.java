@@ -1,10 +1,9 @@
 package be.zwoop.config.audit;
 
-import be.zwoop.config.security.facade.AuthenticationFacade;
+import be.zwoop.security.AuthenticationFacade;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.lang.NonNullApi;
 
 import java.util.Optional;
 import java.util.UUID;

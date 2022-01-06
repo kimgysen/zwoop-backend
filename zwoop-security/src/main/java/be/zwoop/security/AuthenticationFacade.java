@@ -1,4 +1,4 @@
-package be.zwoop.config.security.facade;
+package be.zwoop.security;
 
 import org.springframework.security.core.Authentication;
 

@@ -10,6 +10,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findByUserIdAndBlockedAndActive(UUID userId, boolean isBlocked, boolean isActive);
     Optional<UserEntity> findByNickNameAndBlockedAndActive(String nickName, boolean isBlocked, boolean isActive);
+    Optional<UserEntity> findByNickName(String nickName);
 
     Boolean existsByNickName(String nickName);
 
