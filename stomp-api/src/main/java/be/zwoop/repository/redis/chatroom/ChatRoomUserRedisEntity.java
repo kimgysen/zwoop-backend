@@ -1,4 +1,4 @@
-package be.zwoop.repository.redis;
+package be.zwoop.repository.redis.chatroom;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,23 +8,24 @@ import java.util.Objects;
 
 @Data
 @Builder
-public class ChatRoomUser implements Comparable<ChatRoomUser> {
+public class ChatRoomUserRedisEntity implements Comparable<ChatRoomUserRedisEntity> {
 
 	private final String userId;
 	private final String nickName;
+	private final String avatar;
 	private final Date joinedAt;
 
 
 	@Override
-	public int compareTo(ChatRoomUser chatRoomUser) {
-		return this.userId.compareTo(chatRoomUser.getUserId());
+	public int compareTo(ChatRoomUserRedisEntity chatRoomUserRedisEntity) {
+		return this.userId.compareTo(chatRoomUserRedisEntity.getUserId());
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		ChatRoomUser that = (ChatRoomUser) o;
+		ChatRoomUserRedisEntity that = (ChatRoomUserRedisEntity) o;
 		return userId.equals(that.userId);
 	}
 

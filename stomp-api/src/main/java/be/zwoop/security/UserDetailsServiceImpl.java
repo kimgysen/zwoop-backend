@@ -41,7 +41,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     ? userEntity.getUserId().toString()
                     : userEntity.getNickName();
 
-            return new UserPrincipal(userEntity.getUserId().toString(), "", grantedAuthorities, nickName);
+            return new UserPrincipal(
+                    userEntity.getUserId().toString(),
+                    "",
+                    grantedAuthorities,
+                    nickName,
+                    userEntity.getProfilePic()
+            );
 
         } else {
             throw new UsernameNotFoundException(

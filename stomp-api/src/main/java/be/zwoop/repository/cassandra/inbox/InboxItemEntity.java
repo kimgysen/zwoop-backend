@@ -1,4 +1,4 @@
-package be.zwoop.repository.cassandra;
+package be.zwoop.repository.cassandra.inbox;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,18 +7,23 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 @Data
 @Builder
-@Table("private_messages")
-public class PrivateMessage {
+@Table("inbox_items")
+public class InboxItemEntity {
 
     @PrimaryKey
-    private PrivateMessagePrimaryKey pk;
-    private boolean isRead;
+    private InboxItemPrimaryKey pk;
+
+    private String partnerId;
 
     private String fromUserId;
     private String fromNickName;
-
+    private String fromAvatar;
     private String toUserId;
     private String toNickName;
+    private String toAvatar;
 
-    private String message;
+    private int unread = 0;
+    private String lastMessage;
+
 }
+

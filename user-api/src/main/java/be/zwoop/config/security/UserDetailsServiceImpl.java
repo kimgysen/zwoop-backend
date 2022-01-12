@@ -38,7 +38,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getRole()))
                     .collect(toList());
 
-            return new UserPrincipal(userEntity.getUserId().toString(), "", grantedAuthorities, userEntity.getNickName());
+            return new UserPrincipal(
+                    userEntity.getUserId().toString(),
+                    "",
+                    grantedAuthorities,
+                    userEntity.getNickName(),
+                    userEntity.getProfilePic()
+            );
 
         } else {
             throw new UsernameNotFoundException(

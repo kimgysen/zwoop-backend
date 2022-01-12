@@ -1,22 +1,21 @@
-package be.zwoop.repository.cassandra;
+package be.zwoop.repository.cassandra.public_message;
 
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.Date;
-
 @Builder
 @Data
 @Table("public_messages")
-public class PublicMessage {
+public class PublicMessageEntity {
 
     @PrimaryKey
     private PublicMessagePrimaryKey pk;
 
     private String fromUserId;
     private String fromUserNickName;
+    private String fromUserAvatar;
     private String message;
 
 }

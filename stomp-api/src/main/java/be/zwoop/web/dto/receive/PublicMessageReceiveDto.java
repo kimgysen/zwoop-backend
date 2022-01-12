@@ -1,10 +1,10 @@
-package be.zwoop.web.dto;
+package be.zwoop.web.dto.receive;
 
 
 import lombok.Data;
 
 @Data
-public class PublicMessageDto {
+public class PublicMessageReceiveDto {
     String chatRoomId;
     String message;
 }

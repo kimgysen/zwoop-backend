@@ -34,7 +34,7 @@ public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessag
 	}
 
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableStompBrokerRelay("/queue/", "/topic/")
+		registry.enableStompBrokerRelay("/exchange/", "/topic/")
 				.setAutoStartup(true)
 				.setUserDestinationBroadcast("/topic/unresolved.user.dest")
 				.setUserRegistryBroadcast("/topic/registry.broadcast")

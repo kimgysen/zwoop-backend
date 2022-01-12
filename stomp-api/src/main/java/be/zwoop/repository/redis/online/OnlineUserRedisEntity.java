@@ -1,21 +1,19 @@
-package be.zwoop.repository.redis;
+package be.zwoop.repository.redis.online;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.Id;
 
 
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @RedisHash("online_users")
-public class OnlineUser {
+public class OnlineUserRedisEntity {
 
     @Id
-    private final String id;
+    private String id;
 
 }

@@ -1,65 +1,58 @@
 package be.zwoop.websocket;
 
-import be.zwoop.repository.redis.ChatRoom;
-import be.zwoop.repository.redis.ChatRoomUser;
-import be.zwoop.repository.redis.OnlineUser;
-import be.zwoop.repository.redis.OnlineUserRepository;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.service.chatroom.ChatRoomService;
+import be.zwoop.websocket.service.ConnectType;
+import be.zwoop.websocket.service.WsUtil;
+import be.zwoop.websocket.service.connect.ConnectService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 
-import java.util.Date;
-import java.util.Optional;
+import static be.zwoop.websocket.keys.HeaderKeys.*;
+import static be.zwoop.websocket.keys.SessionKeys.*;
 
 
 @AllArgsConstructor
 @Component
 public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
 
-    private final ChatRoomService chatRoomService;
-    private final OnlineUserRepository onlineUserRepository;
+    private final WsUtil wsUtil;
+    private final ConnectService connectService;
 
     @Override
     public void onApplicationEvent(SessionConnectEvent event) {
+        handleChatRoomConnect(event);
+    }
+
+    private void handleChatRoomConnect(SessionConnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        String chatRoomId = headers
-                .getNativeHeader("chatRoomId")
-                .get(0);
-        headers.getSessionAttributes()
-                .put("chatRoomId", chatRoomId);
+        UserPrincipal principal = wsUtil.getPrincipal(headers);
+        wsUtil.storePrincipalInSession(principal, headers);
 
-        ChatRoom chatRoom;
-        Optional<ChatRoom> chatRoomOpt = chatRoomService.findById(chatRoomId);
+        ConnectType connectType = ConnectType.valueOf(
+                wsUtil.getNativeHeader(HEADER_CONNECT_TYPE, headers));
+        wsUtil.storeInSession(SESSION_CONNECT_TYPE, connectType.name(), headers);
 
-        if (chatRoomOpt.isEmpty()) {
-            chatRoom = chatRoomService.save(new ChatRoom(chatRoomId, chatRoomId));
-        } else {
-            chatRoom = chatRoomOpt.get();
-        }
+        connectService.saveOnlineStatusRedis(principal);
 
-        UserPrincipal principal = getPrincipal(headers);
-        String userId = principal.getUsername();
-        String nickName = principal.getNickName();
-
-        if (userId != null && nickName != null) {
-            onlineUserRepository.save(new OnlineUser(userId));
-
-            ChatRoomUser chatRoomUser = ChatRoomUser.builder()
-                    .userId(principal.getUsername())
-                    .nickName(principal.getNickName())
-                    .joinedAt(new Date())
-                    .build();
-            chatRoomService.join(chatRoom, chatRoomUser);
+        switch (connectType) {
+            case PUBLIC_CHAT -> {
+                String chatRoomId = wsUtil.getNativeHeader(HEADER_CHATROOM_ID, headers);
+                wsUtil.storeInSession(SESSION_CHATROOM_ID, chatRoomId, headers);
+                connectService.savePresenceStatusPublicChatRoom(chatRoomId, principal);
+            }
+            case PRIVATE_CHAT -> {
+                String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
+                wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
+                connectService.savePresenceStatusPrivateChat(postId, principal);
+            }
+            case POST_INBOX -> {
+                String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
+                wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
+            }
         }
 
     }
-
-    private UserPrincipal getPrincipal(SimpMessageHeaderAccessor headers) {
-        return (UserPrincipal) headers.getSessionAttributes().get("userPrincipal");
-    }
-
 }

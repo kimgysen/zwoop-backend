@@ -23,27 +23,46 @@ WITH REPLICATION = {
 USE zwoop_chat 
 CREATE TABLE IF NOT EXISTS public_messages (
     chatRoomId text,
-    ts timestamp,
     date timestamp,
     fromUserId text,
     fromUserNickName text,
+    fromUserAvatar text,
     message text,
-    PRIMARY KEY ((chatRoomId, fromUserId), date) 
+    PRIMARY KEY ((chatRoomId), date) 
 ) WITH CLUSTERING ORDER BY (date ASC);
 ```
 ```
 USE zwoop_chat
 CREATE TABLE IF NOT EXISTS private_messages (
+    postId text,
     userId text,
     partnerId text,
-    isRead boolean,
     date timestamp,
     fromUserId text,
-    fromUserNickName text,
+    fromNickName text,
+    fromAvatar text,
     toUserId text,
-    toUserNickName text,
+    toNickName text,
+    toAvatar text,
     message text,
-    PRIMARY KEY ((userId, partnerId), date)
-) WITH CLUSTERING ORDER BY (date ASC);
-
+    PRIMARY KEY ((postId, userId, partnerId), date)
+) WITH CLUSTERING ORDER BY (date DESC);
+```
+```
+USE zwoop_chat
+CREATE TABLE IF NOT EXISTS inbox_items (
+    postId text,
+    userId text,
+    partnerId text,
+    fromUserId text,
+    fromNickName text,
+    fromAvatar text,
+    toUserId text,
+    toNickName text,
+    toAvatar text,
+    unread int static,
+    lastMessage text,
+    lastMessageDate timestamp,
+    PRIMARY KEY ((postId, userId), lastMessageDate)
+) WITH CLUSTERING ORDER BY (lastMessageDate DESC);
 ```

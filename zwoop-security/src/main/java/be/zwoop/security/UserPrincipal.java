@@ -12,10 +12,12 @@ import java.util.Collection;
 public class UserPrincipal extends User {
 
     private final String nickName;
+    private final String avatar;
 
-    public UserPrincipal(String username, String password, Collection<? extends GrantedAuthority> authorities, String nickName) {
+    public UserPrincipal(String username, String password, Collection<? extends GrantedAuthority> authorities, String nickName, String avatar) {
         super(username, password, authorities);
         this.nickName = nickName;
+        this.avatar = avatar;
     }
 
 }
