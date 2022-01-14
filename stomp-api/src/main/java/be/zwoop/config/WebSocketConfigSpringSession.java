@@ -45,6 +45,6 @@ public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessag
 				.setClientLogin(relayUsername)
 				.setClientPasscode(relayPassword);
 
-		registry.setApplicationDestinationPrefixes("/chatroom");
+		registry.setApplicationDestinationPrefixes("/app");
 	}
 }

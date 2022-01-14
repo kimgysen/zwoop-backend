@@ -1,10 +1,9 @@
 package be.zwoop.web;
 
-import be.zwoop.repository.cassandra.inbox.InboxItemEntity;
-import be.zwoop.repository.cassandra.inbox.mapper.InboxItemMapper;
+import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
+import be.zwoop.features.inbox.mapper.InboxItemMapper;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.service.inbox.InboxService;
-import be.zwoop.service.message.MessageService;
+import be.zwoop.features.inbox.service.InboxService;
 import be.zwoop.web.dto.receive.MarkAsReadDto;
 import be.zwoop.web.dto.send.InboxItemSendDto;
 import be.zwoop.websocket.service.WsUtil;
@@ -24,7 +23,6 @@ import static be.zwoop.websocket.keys.SessionKeys.SESSION_POST_ID;
 public class InboxController {
 
     private final WsUtil wsUtil;
-    private final MessageService messageService;
     private final InboxService inboxService;
     private final InboxItemMapper inboxItemMapper;
 
@@ -33,7 +31,7 @@ public class InboxController {
         String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headerAccessor);
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
-        List<InboxItemEntity> entities = messageService.findAllLastPrivateMessagesByUserId(postId, principal.getUsername());
+        List<InboxItemEntity> entities = inboxService.findAllLastPrivateMessagesByUserId(postId, principal.getUsername());
         return inboxItemMapper.mapEntityListToSendDto(entities);
     }
 

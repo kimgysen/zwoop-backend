@@ -1,11 +1,10 @@
 package be.zwoop.web;
 
-import be.zwoop.repository.cassandra.private_message.PrivateMessageEntity;
-import be.zwoop.repository.cassandra.private_message.mapper.PrivateMessageMapper;
+import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
+import be.zwoop.features.private_chat.mapper.PrivateMessageMapper;
 import be.zwoop.security.AuthenticationFacade;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.service.message.MessageService;
-import be.zwoop.service.private_chat.PrivateChatService;
+import be.zwoop.features.private_chat.service.PrivateChatService;
 import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
 import be.zwoop.web.dto.send.PrivateMessageSendDto;
 import be.zwoop.websocket.service.WsUtil;
@@ -33,12 +32,11 @@ import static be.zwoop.websocket.keys.SessionKeys.SESSION_POST_ID;
 public class PrivateChatController {
     private final WsUtil wsUtil;
     private final AuthenticationFacade authenticationFacade;
-    private final MessageService messageService;
     private final PrivateChatService privateChatService;
     private final PrivateMessageMapper privateMessageMapper;
 
 
-    @GetMapping("/chatroom/messages/private/{postId}")
+    @GetMapping("/app/messages/private/{postId}")
     public Slice<PrivateMessageEntity> getOldPrivateMessages(
             Pageable pageable,
             @PathVariable String postId,
@@ -47,7 +45,7 @@ public class PrivateChatController {
         // TODO: Check if chatroom exists
         // TODO: Add validation on required query parameters
         String userId = authenticationFacade.getAuthenticatedUserId().toString();
-        return messageService.findPrivateMessagesBefore(pageable, postId, userId, chatPartnerUserId, date);
+        return privateChatService.findPrivateMessagesBefore(pageable, postId, userId, chatPartnerUserId, date);
     }
 
     @SubscribeMapping("/old.private.messages/{partnerId}")
@@ -58,7 +56,7 @@ public class PrivateChatController {
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
         List<PrivateMessageEntity> privateMessageEntityEntities =
-                messageService.findFirst20PrivateMessagesByPkPostId(postId, principal.getUsername(), partnerId);
+                privateChatService.findFirst20PrivateMessagesByPkPostId(postId, principal.getUsername(), partnerId);
         return privateMessageMapper.mapEntityListToSendDto(privateMessageEntityEntities);
     }
 

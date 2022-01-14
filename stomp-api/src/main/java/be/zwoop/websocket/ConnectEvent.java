@@ -53,6 +53,5 @@ public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
                 wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
             }
         }
-
     }
 }

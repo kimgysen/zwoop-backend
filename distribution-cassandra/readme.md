@@ -21,7 +21,7 @@ WITH REPLICATION = {
 
 ```
 USE zwoop_chat 
-CREATE TABLE IF NOT EXISTS public_messages (
+CREATE TABLE IF NOT EXISTS chatroom_messages (
     chatRoomId text,
     date timestamp,
     fromUserId text,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS public_messages (
     fromUserAvatar text,
     message text,
     PRIMARY KEY ((chatRoomId), date) 
-) WITH CLUSTERING ORDER BY (date ASC);
+) WITH CLUSTERING ORDER BY (date DESC);
 ```
 ```
 USE zwoop_chat

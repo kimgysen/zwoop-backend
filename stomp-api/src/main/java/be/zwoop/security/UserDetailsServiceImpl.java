@@ -1,7 +1,7 @@
 package be.zwoop.security;
 
-import be.zwoop.repository.pg.user.UserEntity;
-import be.zwoop.repository.pg.user.UserRepository;
+import be.zwoop.security.user.pg.user.UserEntity;
+import be.zwoop.security.user.pg.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;

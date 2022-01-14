@@ -1,12 +1,11 @@
 package be.zwoop.web;
 
 
-import be.zwoop.repository.cassandra.public_message.PublicMessageEntity;
-import be.zwoop.repository.cassandra.public_message.mapper.PublicMessageMapper;
-import be.zwoop.repository.redis.chatroom.ChatRoomUserRedisEntity;
+import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessageEntity;
+import be.zwoop.features.chatroom.mapper.ChatRoomMessageMapper;
+import be.zwoop.features.chatroom.repository.redis.ChatRoomUserRedisEntity;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.service.chatroom.ChatRoomService;
-import be.zwoop.service.message.MessageService;
+import be.zwoop.features.chatroom.service.ChatRoomService;
 import be.zwoop.web.dto.receive.PublicMessageReceiveDto;
 import be.zwoop.web.dto.send.PublicMessageSendDto;
 import be.zwoop.websocket.service.WsUtil;
@@ -34,33 +33,33 @@ public class ChatRoomController {
 
     private final WsUtil wsUtil;
     private final ChatRoomService chatRoomService;
-    private final MessageService messageService;
-    private final PublicMessageMapper publicMessageMapper;
+    private final ChatRoomMessageMapper chatRoomMessageMapper;
 
-    @GetMapping("/chatroom/messages/public/{chatRoomId}")
-    public Slice<PublicMessageEntity> getOldPublicMessages(
+
+    @GetMapping("/app/messages/public/{chatRoomId}")
+    public Slice<ChatRoomMessageEntity> getOldPublicMessages(
             Pageable pageable,
             @PathVariable String chatRoomId,
             @RequestParam(value = "before") Date date) {
         // TODO: Check if chatroom exists
         // TODO: Add validation on required query parameters
-        return messageService.findPublicMessagesBefore(pageable, chatRoomId, date);
+        return chatRoomService.findPublicMessagesBefore(pageable, chatRoomId, date);
     }
 
-    @SubscribeMapping("/old.public.messages")
+    @SubscribeMapping("/chatroom.old.messages")
     public List<PublicMessageSendDto> getOldPublicMessagesOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
         String chatRoomId = wsUtil.getSessionAttr(SESSION_CHATROOM_ID, headerAccessor);
-        List<PublicMessageEntity> publicMessageEntityEntities = messageService.findFirst20PublicMessagesByPkChatRoomId(chatRoomId);
-        return publicMessageMapper.mapEntityListToSendDto(publicMessageEntityEntities);
+        List<ChatRoomMessageEntity> chatRoomMessageEntityEntities = chatRoomService.findFirst20PublicMessagesByPkChatRoomId(chatRoomId);
+        return chatRoomMessageMapper.mapEntityListToSendDto(chatRoomMessageEntityEntities);
     }
 
-    @SubscribeMapping("/connected.users")
+    @SubscribeMapping("/chatroom.connected.users")
     public Set<ChatRoomUserRedisEntity> listChatRoomConnectedUsersOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
         String chatRoomId = wsUtil.getSessionAttr(SESSION_CHATROOM_ID, headerAccessor);
         return chatRoomService.getConnectedUsers(chatRoomId);
     }
 
-    @MessageMapping("/send.message.public")
+    @MessageMapping("/send.message.chatroom")
     public void sendPublicMessage(@Payload PublicMessageReceiveDto msgDto, SimpMessageHeaderAccessor headerAccessor) {
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
         chatRoomService.sendPublicMessage(principal.getUsername(), principal.getNickName(), principal.getAvatar(), msgDto);

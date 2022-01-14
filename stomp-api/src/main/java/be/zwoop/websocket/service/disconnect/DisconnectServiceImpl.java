@@ -1,14 +1,14 @@
 package be.zwoop.websocket.service.disconnect;
 
-import be.zwoop.repository.redis.chatroom.ChatRoomRedisEntity;
-import be.zwoop.repository.redis.chatroom.ChatRoomUserRedisEntity;
-import be.zwoop.repository.redis.online.OnlineUserRedisEntity;
-import be.zwoop.repository.redis.online.OnlineUserRepository;
-import be.zwoop.repository.redis.post.PrivateChatRedisEntity;
-import be.zwoop.repository.redis.post.PrivateChatUserRedisEntity;
+import be.zwoop.features.chatroom.repository.redis.ChatRoomRedisEntity;
+import be.zwoop.features.chatroom.repository.redis.ChatRoomUserRedisEntity;
+import be.zwoop.features.online.OnlineUserRedisEntity;
+import be.zwoop.features.online.OnlineUserRepository;
+import be.zwoop.features.private_chat.repository.redis.PrivateChatRedisEntity;
+import be.zwoop.features.private_chat.repository.redis.PrivateChatUserRedisEntity;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.service.chatroom.ChatRoomService;
-import be.zwoop.service.private_chat.PrivateChatService;
+import be.zwoop.features.chatroom.service.ChatRoomService;
+import be.zwoop.features.private_chat.service.PrivateChatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
