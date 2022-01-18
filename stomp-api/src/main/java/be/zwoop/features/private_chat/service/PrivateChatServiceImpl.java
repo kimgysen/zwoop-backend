@@ -1,15 +1,15 @@
 package be.zwoop.features.private_chat.service;
 
 
-import be.zwoop.features.inbox.factory.InboxItemFactory;
-import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
+import be.zwoop.features.inbox.service.InboxService;
 import be.zwoop.features.private_chat.factory.PrivateMessageFactory;
+import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageRepository;
 import be.zwoop.features.private_chat.repository.redis.PrivateChatRedisEntity;
 import be.zwoop.features.private_chat.repository.redis.PrivateChatRepository;
 import be.zwoop.features.private_chat.repository.redis.PrivateChatUserRedisEntity;
-import be.zwoop.features.inbox.service.InboxService;
 import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
+import be.zwoop.web.dto.send.TypingDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -61,6 +61,33 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         privateChatRepository.save(privateChatRedisEntity);
     }
 
+    @Override
+    public void startTyping(String postId, String userId, String partnerId) {
+        if (isUserConnected(postId, partnerId)) {
+            wsTemplate.convertAndSendToUser(
+                    partnerId,
+                    startTypingDestination(),
+                    TypingDto.builder()
+                            .postId(postId)
+                            .partnerId(userId)
+                            .build()
+            );
+        }
+    }
+
+    @Override
+    public void stopTyping(String postId, String userId, String partnerId) {
+        if (isUserConnected(postId, partnerId)) {
+            wsTemplate.convertAndSendToUser(
+                    partnerId,
+                    stopTypingDestination(),
+                    TypingDto.builder()
+                            .postId(postId)
+                            .partnerId(userId)
+                            .build()
+            );
+        }
+    }
 
     @Override
     public void sendPrivateMessage(String postId, String userId, String nickName, String avatar, PrivateMessageReceiveDto msgReceiveDto) {
@@ -72,11 +99,11 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         wsTemplate.convertAndSendToUser(
                 senderId,
                 privateMsgDestination(),
-                privateMessageFactory.buildPrivateMessageSendDto(senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
+                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
         );
 
         PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
-                senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto);
+                postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto);
         privateMessageRepository.save(msgEntity);
         inboxService.persistInboxItemForUser(msgEntity, senderId, msgReceiveDto.getToUserId(), true);
     }
@@ -98,11 +125,11 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         wsTemplate.convertAndSendToUser(
                 msgReceiveDto.getToUserId(),
                 privateMsgDestination(),
-                privateMessageFactory.buildPrivateMessageSendDto(senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
+                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
         );
 
         PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
-                msgReceiveDto.getToUserId(), senderId, senderId, senderNickName, senderAvatar, msgReceiveDto);
+                postId, msgReceiveDto.getToUserId(), senderId, senderId, senderNickName, senderAvatar, msgReceiveDto);
         privateMessageRepository.save(msgEntity);
         inboxService.persistInboxItemForUser(msgEntity, msgReceiveDto.getToUserId(), senderId, isReceiverConnected);
     }
@@ -121,6 +148,14 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 
     private String privateMsgDestination() {
         return "/exchange/amq.direct/private.messages";
+    }
+
+    private String startTypingDestination() {
+        return "/exchange/amq.direct/start.typing";
+    }
+
+    private String stopTypingDestination() {
+        return "/exchange/amq.direct/stop.typing";
     }
 
 }

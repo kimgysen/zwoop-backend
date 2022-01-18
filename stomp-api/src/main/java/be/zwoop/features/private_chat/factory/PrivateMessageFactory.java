@@ -12,11 +12,12 @@ import java.util.Date;
 public class PrivateMessageFactory {
 
     public PrivateMessageEntity buildPrivateMessage(
+            String postId,
             String userId, String partnerId,
             String senderId, String senderNickName, String senderAvatar,
             PrivateMessageReceiveDto dto) {
         PrivateMessagePrimaryKey pk = PrivateMessagePrimaryKey.builder()
-                .postId(dto.getPostId())
+                .postId(postId)
                 .userId(userId)
                 .partnerId(partnerId)
                 .date(new Date())
@@ -34,11 +35,13 @@ public class PrivateMessageFactory {
                 .build();
     }
 
-    public PrivateMessageSendDto buildPrivateMessageSendDto(String userId, String partnerId,
-                                                            String senderId, String senderNickName, String senderAvatar,
-                                                            PrivateMessageReceiveDto dto) {
+    public PrivateMessageSendDto buildPrivateMessageSendDto(
+            String postId,
+            String userId, String partnerId,
+            String senderId, String senderNickName, String senderAvatar,
+            PrivateMessageReceiveDto dto) {
         return PrivateMessageSendDto.builder()
-                .postId(dto.getPostId())
+                .postId(postId)
                 .userId(userId)
                 .partnerId(partnerId)
                 .date(new Date())

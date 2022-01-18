@@ -60,9 +60,10 @@ CREATE TABLE IF NOT EXISTS inbox_items (
     toUserId text,
     toNickName text,
     toAvatar text,
-    unread int static,
+    unread int,
+    hasPartnerRead boolean,
     lastMessage text,
     lastMessageDate timestamp,
-    PRIMARY KEY ((postId, userId), lastMessageDate)
-) WITH CLUSTERING ORDER BY (lastMessageDate DESC);
+    PRIMARY KEY ((userId), postId, lastMessageDate)
+) WITH CLUSTERING ORDER BY (postId DESC, lastMessageDate DESC);
 ```

@@ -23,6 +23,7 @@ public class InboxItemEntity {
     private String toAvatar;
 
     private int unread = 0;
+    private boolean hasPartnerRead;
     private String lastMessage;
 
 }

@@ -26,12 +26,20 @@ public class InboxController {
     private final InboxService inboxService;
     private final InboxItemMapper inboxItemMapper;
 
-    @SubscribeMapping("/inbox.items")
-    public List<InboxItemSendDto> getInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+    @SubscribeMapping("/user.inbox.items")
+    public List<InboxItemSendDto> getUserInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+        UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
+
+        List<InboxItemEntity> entities = inboxService.findAllInboxItemsByUserId(principal.getUsername());
+        return inboxItemMapper.mapEntityListToSendDto(entities);
+    }
+
+    @SubscribeMapping("/post.inbox.items")
+    public List<InboxItemSendDto> getPostInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
         String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headerAccessor);
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
-        List<InboxItemEntity> entities = inboxService.findAllLastPrivateMessagesByUserId(postId, principal.getUsername());
+        List<InboxItemEntity> entities = inboxService.findAllInboxItemsByPostIdAndUserId(postId, principal.getUsername());
         return inboxItemMapper.mapEntityListToSendDto(entities);
     }
 
@@ -41,6 +49,7 @@ public class InboxController {
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
         inboxService.markInboxItemAsRead(postId, principal.getUsername(), markAsReadDto.getPartnerId());
+        inboxService.markHasPartnerRead(postId, markAsReadDto.getPartnerId(), principal.getUsername());
     }
 
 }
