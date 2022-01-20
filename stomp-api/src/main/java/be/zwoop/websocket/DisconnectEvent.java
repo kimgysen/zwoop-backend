@@ -1,5 +1,6 @@
 package be.zwoop.websocket;
 
+import be.zwoop.features.private_chat.service.PrivateChatService;
 import be.zwoop.security.UserPrincipal;
 import be.zwoop.websocket.service.ConnectType;
 import be.zwoop.websocket.service.WsUtil;
@@ -21,6 +22,7 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
 
     private final WsUtil wsUtil;
     private final DisconnectService disconnectService;
+    private final PrivateChatService privateChatService;
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
@@ -31,7 +33,7 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         UserPrincipal principal = wsUtil.getPrincipal(headers);
 
-        if (principal != null) {
+        if (wsUtil.principalIsSet(principal)) {
             disconnectService.saveOfflineStatusRedis(principal);
 
             String strConnectType = wsUtil.getSessionAttr(SESSION_CONNECT_TYPE, headers);
@@ -46,6 +48,7 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
                     }
                     case PRIVATE_CHAT -> {
                         String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headers);
+                        privateChatService.stopAllTypingForUser(postId, principal.getUsername());
                         disconnectService.saveAbsenceStatusPrivateChat(postId, principal);
                     }
                 }
@@ -53,6 +56,7 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
             } else {
                 log.error("Disconnect: connectType from session is null");
             }
+
         } else {
             log.error("Disconnect: principal is null");
 

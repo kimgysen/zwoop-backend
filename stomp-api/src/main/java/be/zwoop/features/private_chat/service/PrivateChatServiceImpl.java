@@ -5,9 +5,7 @@ import be.zwoop.features.inbox.service.InboxService;
 import be.zwoop.features.private_chat.factory.PrivateMessageFactory;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageRepository;
-import be.zwoop.features.private_chat.repository.redis.PrivateChatRedisEntity;
-import be.zwoop.features.private_chat.repository.redis.PrivateChatRepository;
-import be.zwoop.features.private_chat.repository.redis.PrivateChatUserRedisEntity;
+import be.zwoop.features.private_chat.repository.redis.*;
 import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
 import be.zwoop.web.dto.send.TypingDto;
 import lombok.AllArgsConstructor;
@@ -16,9 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -29,6 +25,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
     private final InboxService inboxService;
     private final PrivateMessageFactory privateMessageFactory;
     private final PrivateMessageRepository privateMessageRepository;
+    private final PrivateChatWritingRedisRepository privateChatWritingRedisRepository;
 
     @Override
     public PrivateChatRedisEntity getOrCreatePrivateChatRedisEntity(String postId) {
@@ -63,29 +60,79 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 
     @Override
     public void startTyping(String postId, String userId, String partnerId) {
-        if (isUserConnected(postId, partnerId)) {
-            wsTemplate.convertAndSendToUser(
-                    partnerId,
-                    startTypingDestination(),
-                    TypingDto.builder()
+        Optional<PrivateChatWritingRedisEntity> writingUserOpt = privateChatWritingRedisRepository.findById(userId);
+        if (writingUserOpt.isPresent()) {
+            PrivateChatWritingRedisEntity writingUser = writingUserOpt.get();
+            writingUser.addPartner(
+                    WritingToUserRedisEntity.builder()
                             .postId(postId)
-                            .partnerId(userId)
-                            .build()
-            );
+                            .partnerId(partnerId)
+                            .build());
+            privateChatWritingRedisRepository.save(writingUser);
+        } else {
+            PrivateChatWritingRedisEntity newWritingUser = PrivateChatWritingRedisEntity
+                    .builder()
+                    .id(userId)
+                    .build();
+            newWritingUser.addPartner(WritingToUserRedisEntity.builder()
+                    .postId(postId)
+                    .partnerId(partnerId)
+                    .build());
+            privateChatWritingRedisRepository.save(newWritingUser);
         }
+
+        wsTemplate.convertAndSendToUser(
+                partnerId,
+                startTypingDestination(),
+                TypingDto.builder()
+                        .postId(postId)
+                        .partnerId(userId)
+                        .build()
+        );
     }
 
     @Override
     public void stopTyping(String postId, String userId, String partnerId) {
-        if (isUserConnected(postId, partnerId)) {
-            wsTemplate.convertAndSendToUser(
-                    partnerId,
-                    stopTypingDestination(),
-                    TypingDto.builder()
-                            .postId(postId)
-                            .partnerId(userId)
-                            .build()
-            );
+        Optional<PrivateChatWritingRedisEntity> writingUserOpt = privateChatWritingRedisRepository.findById(userId);
+        if (writingUserOpt.isPresent()) {
+            PrivateChatWritingRedisEntity writingUser = writingUserOpt.get();
+            writingUser.removePartner(
+                WritingToUserRedisEntity.builder()
+                    .postId(postId)
+                    .partnerId(partnerId)
+                    .build());
+            privateChatWritingRedisRepository.save(writingUser);
+        }
+
+        wsTemplate.convertAndSendToUser(
+                partnerId,
+                stopTypingDestination(),
+                TypingDto.builder()
+                        .postId(postId)
+                        .partnerId(userId)
+                        .build()
+        );
+    }
+
+    @Override
+    public void stopAllTypingForUser(String postId, String userId) {
+        Optional<PrivateChatWritingRedisEntity> writingUserOpt = privateChatWritingRedisRepository.findById(userId);
+        if (writingUserOpt.isPresent()) {
+            PrivateChatWritingRedisEntity writingUser = writingUserOpt.get();
+            if (writingUser.getIsWritingToUsers() != null) {
+                writingUser.getIsWritingToUsers()
+                        .forEach(partner -> {
+                            wsTemplate.convertAndSendToUser(
+                                    partner.getPartnerId(),
+                                    stopTypingDestination(),
+                                    TypingDto.builder()
+                                            .postId(postId)
+                                            .partnerId(userId)
+                                            .build());
+                        });
+                writingUser.removeAllPartners();
+                privateChatWritingRedisRepository.save(writingUser);
+            }
         }
     }
 
@@ -143,6 +190,15 @@ public class PrivateChatServiceImpl implements PrivateChatService{
                         .getConnectedUsers()
                         .stream()
                         .anyMatch(u -> u.getUserId().equals(userId)))
+                .orElse(false);
+    }
+
+    @Override
+    public boolean isPartnerWriting(String postId, String userId, String partnerId) {
+        Optional<PrivateChatWritingRedisEntity> writingUserOpt = privateChatWritingRedisRepository.findById(partnerId);
+        return writingUserOpt
+                .map(privateChatWritingRedisEntity ->
+                        privateChatWritingRedisEntity.containsPartner(postId, userId))
                 .orElse(false);
     };
 

@@ -24,6 +24,7 @@ public class InboxItemMapper {
                 .toNickName(entity.getToNickName())
                 .toAvatar(entity.getToAvatar())
                 .unread(entity.getUnread())
+                .hasPartnerRead(entity.isHasPartnerRead())
                 .lastMessage(entity.getLastMessage())
                 .lastMessageDate(entity.getPk().getLastMessageDate())
                 .build();

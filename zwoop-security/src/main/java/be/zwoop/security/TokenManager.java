@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,8 +64,9 @@ public class TokenManager {
 
     public void validateToken(String token, UserDetails userDetails) {
         String username = getUsernameFromToken(token);
-        if (!username.equals(userDetails.getUsername())
-                && !isTokenExpired(token)) {
+        if (isTokenExpired(token)) {
+            throw new AccountExpiredException("ExpiredJwtException");
+        } else if (!username.equals(userDetails.getUsername())) {
             throw new BadCredentialsException("Jwt is invalid because user details don't match");
         };
     }

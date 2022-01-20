@@ -45,9 +45,11 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
             final String jwt = getJwtFromHeader(authorizationHeader);
             String userId = tokenManager.getUsernameFromToken(jwt);
             UserPrincipal principal = (UserPrincipal) userDetailsService.loadUserByUsername(userId);
+            tokenManager.validateToken(jwt, principal);
             wsUtil.storePrincipalInSession(principal, accessor);
 
             accessor.setUser(principal::getUsername);
+
         }
         return message;
     }

@@ -21,6 +21,7 @@ public class InboxItemSendDto {
     private String toAvatar;
 
     private int unread = 0;
+    private boolean hasPartnerRead;
     private Date lastMessageDate;
     private String lastMessage;
 

@@ -1,9 +1,9 @@
 package be.zwoop.web;
 
-import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
 import be.zwoop.features.inbox.mapper.InboxItemMapper;
-import be.zwoop.security.UserPrincipal;
+import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
 import be.zwoop.features.inbox.service.InboxService;
+import be.zwoop.security.UserPrincipal;
 import be.zwoop.web.dto.receive.MarkAsReadDto;
 import be.zwoop.web.dto.send.InboxItemSendDto;
 import be.zwoop.websocket.service.WsUtil;

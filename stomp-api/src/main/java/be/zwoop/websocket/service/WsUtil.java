@@ -53,4 +53,9 @@ public class WsUtil {
                 .get(SESSION_PRINCIPAL);
 
     }
+
+    public boolean principalIsSet(UserPrincipal principal) {
+        return principal != null && principal.getUsername() != null;
+    }
+
 }

@@ -73,7 +73,21 @@ public class PrivateChatController {
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
         Optional<InboxItemEntity> inboxItemOpt = inboxService.findByPostIdAndUserIdAndPartnerId(postId, principal.getUsername(), partnerId);
-        return inboxItemOpt.isPresent();
+        return inboxItemOpt
+                .map(InboxItemEntity::isHasPartnerRead)
+                .orElse(false);
+    }
+
+    @SubscribeMapping("/writing/partner/{partnerId}")
+    public boolean isWritingMessage(
+            @DestinationVariable String partnerId,
+            SimpMessageHeaderAccessor headerAccessor) {
+        String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headerAccessor);
+        UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
+
+        return privateChatService
+                .isPartnerWriting(postId, principal.getUsername(), partnerId);
+
     }
 
     @MessageMapping("/send.message.private")

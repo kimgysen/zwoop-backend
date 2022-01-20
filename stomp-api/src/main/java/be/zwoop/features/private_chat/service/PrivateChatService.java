@@ -21,8 +21,10 @@ public interface PrivateChatService {
     List<PrivateMessageEntity> findFirst20PrivateMessagesByPkPostId(String postId, String userId, String partnerId);
     Slice<PrivateMessageEntity> findPrivateMessagesBefore(Pageable pageable, String postId, String userId, String partnerId, Date date);
 
+    boolean isPartnerWriting(String postId, String userId, String partnerId);
     void startTyping(String postId, String userId, String partnerId);
     void stopTyping(String postId, String userId, String partnerId);
+    void stopAllTypingForUser(String postId, String userId);
     void sendPrivateMessage(String postId, String userId, String nickName, String avatar, PrivateMessageReceiveDto msgReceiveDto);
 
 }
