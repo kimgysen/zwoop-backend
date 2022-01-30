@@ -1,4 +1,4 @@
-package be.zwoop.security.user.pg.user;
+package be.zwoop.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -7,7 +7,8 @@ import java.util.UUID;
 
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
-
+    Optional<UserEntity> findByUserIdAndBlockedAndActive(UUID userId, boolean isBlocked, boolean isActive);
+    Optional<UserEntity> findByNickNameAndBlockedAndActive(String nickName, boolean isBlocked, boolean isActive);
     Optional<UserEntity> findByNickName(String nickName);
 
     Boolean existsByNickName(String nickName);

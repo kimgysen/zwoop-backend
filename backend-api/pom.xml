@@ -19,6 +19,11 @@
     <dependencies>
         <dependency>
             <groupId>be.zwoop</groupId>
+            <artifactId>pg-repository</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.zwoop</groupId>
             <artifactId>zwoop-security</artifactId>
         </dependency>
         <dependency>

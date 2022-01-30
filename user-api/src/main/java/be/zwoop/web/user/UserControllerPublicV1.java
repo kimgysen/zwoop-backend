@@ -60,7 +60,6 @@ public class UserControllerPublicV1 {
         }
     }
 
-
     @GetMapping(value = "/{userId}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable UUID userId) {
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);

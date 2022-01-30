@@ -3,7 +3,6 @@ package be.zwoop.repository.user_authprovider;
 import be.zwoop.repository.authprovider.AuthProviderEntity;
 import be.zwoop.repository.user.UserEntity;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.UUID;

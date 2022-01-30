@@ -142,19 +142,6 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         sendPrivateMessageToReceiver(postId, userId, nickName, avatar, msgReceiveDto);
     }
 
-    private void sendPrivateMessageToSender(String postId, String senderId, String senderNickName, String senderAvatar, PrivateMessageReceiveDto msgReceiveDto) {
-        wsTemplate.convertAndSendToUser(
-                senderId,
-                privateMsgDestination(),
-                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
-        );
-
-        PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
-                postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto);
-        privateMessageRepository.save(msgEntity);
-        inboxService.persistInboxItemForUser(msgEntity, senderId, msgReceiveDto.getToUserId(), true);
-    }
-
     @Override
     public List<PrivateMessageEntity> findFirst20PrivateMessagesByPkPostId(String postId, String userId, String partnerId) {
         return privateMessageRepository.findFirst20ByPkPostIdAndPkUserIdEqualsAndPkPartnerIdEqualsOrderByPkDateDesc(postId, userId, partnerId);
@@ -166,9 +153,20 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         return privateMessageRepository.findAllByPkUserIdEqualsAndFromUserIdEqualsOrToUserIdEqualsAndPkDateGreaterThan(pageable, userId, chatPartnerUserId, chatPartnerUserId, date);
     }
 
-    private void sendPrivateMessageToReceiver(String postId, String senderId, String senderNickName, String senderAvatar, PrivateMessageReceiveDto msgReceiveDto) {
-        boolean isReceiverConnected = isUserConnected(postId, msgReceiveDto.getToUserId());
+    private void sendPrivateMessageToSender(String postId, String senderId, String senderNickName, String senderAvatar, PrivateMessageReceiveDto msgReceiveDto) {
+        wsTemplate.convertAndSendToUser(
+                senderId,
+                privateMsgDestination(),
+                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
+        );
 
+        PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
+                postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto);
+        privateMessageRepository.save(msgEntity);
+        inboxService.persistAndSendInboxItemForUser(msgEntity, senderId, msgReceiveDto.getToUserId());
+    }
+
+    private void sendPrivateMessageToReceiver(String postId, String senderId, String senderNickName, String senderAvatar, PrivateMessageReceiveDto msgReceiveDto) {
         wsTemplate.convertAndSendToUser(
                 msgReceiveDto.getToUserId(),
                 privateMsgDestination(),
@@ -178,7 +176,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
                 postId, msgReceiveDto.getToUserId(), senderId, senderId, senderNickName, senderAvatar, msgReceiveDto);
         privateMessageRepository.save(msgEntity);
-        inboxService.persistInboxItemForUser(msgEntity, msgReceiveDto.getToUserId(), senderId, isReceiverConnected);
+        inboxService.persistAndSendInboxItemForUser(msgEntity, msgReceiveDto.getToUserId(), senderId);
     }
 
     @Override

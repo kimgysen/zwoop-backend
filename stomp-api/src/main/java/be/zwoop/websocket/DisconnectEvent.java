@@ -26,10 +26,10 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
-        handleChatroomDisconnect(event);
+        handleDisconnect(event);
     }
 
-    private void handleChatroomDisconnect(SessionDisconnectEvent event) {
+    private void handleDisconnect(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         UserPrincipal principal = wsUtil.getPrincipal(headers);
 

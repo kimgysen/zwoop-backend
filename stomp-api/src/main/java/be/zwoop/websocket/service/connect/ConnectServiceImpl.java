@@ -28,8 +28,8 @@ public class ConnectServiceImpl implements ConnectService {
         joinChatRoom(chatRoomRedisEntity, principal);
     }
 
-    public void savePresenceStatusPrivateChat(String postId, UserPrincipal principal) {
-        PrivateChatRedisEntity privateChatRedisEntity = privateChatService.getOrCreatePrivateChatRedisEntity(postId);
+    public void savePresenceStatusPrivateChat(String chatRoomId, UserPrincipal principal) {
+        PrivateChatRedisEntity privateChatRedisEntity = privateChatService.getOrCreatePrivateChatRedisEntity(chatRoomId);
         joinPrivateChat(privateChatRedisEntity, principal);
     }
 
@@ -55,17 +55,6 @@ public class ConnectServiceImpl implements ConnectService {
                 .joinedAt(new Date())
                 .build();
         privateChatService.join(privateChatRedisEntity, privateChatUserRedisEntity);
-    }
-
-
-    @Override
-    public boolean isConnectedToChatRoom(String chatRoomId) {
-        return false;
-    }
-
-    @Override
-    public boolean isConnectedToPrivateChat(String postId) {
-        return false;
     }
 
 }

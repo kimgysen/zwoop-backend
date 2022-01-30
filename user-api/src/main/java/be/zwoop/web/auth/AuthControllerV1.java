@@ -74,7 +74,6 @@ public class AuthControllerV1 {
                     .firstName(userEntity.getFirstName())
                     .profilePic(userEntity.getProfilePic())
                     .build();
-
             return ok(respDto);
         }
     }

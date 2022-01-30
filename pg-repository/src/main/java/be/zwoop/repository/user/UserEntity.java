@@ -1,6 +1,7 @@
-package be.zwoop.security.user.pg.user;
+package be.zwoop.repository.user;
 
-import be.zwoop.security.user.pg.role.RoleEntity;
+import be.zwoop.repository.role.RoleEntity;
+import be.zwoop.repository.tag.TagEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -56,6 +57,14 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
+            name = "\"User_Tag\"",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+    )
+    private Set<TagEntity> tags;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
             name = "\"User_Role\"",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id") }
@@ -73,6 +82,5 @@ public class UserEntity {
     @LastModifiedBy
     @Column(name = "updated_by")
     private UUID updatedBy;
-
 
 }

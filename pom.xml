@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
+        <module>pg-repository</module>
+        <module>zwoop-security</module>
         <module>user-api</module>
         <module>backend-api</module>
         <module>stomp-api</module>
         <module>distribution-pg</module>
-        <module>zwoop-security</module>
         <module>distribution-cassandra</module>
     </modules>
 
@@ -45,6 +46,11 @@
             <dependency>
                 <groupId>be.zwoop</groupId>
                 <artifactId>zwoop-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>be.zwoop</groupId>
+                <artifactId>pg-repository</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

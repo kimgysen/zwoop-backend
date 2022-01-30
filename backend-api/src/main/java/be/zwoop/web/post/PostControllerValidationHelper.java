@@ -2,7 +2,6 @@ package be.zwoop.web.post;
 
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
-import be.zwoop.repository.user.UserRepository;
 import be.zwoop.web.exception.RequestParamException;
 import be.zwoop.web.post.dto.ValidFeedParamDto;
 import lombok.AllArgsConstructor;

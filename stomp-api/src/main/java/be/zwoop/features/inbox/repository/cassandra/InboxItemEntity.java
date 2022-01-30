@@ -1,5 +1,6 @@
 package be.zwoop.features.inbox.repository.cassandra;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -10,6 +11,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Table("inbox_items")
 public class InboxItemEntity {
 
+    @JsonUnwrapped
     @PrimaryKey
     private InboxItemPrimaryKey pk;
 

@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InboxService {
-    void persistInboxItemForUser(PrivateMessageEntity privateLastMessage, String senderId, String senderNickName, boolean isPartnerConnected);
+    void persistAndSendInboxItemForUser(PrivateMessageEntity privateLastMessage, String senderId, String senderNickName);
     void markInboxItemAsRead(String postId, String userId, String partnerId);
     void markHasPartnerRead(String postId, String partnerId, String userId);
     List<InboxItemEntity> findAllInboxItemsByPostIdAndUserId(String postId, String userId);
-    List<InboxItemEntity> findAllInboxItemsByUserId(String userId);
+    List<InboxItemEntity> findFirst20InboxItemsByUserId(String userId);
     Optional<InboxItemEntity> findByPostIdAndUserIdAndPartnerId(String postId, String userId, String partnerId);
 }

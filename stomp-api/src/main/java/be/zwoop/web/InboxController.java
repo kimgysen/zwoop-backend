@@ -1,11 +1,9 @@
 package be.zwoop.web;
 
-import be.zwoop.features.inbox.mapper.InboxItemMapper;
 import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
 import be.zwoop.features.inbox.service.InboxService;
 import be.zwoop.security.UserPrincipal;
 import be.zwoop.web.dto.receive.MarkAsReadDto;
-import be.zwoop.web.dto.send.InboxItemSendDto;
 import be.zwoop.websocket.service.WsUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,23 +22,20 @@ public class InboxController {
 
     private final WsUtil wsUtil;
     private final InboxService inboxService;
-    private final InboxItemMapper inboxItemMapper;
 
-    @SubscribeMapping("/user.inbox.items")
-    public List<InboxItemSendDto> getUserInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+    @SubscribeMapping("/app.inbox.items")
+    public List<InboxItemEntity> getUserInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
-        List<InboxItemEntity> entities = inboxService.findAllInboxItemsByUserId(principal.getUsername());
-        return inboxItemMapper.mapEntityListToSendDto(entities);
+        return inboxService.findFirst20InboxItemsByUserId(principal.getUsername());
     }
 
-    @SubscribeMapping("/post.inbox.items")
-    public List<InboxItemSendDto> getPostInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
+    @SubscribeMapping("/post/{postId}/inbox.items")
+    public List<InboxItemEntity> getPostInboxItemsOnSubscribe(SimpMessageHeaderAccessor headerAccessor) {
         String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headerAccessor);
         UserPrincipal principal = wsUtil.getPrincipal(headerAccessor);
 
-        List<InboxItemEntity> entities = inboxService.findAllInboxItemsByPostIdAndUserId(postId, principal.getUsername());
-        return inboxItemMapper.mapEntityListToSendDto(entities);
+        return inboxService.findAllInboxItemsByPostIdAndUserId(postId, principal.getUsername());
     }
 
     @MessageMapping("/mark.as.read")

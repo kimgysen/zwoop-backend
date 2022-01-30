@@ -1,6 +1,5 @@
 package be.zwoop.repository.currency;
 
-import be.zwoop.repository.post.PostStatusEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

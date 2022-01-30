@@ -51,7 +51,7 @@ public class PostControllerPrivateV1 {
     public ResponseEntity<Void> savePost(@Valid @RequestBody PostDto postDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         // TODO: Optional check if active and not blocked
-        Optional<UserEntity> askerEntityOpt = userRepository.findByUserId(principalId);
+        Optional<UserEntity> askerEntityOpt = userRepository.findByUserIdAndBlockedAndActive(principalId, false, true);
 
         if (askerEntityOpt.isEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST, "Asker doesn\'t exist for UUID: " + principalId.toString());

@@ -22,7 +22,7 @@ public class InboxServiceImpl implements InboxService {
     private final SimpMessagingTemplate wsTemplate;
 
     @Override
-    public void persistInboxItemForUser(PrivateMessageEntity privateMessageEntity, String userId, String partnerId, boolean isReceiverConnected) {
+    public void persistAndSendInboxItemForUser(PrivateMessageEntity privateMessageEntity, String userId, String partnerId) {
         Optional<InboxItemEntity> inboxItemOpt = findByPostIdAndUserIdAndPartnerId(
                 privateMessageEntity.getPk().getPostId(), userId, partnerId);
 
@@ -38,6 +38,11 @@ public class InboxServiceImpl implements InboxService {
             inboxItemEntity.setUnread(++unreadCount);
         }
 
+        wsTemplate.convertAndSendToUser(
+                userId,
+                inboxItemReceivedDestination(),
+                inboxItemEntity);
+
         inboxItemRepository.save(inboxItemEntity);
     }
 
@@ -47,8 +52,8 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public List<InboxItemEntity> findAllInboxItemsByUserId(String userId) {
-        return inboxItemRepository.findAllByPkUserIdEqualsOrderByPkLastMessageDateDesc(userId);
+    public List<InboxItemEntity> findFirst20InboxItemsByUserId(String userId) {
+        return inboxItemRepository.findFirst20ByPkUserIdEquals(userId);
     }
 
     @Override
@@ -98,4 +103,9 @@ public class InboxServiceImpl implements InboxService {
     private String partnerReadDestination() {
         return "/exchange/amq.direct/partner.read";
     }
+
+    private String inboxItemReceivedDestination() {
+        return "/exchange/amq.direct/inbox.item.received";
+    }
+
 }

@@ -23,10 +23,10 @@ public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
 
     @Override
     public void onApplicationEvent(SessionConnectEvent event) {
-        handleChatRoomConnect(event);
+        handleConnect(event);
     }
 
-    private void handleChatRoomConnect(SessionConnectEvent event) {
+    private void handleConnect(SessionConnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         UserPrincipal principal = wsUtil.getPrincipal(headers);
         wsUtil.storePrincipalInSession(principal, headers);
@@ -46,7 +46,7 @@ public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
             case PRIVATE_CHAT -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
                 wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
-                connectService.savePresenceStatusPrivateChat(postId, principal);
+                connectService.savePresenceStatusPrivateChat("post-" + postId, principal);
             }
             case POST_INBOX -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
