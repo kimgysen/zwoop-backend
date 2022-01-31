@@ -26,29 +26,27 @@ public class InboxServiceImpl implements InboxService {
         Optional<InboxItemEntity> inboxItemOpt = findByPostIdAndUserIdAndPartnerId(
                 privateMessageEntity.getPk().getPostId(), userId, partnerId);
 
-        int unreadCount = 0;
+        InboxItemEntity inboxItemEntity;
+
         if (inboxItemOpt.isPresent()) {
             InboxItemEntity foundItemEntity = inboxItemOpt.get();
-            unreadCount = foundItemEntity.getUnread();
-            inboxItemRepository.delete(foundItemEntity);
+            inboxItemEntity = inboxItemFactory.updateFromPrivateMessage(foundItemEntity, privateMessageEntity);
+
+        } else {
+            inboxItemEntity = inboxItemFactory.buildInboxItem(userId, partnerId, privateMessageEntity);
         }
 
-        InboxItemEntity inboxItemEntity = inboxItemFactory.buildInboxItem(userId, partnerId, privateMessageEntity);
-        if (privateMessageEntity.getToUserId().equals(userId)) {
-            inboxItemEntity.setUnread(++unreadCount);
-        }
+        inboxItemRepository.save(inboxItemEntity);
 
         wsTemplate.convertAndSendToUser(
                 userId,
                 inboxItemReceivedDestination(),
                 inboxItemEntity);
-
-        inboxItemRepository.save(inboxItemEntity);
     }
 
     @Override
     public List<InboxItemEntity> findAllInboxItemsByPostIdAndUserId(String postId, String userId) {
-        return inboxItemRepository.findAllByPkPostIdEqualsAndPkUserIdEqualsOrderByPkLastMessageDateDesc(postId, userId);
+        return inboxItemRepository.findAllByPkPostIdEqualsAndPkUserIdEquals(postId, userId);
     }
 
     @Override
@@ -94,10 +92,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Optional<InboxItemEntity> findByPostIdAndUserIdAndPartnerId(String postId, String userId, String partnerId) {
-        return inboxItemRepository.findAllByPkPostIdEqualsAndPkUserIdEqualsOrderByPkLastMessageDateDesc(postId, userId)
-                .stream()
-                .filter(entity -> entity.getPartnerId().equals(partnerId))
-                .findFirst();
+        return inboxItemRepository.findByPkPostIdEqualsAndPkUserIdEqualsAndPkPartnerIdEquals(postId, userId, partnerId);
     }
 
     private String partnerReadDestination() {

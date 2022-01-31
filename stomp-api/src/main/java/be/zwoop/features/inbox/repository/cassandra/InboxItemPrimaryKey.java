@@ -20,7 +20,7 @@ public class InboxItemPrimaryKey {
     @PrimaryKeyColumn(name = "userId", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
     private String userId;
 
-    @PrimaryKeyColumn(name = "lastMessageDate", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
-    private Date lastMessageDate;
+    @PrimaryKeyColumn(name = "partnerId", ordinal = 2, type = PrimaryKeyType.PARTITIONED)
+    private String partnerId;
 
 }

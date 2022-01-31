@@ -6,6 +6,8 @@ import lombok.Data;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import java.util.Date;
+
 @Data
 @Builder
 @Table("inbox_items")
@@ -14,8 +16,6 @@ public class InboxItemEntity {
     @JsonUnwrapped
     @PrimaryKey
     private InboxItemPrimaryKey pk;
-
-    private String partnerId;
 
     private String fromUserId;
     private String fromNickName;
@@ -27,6 +27,7 @@ public class InboxItemEntity {
     private int unread = 0;
     private boolean hasPartnerRead;
     private String lastMessage;
+    private Date lastMessageDate;
 
 }
 

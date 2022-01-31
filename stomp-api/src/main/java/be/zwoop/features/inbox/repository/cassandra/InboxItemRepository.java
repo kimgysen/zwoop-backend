@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface InboxItemRepository extends CassandraRepository<InboxItemEntity, InboxItemPrimaryKey> {
-    List<InboxItemEntity> findAllByPkPostIdEqualsAndPkUserIdEqualsOrderByPkLastMessageDateDesc(String postId, String userId);
+    List<InboxItemEntity> findAllByPkPostIdEqualsAndPkUserIdEquals(String postId, String userId);
+    Optional<InboxItemEntity> findByPkPostIdEqualsAndPkUserIdEqualsAndPkPartnerIdEquals(String postId, String userId, String partnerId);
     List<InboxItemEntity> findFirst20ByPkUserIdEquals(String userId);
 }

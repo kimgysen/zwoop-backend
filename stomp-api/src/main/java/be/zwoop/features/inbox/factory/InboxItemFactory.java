@@ -15,13 +15,12 @@ public class InboxItemFactory {
                 .builder()
                 .postId(msg.getPk().getPostId())
                 .userId(userId)
-                .lastMessageDate(new Date())
+                .partnerId(partnerId)
                 .build();
 
         return InboxItemEntity
                 .builder()
                 .pk(pk)
-                .partnerId(partnerId)
                 .fromUserId(msg.getFromUserId())
                 .fromAvatar(msg.getFromAvatar())
                 .fromNickName(msg.getFromNickName())
@@ -29,7 +28,23 @@ public class InboxItemFactory {
                 .toNickName(msg.getToNickName())
                 .toAvatar(msg.getToAvatar())
                 .lastMessage(msg.getMessage())
+                .lastMessageDate(new Date())
                 .build();
+    }
+
+    public InboxItemEntity updateFromPrivateMessage(InboxItemEntity inboxItemEntity, PrivateMessageEntity privateMessageEntity) {
+        inboxItemEntity.setFromUserId(privateMessageEntity.getFromUserId());
+        inboxItemEntity.setFromNickName(privateMessageEntity.getFromNickName());
+        inboxItemEntity.setFromAvatar(privateMessageEntity.getFromAvatar());
+        inboxItemEntity.setToUserId(privateMessageEntity.getToUserId());
+        inboxItemEntity.setToNickName(privateMessageEntity.getToNickName());
+        inboxItemEntity.setToAvatar(privateMessageEntity.getToAvatar());
+        inboxItemEntity.setLastMessage(privateMessageEntity.getMessage());
+        inboxItemEntity.setLastMessageDate(new Date());
+        int unread = inboxItemEntity.getUnread();
+        inboxItemEntity.setUnread(++unread);
+
+        return inboxItemEntity;
     }
 
 }
