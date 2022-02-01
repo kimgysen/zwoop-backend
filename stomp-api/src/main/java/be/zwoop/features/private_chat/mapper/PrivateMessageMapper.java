@@ -2,7 +2,7 @@ package be.zwoop.features.private_chat.mapper;
 
 
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
-import be.zwoop.web.dto.send.PrivateMessageSendDto;
+import be.zwoop.web.dto.send.private_chat.PrivateMessageSendDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

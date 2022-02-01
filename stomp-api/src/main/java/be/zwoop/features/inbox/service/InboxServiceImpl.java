@@ -4,7 +4,8 @@ import be.zwoop.features.inbox.factory.InboxItemFactory;
 import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
 import be.zwoop.features.inbox.repository.cassandra.InboxItemRepository;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
-import be.zwoop.web.dto.send.PartnerReadSendDto;
+import be.zwoop.web.dto.send.private_chat.PartnerReadSendDto;
+import be.zwoop.web.dto.send.private_chat.PrivateChatFeatureDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static be.zwoop.web.dto.send.private_chat.PrivateChatFeatureType.PARTNER_READ;
 
 @AllArgsConstructor
 @Service
@@ -80,11 +83,15 @@ public class InboxServiceImpl implements InboxService {
 
             wsTemplate.convertAndSendToUser(
                     partnerId,
-                    partnerReadDestination(),
-                    PartnerReadSendDto.builder()
-                            .postId(postId)
-                            .partnerId(userId)
-                            .readDate(new Date())
+                    privateMsgDestination(),
+                    PrivateChatFeatureDto.builder()
+                            .featureType(PARTNER_READ)
+                            .featureDto(
+                                PartnerReadSendDto.builder()
+                                    .postId(postId)
+                                    .partnerId(userId)
+                                    .readDate(new Date())
+                                    .build())
                             .build()
             );
         }
@@ -95,8 +102,8 @@ public class InboxServiceImpl implements InboxService {
         return inboxItemRepository.findByPkPostIdEqualsAndPkUserIdEqualsAndPkPartnerIdEquals(postId, userId, partnerId);
     }
 
-    private String partnerReadDestination() {
-        return "/exchange/amq.direct/partner.read";
+    private String privateMsgDestination() {
+        return "/exchange/amq.direct/private.chat.updates";
     }
 
     private String inboxItemReceivedDestination() {

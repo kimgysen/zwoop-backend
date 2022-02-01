@@ -7,7 +7,7 @@ import be.zwoop.features.chatroom.repository.redis.ChatRoomUserRedisEntity;
 import be.zwoop.security.UserPrincipal;
 import be.zwoop.features.chatroom.service.ChatRoomService;
 import be.zwoop.web.dto.receive.PublicMessageReceiveDto;
-import be.zwoop.web.dto.send.PublicMessageSendDto;
+import be.zwoop.web.dto.send.public_chat.PublicMessageSendDto;
 import be.zwoop.websocket.service.WsUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

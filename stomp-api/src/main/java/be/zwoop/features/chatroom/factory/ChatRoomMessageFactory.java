@@ -3,7 +3,7 @@ package be.zwoop.features.chatroom.factory;
 import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessageEntity;
 import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessagePrimaryKey;
 import be.zwoop.web.dto.receive.PublicMessageReceiveDto;
-import be.zwoop.web.dto.send.PublicMessageSendDto;
+import be.zwoop.web.dto.send.public_chat.PublicMessageSendDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

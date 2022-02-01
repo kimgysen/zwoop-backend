@@ -1,4 +1,4 @@
-package be.zwoop.web.dto.send;
+package be.zwoop.web.dto.send.inbox;
 
 
 import lombok.Builder;

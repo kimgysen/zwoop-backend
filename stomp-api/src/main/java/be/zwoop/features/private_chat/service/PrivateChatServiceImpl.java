@@ -7,14 +7,19 @@ import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageRepository;
 import be.zwoop.features.private_chat.repository.redis.*;
 import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
-import be.zwoop.web.dto.send.TypingDto;
+import be.zwoop.web.dto.send.private_chat.PrivateChatFeatureDto;
+import be.zwoop.web.dto.send.private_chat.TypingDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static be.zwoop.web.dto.send.private_chat.PrivateChatFeatureType.*;
 
 @AllArgsConstructor
 @Service
@@ -83,12 +88,15 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 
         wsTemplate.convertAndSendToUser(
                 partnerId,
-                startTypingDestination(),
-                TypingDto.builder()
-                        .postId(postId)
-                        .partnerId(userId)
-                        .build()
-        );
+                privateMsgDestination(),
+                PrivateChatFeatureDto.builder()
+                        .featureType(START_TYPING)
+                        .featureDto(
+                                TypingDto.builder()
+                                        .postId(postId)
+                                        .partnerId(userId)
+                                        .build())
+                        .build());
     }
 
     @Override
@@ -106,12 +114,15 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 
         wsTemplate.convertAndSendToUser(
                 partnerId,
-                stopTypingDestination(),
-                TypingDto.builder()
-                        .postId(postId)
-                        .partnerId(userId)
-                        .build()
-        );
+                privateMsgDestination(),
+                PrivateChatFeatureDto.builder()
+                        .featureType(STOP_TYPING)
+                        .featureDto(
+                                TypingDto.builder()
+                                        .postId(postId)
+                                        .partnerId(userId)
+                                        .build())
+                        .build());
     }
 
     @Override
@@ -124,10 +135,14 @@ public class PrivateChatServiceImpl implements PrivateChatService{
                         .forEach(partner -> {
                             wsTemplate.convertAndSendToUser(
                                     partner.getPartnerId(),
-                                    stopTypingDestination(),
-                                    TypingDto.builder()
-                                            .postId(postId)
-                                            .partnerId(userId)
+                                    privateMsgDestination(),
+                                    PrivateChatFeatureDto.builder()
+                                            .featureType(STOP_TYPING)
+                                            .featureDto(
+                                                TypingDto.builder()
+                                                        .postId(postId)
+                                                        .partnerId(userId)
+                                                        .build())
                                             .build());
                         });
                 writingUser.removeAllPartners();
@@ -157,8 +172,12 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         wsTemplate.convertAndSendToUser(
                 senderId,
                 privateMsgDestination(),
-                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
-        );
+                PrivateChatFeatureDto.builder()
+                        .featureType(PRIVATE_MESSAGE)
+                        .featureDto(
+                                privateMessageFactory
+                                        .buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto))
+                        .build());
 
         PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
                 postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto);
@@ -170,8 +189,12 @@ public class PrivateChatServiceImpl implements PrivateChatService{
         wsTemplate.convertAndSendToUser(
                 msgReceiveDto.getToUserId(),
                 privateMsgDestination(),
-                privateMessageFactory.buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto)
-        );
+                PrivateChatFeatureDto.builder()
+                        .featureType(PRIVATE_MESSAGE)
+                        .featureDto(
+                                privateMessageFactory
+                                        .buildPrivateMessageSendDto(postId, senderId, msgReceiveDto.getToUserId(), senderId, senderNickName, senderAvatar, msgReceiveDto))
+                        .build());
 
         PrivateMessageEntity msgEntity = privateMessageFactory.buildPrivateMessage(
                 postId, msgReceiveDto.getToUserId(), senderId, senderId, senderNickName, senderAvatar, msgReceiveDto);
@@ -201,15 +224,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
     };
 
     private String privateMsgDestination() {
-        return "/exchange/amq.direct/private.messages";
-    }
-
-    private String startTypingDestination() {
-        return "/exchange/amq.direct/start.typing";
-    }
-
-    private String stopTypingDestination() {
-        return "/exchange/amq.direct/stop.typing";
+        return "/exchange/amq.direct/private.chat.updates";
     }
 
 }

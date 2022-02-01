@@ -1,4 +1,4 @@
-package be.zwoop.web.dto.send;
+package be.zwoop.web.dto.send.public_chat;
 
 
 import lombok.Builder;
