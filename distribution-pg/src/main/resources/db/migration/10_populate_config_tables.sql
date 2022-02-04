@@ -21,9 +21,9 @@ INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(1, 'OPEN');
 INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(2, 'IN_PROGRESS');
 INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(3, 'CLOSED');
 
--- ApplicationStatus
-INSERT INTO "ApplicationStatus" (application_status_id, application_status) VALUES(1, 'PENDING');
-INSERT INTO "ApplicationStatus" (application_status_id, application_status) VALUES(2, 'ACCEPTED');
+-- BiddingStatus
+INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(1, 'PENDING');
+INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(2, 'ACCEPTED');
 
 -- AnswerStatus
 INSERT INTO "AnswerStatus" (answer_status_id, answer_status) VALUES(1, 'PENDING');

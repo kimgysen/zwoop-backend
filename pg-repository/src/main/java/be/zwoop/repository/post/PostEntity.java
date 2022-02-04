@@ -2,7 +2,7 @@ package be.zwoop.repository.post;
 
 import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.answer.AnswerEntity;
-import be.zwoop.repository.application.ApplicationEntity;
+import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
@@ -46,15 +46,15 @@ public class PostEntity extends BaseEntity {
     @Column(name = "post_text")
     private String postText;
 
-    @Column(name = "offer_price", scale = 3)
-    private BigDecimal offerPrice;
+    @Column(name = "bid_price", scale = 3)
+    private BigDecimal bidPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "currency_id", updatable = false, insertable = false)
+    @JoinColumn(name = "currency_id")
     private CurrencyEntity currency;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_status_id", updatable = false, insertable = false)
+    @JoinColumn(name = "post_status_id")
     private PostStatusEntity postStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -71,6 +71,6 @@ public class PostEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
-    private List<ApplicationEntity> applications;
+    private List<BiddingEntity> biddings;
 
 }

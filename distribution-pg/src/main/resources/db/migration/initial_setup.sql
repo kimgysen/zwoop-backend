@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS "Post"(
     asker_id UUID NOT NULL,
     post_title TEXT NOT NULL,
     post_text TEXT NOT NULL,
-    offer_price REAL,
+    bid_price REAL,
     currency_id INT,
     post_status_id INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL,
@@ -126,32 +126,31 @@ CREATE TABLE IF NOT EXISTS "User_Tag"(
     FOREIGN KEY (tag_id) REFERENCES "Tag"(tag_id)
 );
 
--- Create ApplicationStatus table
-CREATE TABLE IF NOT EXISTS "ApplicationStatus"(
-     application_status_id INT NOT NULL,
-     application_status TEXT NOT NULL,
+-- Create BiddingStatus table
+CREATE TABLE IF NOT EXISTS "BiddingStatus"(
+     bidding_status_id INT NOT NULL,
+     bidding_status TEXT NOT NULL,
 
-     PRIMARY KEY (application_status_id)
+     PRIMARY KEY (bidding_status_id)
 );
 
--- Create Application table
-CREATE TABLE IF NOT EXISTS "Application"(
-    application_id UUID NOT NULL DEFAULT gen_random_uuid(),
+-- Create Bidding table
+CREATE TABLE IF NOT EXISTS "Bidding"(
+    bidding_id UUID NOT NULL DEFAULT gen_random_uuid(),
     post_id UUID NOT NULL,
     respondent_id UUID NOT NULL,
-    application_text TEXT NOT NULL,
     ask_price REAL,
-    application_status_id INT NOT NULL DEFAULT 1,
+    bidding_status_id INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL,
     created_by UUID NOT NULL,
     updated_at TIMESTAMP,
     updated_by UUID,
 
-    PRIMARY KEY (application_id),
+    PRIMARY KEY (bidding_id),
     UNIQUE(post_id, respondent_id),
     FOREIGN KEY (post_id) REFERENCES "Post"(post_id),
     FOREIGN KEY (respondent_id) REFERENCES "User"(user_id),
-    FOREIGN KEY (application_status_id) REFERENCES "ApplicationStatus"(application_status_id)
+    FOREIGN KEY (bidding_status_id) REFERENCES "BiddingStatus"(bidding_status_id)
 );
 
 -- Create AnswerStatus table

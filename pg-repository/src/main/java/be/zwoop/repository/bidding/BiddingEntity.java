@@ -1,4 +1,4 @@
-package be.zwoop.repository.application;
+package be.zwoop.repository.bidding;
 
 import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.post.PostEntity;
@@ -12,17 +12,17 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Table(name = "\"Application\"")
+@Table(name = "\"Bidding\"")
 @Entity
 @NoArgsConstructor
 @SuperBuilder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ApplicationEntity extends BaseEntity {
+public class BiddingEntity extends BaseEntity {
 
     @Id
-    @Column(name = "application_id")
-    private UUID applicationId;
+    @Column(name = "bidding_id")
+    private UUID biddingId;
 
     @NotNull
     @ManyToOne
@@ -32,16 +32,12 @@ public class ApplicationEntity extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "respondent_id", updatable = false, insertable = false)
-    private UserEntity respondentId;
-
-    @NotNull
-    @Column(name = "application_text")
-    private String applicationText;
+    private UserEntity respondent;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "application_status_id", updatable = false, insertable = false)
-    private ApplicationStatusEntity applicationStatusEntity;
+    @JoinColumn(name = "bidding_status_id", updatable = false, insertable = false)
+    private BiddingStatusEntity biddingStatus;
 
     @Column(name = "ask_price")
     private double askPrice;

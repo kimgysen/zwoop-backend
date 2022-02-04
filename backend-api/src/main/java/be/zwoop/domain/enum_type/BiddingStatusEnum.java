@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum ApplicationStatusEnum {
+public enum BiddingStatusEnum {
     PENDING(1),
     ACCEPTED(2);
 

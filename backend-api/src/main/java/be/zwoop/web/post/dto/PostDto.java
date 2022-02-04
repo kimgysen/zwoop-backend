@@ -17,7 +17,7 @@ public class PostDto {
     @NotEmpty
     private String text;
 
-    private BigDecimal offer;
+    private BigDecimal bidPrice;
     private String currency;
 
     @NotEmpty

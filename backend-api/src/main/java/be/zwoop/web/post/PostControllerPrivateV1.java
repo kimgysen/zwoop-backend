@@ -61,9 +61,9 @@ public class PostControllerPrivateV1 {
         Optional<PostEntity> postEntityOpt = postRepository.findByAskerAndPostTitle(askerEntity, postDto.getTitle());
 
         CurrencyEntity currencyEntity = null;
-        if (postDto.getOffer() != null) {
+        if (postDto.getBidPrice() != null) {
             if (postDto.getCurrency() == null) {
-                throw new ResponseStatusException(BAD_REQUEST, "Currency is null while offer price is defined.");
+                throw new ResponseStatusException(BAD_REQUEST, "Currency is null while bid price is defined.");
             } else {
                 Optional<CurrencyEntity> currencyEntityOpt = currencyRepository.findByCurrency(postDto.getCurrency());
                 if (currencyEntityOpt.isEmpty()) {
@@ -89,7 +89,7 @@ public class PostControllerPrivateV1 {
                     .postStatus(postStatusEntity)
                     .postTitle(postDto.getTitle())
                     .postText(postDto.getText())
-                    .offerPrice(postDto.getOffer())
+                    .bidPrice(postDto.getBidPrice())
                     .currency(currencyEntity)
                     .postStatus(postStatusEntity)
                     .tags(tagEntities)
