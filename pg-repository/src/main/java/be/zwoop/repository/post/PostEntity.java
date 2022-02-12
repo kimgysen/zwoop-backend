@@ -66,11 +66,4 @@ public class PostEntity extends BaseEntity {
     )
     private List<TagEntity> tags;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    private List<AnswerEntity> answers;
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private List<BiddingEntity> biddings;
-
 }

@@ -14,7 +14,7 @@ INSERT INTO "AuthProvider" (auth_provider_id, auth_provider) VALUES (4, 'TWITTER
 INSERT INTO "AuthProvider" (auth_provider_id, auth_provider) VALUES (5, 'FACEBOOK');
 
 -- Currency
-INSERT INTO "Currency" (currency_id, currency) VALUES(1, 'BNB');
+INSERT INTO "Currency" (currency_id, currency_code) VALUES(1, 'BNB');
 
 -- PostStatus
 INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(1, 'OPEN');

@@ -2,7 +2,7 @@ package be.zwoop.features.chatroom.mapper;
 
 
 import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessageEntity;
-import be.zwoop.web.dto.send.public_chat.PublicMessageSendDto;
+import be.zwoop.web.public_chat.dto.send.PublicMessageSendDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

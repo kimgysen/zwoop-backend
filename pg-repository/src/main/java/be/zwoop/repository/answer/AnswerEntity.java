@@ -25,12 +25,12 @@ public class AnswerEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "post_id", updatable = false, insertable = false)
+    @JoinColumn(name = "post_id")
     private PostEntity post;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "respondent_id", updatable = false, insertable = false)
+    @JoinColumn(name = "respondent_id")
     private UserEntity respondent;
 
     @NotNull
@@ -39,7 +39,7 @@ public class AnswerEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "answer_status_id", updatable = false, insertable = false)
+    @JoinColumn(name = "answer_status_id")
     private AnswerStatusEntity answerStatus;
 
     @Column(name = "closing_price")

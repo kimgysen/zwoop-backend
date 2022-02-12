@@ -17,13 +17,13 @@ public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessag
 	@Value("${spring.rabbitmq.host}")
 	private String relayHost;
 
-	@Value("${spring.rabbitmq.port}")
+	@Value("${spring.rabbitmq.stomp-port}")
 	private Integer relayPort;
 
-	@Value("${spring.rabbitmq.username}")
+	@Value("${spring.rabbitmq.stomp-username}")
 	private String relayUsername;
 
-	@Value("${spring.rabbitmq.password}")
+	@Value("${spring.rabbitmq.stomp-password}")
 	private String relayPassword;
 
 

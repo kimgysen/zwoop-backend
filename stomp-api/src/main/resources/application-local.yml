@@ -14,9 +14,12 @@ spring:
 
   rabbitmq:
     host: localhost
-    port: 61613
+    port: 5672
     username: admin
     password: admin
+    stomp-port: 61613
+    stomp-username: admin
+    stomp-password: admin
 
 cassandra:
   host: localhost

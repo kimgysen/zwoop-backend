@@ -11,6 +11,7 @@ import be.zwoop.repository.user.UserRepository;
 import be.zwoop.repository.user_authprovider.UserAuthProviderEntity;
 import be.zwoop.repository.user_authprovider.UserAuthProviderRepository;
 import be.zwoop.security.TokenManager;
+import be.zwoop.service.nick.NickNameService;
 import be.zwoop.web.auth.dto.AuthResponseDto;
 import be.zwoop.web.auth.dto.LoginDto;
 import be.zwoop.web.auth.dto.RegisterDto;
@@ -48,6 +49,7 @@ public class AuthControllerV1 {
     private final UserAuthProviderRepository userAuthProviderRepository;
     private final @Qualifier("UserDetailsServiceImpl") UserDetailsService userDetailsService;
     private final TokenManager tokenManager;
+    private final NickNameService nickNameService;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
@@ -92,12 +94,12 @@ public class AuthControllerV1 {
                             .findByOauthUserIdAndAuthProviderEntity(registerDto.getAuthId(), authProviderEntityOpt.get());
 
             UserEntity savedUser;
-            UUID userId = UUID.randomUUID();
             if (userAuthProviderEntityOpt.isEmpty()) {
                 RoleEntity roleEntity = roleRepository.getById(RoleEnum.USER.getValue());
+                String nickName = nickNameService.generateFakeNickName();
                 UserEntity toSave = UserEntity.builder()
-                        .userId(userId)
-                        .nickName(userId.toString())
+                        .userId(UUID.randomUUID())
+                        .nickName(nickName)
                         .firstName(registerDto.getFirstName())
                         .lastName(registerDto.getLastName())
                         .profilePic(registerDto.getProfilePic())

@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>pg-repository</module>
+        <module>domain-amqp-notify</module>
         <module>zwoop-security</module>
         <module>user-api</module>
         <module>backend-api</module>
@@ -51,6 +52,11 @@
             <dependency>
                 <groupId>be.zwoop</groupId>
                 <artifactId>pg-repository</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>be.zwoop</groupId>
+                <artifactId>domain-amqp-notify</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

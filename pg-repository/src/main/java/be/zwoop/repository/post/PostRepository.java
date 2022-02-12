@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<PostEntity, UUID> {
 
-    Optional<PostEntity> findByAskerAndPostTitle(UserEntity askerId, String title);
+    Optional<PostEntity> findByPostTitleAndAsker(String title, UserEntity askerId);
 
     Page<PostEntity> findAllByPostStatusEqualsOrderByCreatedAtDesc(PostStatusEntity postStatusEntity, Pageable pageable);
 

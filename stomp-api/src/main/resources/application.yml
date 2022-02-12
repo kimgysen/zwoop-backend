@@ -39,3 +39,10 @@ logging:
       springframework: INFO
       hibernate:
         SQL: info
+
+rabbit:
+  queue:
+    postupdates:
+        concurrent:
+          listeners: 3
+

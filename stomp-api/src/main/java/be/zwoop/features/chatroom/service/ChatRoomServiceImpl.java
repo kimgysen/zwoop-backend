@@ -6,7 +6,7 @@ import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessageRepository
 import be.zwoop.features.chatroom.repository.redis.ChatRoomRedisEntity;
 import be.zwoop.features.chatroom.repository.redis.ChatRoomRedisRepository;
 import be.zwoop.features.chatroom.repository.redis.ChatRoomUserRedisEntity;
-import be.zwoop.web.dto.receive.PublicMessageReceiveDto;
+import be.zwoop.web.public_chat.dto.receive.PublicMessageReceiveDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

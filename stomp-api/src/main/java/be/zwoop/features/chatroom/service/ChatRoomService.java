@@ -3,7 +3,7 @@ package be.zwoop.features.chatroom.service;
 import be.zwoop.features.chatroom.repository.cassandra.ChatRoomMessageEntity;
 import be.zwoop.features.chatroom.repository.redis.ChatRoomRedisEntity;
 import be.zwoop.features.chatroom.repository.redis.ChatRoomUserRedisEntity;
-import be.zwoop.web.dto.receive.PublicMessageReceiveDto;
+import be.zwoop.web.public_chat.dto.receive.PublicMessageReceiveDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 

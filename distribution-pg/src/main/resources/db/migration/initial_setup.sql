@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS "PostStatus"(
 -- Create Currency table
 CREATE TABLE IF NOT EXISTS "Currency"(
     currency_id INT NOT NULL,
-    currency TEXT NOT NULL,
+    currency_code TEXT NOT NULL,
 
     PRIMARY KEY (currency_id)
 );
@@ -139,7 +139,8 @@ CREATE TABLE IF NOT EXISTS "Bidding"(
     bidding_id UUID NOT NULL DEFAULT gen_random_uuid(),
     post_id UUID NOT NULL,
     respondent_id UUID NOT NULL,
-    ask_price REAL,
+    ask_price REAL NOT NULL,
+    currency_id INT NOT NULL,
     bidding_status_id INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL,
     created_by UUID NOT NULL,
@@ -150,6 +151,7 @@ CREATE TABLE IF NOT EXISTS "Bidding"(
     UNIQUE(post_id, respondent_id),
     FOREIGN KEY (post_id) REFERENCES "Post"(post_id),
     FOREIGN KEY (respondent_id) REFERENCES "User"(user_id),
+    FOREIGN KEY (currency_id) REFERENCES "Currency"(currency_id),
     FOREIGN KEY (bidding_status_id) REFERENCES "BiddingStatus"(bidding_status_id)
 );
 

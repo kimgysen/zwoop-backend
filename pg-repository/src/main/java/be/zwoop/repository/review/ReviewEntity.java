@@ -25,12 +25,12 @@ public class ReviewEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "reviewer_id", updatable = false, insertable = false)
+    @JoinColumn(name = "reviewer_id")
     private UserEntity reviewer;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "reviewee_id", updatable = false, insertable = false)
+    @JoinColumn(name = "reviewee_id")
     private UserEntity reviewee;
 
     @NotNull

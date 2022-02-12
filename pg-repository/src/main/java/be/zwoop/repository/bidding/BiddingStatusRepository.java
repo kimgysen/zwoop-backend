@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface BiddingStatusRepository extends JpaRepository<BiddingStatusEntity, Integer> {
 
     Optional<BiddingStatusEntity> findByBiddingStatusId(int biddingStatus);
-
 }

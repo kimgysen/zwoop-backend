@@ -1,7 +1,7 @@
 package be.zwoop.websocket;
 
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.websocket.service.ConnectType;
+import be.zwoop.websocket.service.StreamType;
 import be.zwoop.websocket.service.WsUtil;
 import be.zwoop.websocket.service.connect.ConnectService;
 import lombok.AllArgsConstructor;
@@ -31,22 +31,22 @@ public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
         UserPrincipal principal = wsUtil.getPrincipal(headers);
         wsUtil.storePrincipalInSession(principal, headers);
 
-        ConnectType connectType = ConnectType.valueOf(
+        StreamType streamType = StreamType.valueOf(
                 wsUtil.getNativeHeader(HEADER_CONNECT_TYPE, headers));
-        wsUtil.storeInSession(SESSION_CONNECT_TYPE, connectType.name(), headers);
+        wsUtil.storeInSession(SESSION_STREAM_TYPE, streamType.name(), headers);
 
         connectService.saveOnlineStatusRedis(principal);
 
-        switch (connectType) {
-            case PUBLIC_CHAT -> {
+        switch (streamType) {
+            case TAG_PUBLIC_CHAT -> {
                 String chatRoomId = wsUtil.getNativeHeader(HEADER_CHATROOM_ID, headers);
                 wsUtil.storeInSession(SESSION_CHATROOM_ID, chatRoomId, headers);
                 connectService.savePresenceStatusPublicChatRoom(chatRoomId, principal);
             }
-            case PRIVATE_CHAT -> {
+            case POST_PRIVATE_CHAT -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
                 wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
-                connectService.savePresenceStatusPrivateChat("post-" + postId, principal);
+                connectService.savePresenceStatusPrivateChat("be.zwoop.amqp.domain.post-" + postId, principal);
             }
             case POST_INBOX -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);

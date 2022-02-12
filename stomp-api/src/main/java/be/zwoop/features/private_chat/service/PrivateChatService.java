@@ -3,7 +3,7 @@ package be.zwoop.features.private_chat.service;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
 import be.zwoop.features.private_chat.repository.redis.PrivateChatRedisEntity;
 import be.zwoop.features.private_chat.repository.redis.PrivateChatUserRedisEntity;
-import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
+import be.zwoop.web.private_chat.dto.receive.PrivateMessageReceiveDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 

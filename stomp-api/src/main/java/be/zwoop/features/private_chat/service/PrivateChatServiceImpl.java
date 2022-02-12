@@ -6,9 +6,9 @@ import be.zwoop.features.private_chat.factory.PrivateMessageFactory;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageRepository;
 import be.zwoop.features.private_chat.repository.redis.*;
-import be.zwoop.web.dto.receive.PrivateMessageReceiveDto;
-import be.zwoop.web.dto.send.private_chat.PrivateChatFeatureDto;
-import be.zwoop.web.dto.send.private_chat.TypingDto;
+import be.zwoop.web.private_chat.dto.receive.PrivateMessageReceiveDto;
+import be.zwoop.web.private_chat.dto.send.PrivateChatFeatureDto;
+import be.zwoop.web.private_chat.dto.send.feature.TypingDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static be.zwoop.web.dto.send.private_chat.PrivateChatFeatureType.*;
+import static be.zwoop.web.private_chat.dto.send.PrivateChatFeatureType.*;
 
 @AllArgsConstructor
 @Service

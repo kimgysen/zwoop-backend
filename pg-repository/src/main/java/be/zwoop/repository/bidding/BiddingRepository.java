@@ -10,7 +10,9 @@ import java.util.UUID;
 
 public interface BiddingRepository extends JpaRepository<BiddingEntity, UUID> {
 
-    Optional<BiddingEntity> findByPostEqualsAndRespondentEqualsAndBiddingStatusEquals(PostEntity post, UserEntity respondent, BiddingStatusEntity bidingStatus);
+    Optional<BiddingEntity> findByPostEqualsAndRespondentEqualsAndBiddingStatusEquals(PostEntity post, UserEntity respondent, BiddingStatusEntity biddingStatus);
+    Optional<BiddingEntity> findByPostEqualsAndBiddingStatusEquals(PostEntity post, BiddingStatusEntity biddingStatus);
+    Optional<BiddingEntity> findByPostEqualsAndRespondentEquals(PostEntity post, UserEntity respondent);
 
     List<BiddingEntity> findAllByPostEquals(PostEntity post);
 

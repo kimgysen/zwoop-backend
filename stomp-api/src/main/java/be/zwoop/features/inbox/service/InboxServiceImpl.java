@@ -4,8 +4,8 @@ import be.zwoop.features.inbox.factory.InboxItemFactory;
 import be.zwoop.features.inbox.repository.cassandra.InboxItemEntity;
 import be.zwoop.features.inbox.repository.cassandra.InboxItemRepository;
 import be.zwoop.features.private_chat.repository.cassandra.PrivateMessageEntity;
-import be.zwoop.web.dto.send.private_chat.PartnerReadSendDto;
-import be.zwoop.web.dto.send.private_chat.PrivateChatFeatureDto;
+import be.zwoop.web.private_chat.dto.send.feature.PartnerReadSendDto;
+import be.zwoop.web.private_chat.dto.send.PrivateChatFeatureDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static be.zwoop.web.dto.send.private_chat.PrivateChatFeatureType.PARTNER_READ;
+import static be.zwoop.web.private_chat.dto.send.PrivateChatFeatureType.PARTNER_READ;
 
 @AllArgsConstructor
 @Service

@@ -2,7 +2,7 @@ package be.zwoop.websocket;
 
 import be.zwoop.features.private_chat.service.PrivateChatService;
 import be.zwoop.security.UserPrincipal;
-import be.zwoop.websocket.service.ConnectType;
+import be.zwoop.websocket.service.StreamType;
 import be.zwoop.websocket.service.WsUtil;
 import be.zwoop.websocket.service.disconnect.DisconnectService;
 import lombok.AllArgsConstructor;
@@ -36,17 +36,17 @@ public class DisconnectEvent implements ApplicationListener<SessionDisconnectEve
         if (wsUtil.principalIsSet(principal)) {
             disconnectService.saveOfflineStatusRedis(principal);
 
-            String strConnectType = wsUtil.getSessionAttr(SESSION_CONNECT_TYPE, headers);
+            String strConnectType = wsUtil.getSessionAttr(SESSION_STREAM_TYPE, headers);
 
             if (strConnectType != null) {
-                ConnectType connectType = ConnectType.valueOf(strConnectType);
+                StreamType streamType = StreamType.valueOf(strConnectType);
 
-                switch (connectType) {
-                    case PUBLIC_CHAT -> {
+                switch (streamType) {
+                    case TAG_PUBLIC_CHAT -> {
                         String chatRoomId = wsUtil.getSessionAttr(SESSION_CHATROOM_ID, headers);
                         disconnectService.saveAbsenceStatusPublicChatRoom(chatRoomId, principal);
                     }
-                    case PRIVATE_CHAT -> {
+                    case POST_PRIVATE_CHAT -> {
                         String postId = wsUtil.getSessionAttr(SESSION_POST_ID, headers);
                         privateChatService.stopAllTypingForUser(postId, principal.getUsername());
                         disconnectService.saveAbsenceStatusPrivateChat(postId, principal);
