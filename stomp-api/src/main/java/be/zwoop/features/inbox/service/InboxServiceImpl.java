@@ -33,7 +33,7 @@ public class InboxServiceImpl implements InboxService {
 
         if (inboxItemOpt.isPresent()) {
             InboxItemEntity foundItemEntity = inboxItemOpt.get();
-            inboxItemEntity = inboxItemFactory.updateFromPrivateMessage(foundItemEntity, privateMessageEntity);
+            inboxItemEntity = inboxItemFactory.updateFromPrivateMessage(userId, foundItemEntity, privateMessageEntity);
 
         } else {
             inboxItemEntity = inboxItemFactory.buildInboxItem(userId, partnerId, privateMessageEntity);

@@ -29,10 +29,11 @@ public class InboxItemFactory {
                 .toAvatar(msg.getToAvatar())
                 .lastMessage(msg.getMessage())
                 .lastMessageDate(new Date())
+                .unread(msg.getFromUserId().equals(userId) ? 0 : 1)
                 .build();
     }
 
-    public InboxItemEntity updateFromPrivateMessage(InboxItemEntity inboxItemEntity, PrivateMessageEntity privateMessageEntity) {
+    public InboxItemEntity updateFromPrivateMessage(String userId, InboxItemEntity inboxItemEntity, PrivateMessageEntity privateMessageEntity) {
         inboxItemEntity.setFromUserId(privateMessageEntity.getFromUserId());
         inboxItemEntity.setFromNickName(privateMessageEntity.getFromNickName());
         inboxItemEntity.setFromAvatar(privateMessageEntity.getFromAvatar());
@@ -42,7 +43,10 @@ public class InboxItemFactory {
         inboxItemEntity.setLastMessage(privateMessageEntity.getMessage());
         inboxItemEntity.setLastMessageDate(new Date());
         int unread = inboxItemEntity.getUnread();
-        inboxItemEntity.setUnread(++unread);
+        inboxItemEntity.setUnread(
+                privateMessageEntity.getFromUserId().equals(userId)
+                        ? 0
+                        : ++unread);
 
         return inboxItemEntity;
     }
