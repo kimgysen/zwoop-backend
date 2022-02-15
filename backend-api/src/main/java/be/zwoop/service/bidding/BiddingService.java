@@ -18,4 +18,5 @@ public interface BiddingService {
     void sendBiddingChangedToQueue(BiddingEntity biddingEntity);
     void sendBiddingRemovedToQueue(BiddingEntity biddingEntity);
     void sendBiddingAcceptedToQueue(BiddingEntity biddingEntity);
+    void sendBiddingRemoveAcceptedToQueue(BiddingEntity biddingEntity);
 }

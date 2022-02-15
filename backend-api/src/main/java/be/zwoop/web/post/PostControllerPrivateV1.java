@@ -1,6 +1,7 @@
 package be.zwoop.web.post;
 
 
+import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
@@ -72,6 +73,10 @@ public class PostControllerPrivateV1 {
         PostEntity toUpdate = postEntityOpt.get();
         if (!toUpdate.getAsker().getUserId().equals(principalEntity.getUserId())) {
             throw new ResponseStatusException(UNAUTHORIZED);
+        }
+
+        if (!toUpdate.getPostStatus().getPostStatus().equals(PostStatusEnum.OPEN.name())) {
+            throw new ResponseStatusException(CONFLICT, "Cannot update a post that is doesn\'t have OPEN status.");
         }
 
         if (postService.hasPostChanged(toUpdate, postDto)) {

@@ -1,11 +1,16 @@
 package be.zwoop.web.bidding;
 
 import be.zwoop.domain.enum_type.BiddingStatusEnum;
+import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
 import be.zwoop.repository.bidding.BiddingStatusEntity;
+import be.zwoop.repository.bidding.BiddingStatusRepository;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.post.PostEntity;
+import be.zwoop.repository.post.PostRepository;
+import be.zwoop.repository.post.PostStatusEntity;
+import be.zwoop.repository.post.PostStatusRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
 import be.zwoop.service.bidding.BiddingService;
@@ -13,6 +18,7 @@ import be.zwoop.web.bidding.dto.BiddingDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,6 +26,8 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
+import static be.zwoop.domain.enum_type.PostStatusEnum.IN_PROGRESS;
+import static be.zwoop.domain.enum_type.PostStatusEnum.OPEN;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.noContent;
@@ -31,12 +39,16 @@ import static org.springframework.http.ResponseEntity.noContent;
 public class BiddingControllerPrivateV1 {
 
     private final AuthenticationFacade authenticationFacade;
-    private final BiddingRepository biddingRepository;
+    private final BiddingStatusRepository biddingStatusRepository;
+    private final PostStatusRepository postStatusRepository;
+    private final PostRepository postRepository;
     private final BiddingControllerValidator validator;
     private final BiddingService biddingService;
 
 
-    @PutMapping("/{biddingId}/accept")
+    // TODO: Accept should implement transactional smart contract handling
+    @PutMapping("/{biddingId}/accepted")
+    @Transactional
     public ResponseEntity<Void> acceptBidding(
             @PathVariable UUID postId,
             @PathVariable UUID biddingId) {
@@ -44,21 +56,24 @@ public class BiddingControllerPrivateV1 {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
 
         PostEntity postEntity = validator.validateAndGetPost(postId);
-        BiddingStatusEntity pendingStatusEntity = validator.validateAndGetBiddingStatus(BiddingStatusEnum.PENDING);
+        BiddingStatusEntity acceptedStatusEntity = biddingStatusRepository.findByBiddingStatusId(BiddingStatusEnum.ACCEPTED.getValue());
 
-        Optional<BiddingEntity> pendingBiddingEntityOpt = biddingService.findByPostAndBiddingStatus(
-                postEntity, pendingStatusEntity);
+        Optional<BiddingEntity> acceptedBiddingEntityOpt = biddingService.findByPostAndBiddingStatus(
+                postEntity, acceptedStatusEntity);
 
-        if (pendingBiddingEntityOpt.isPresent()) {
-            throw new ResponseStatusException(CONFLICT, "post already has an accepted bidding");
+        if (acceptedBiddingEntityOpt.isPresent()
+                && !acceptedBiddingEntityOpt.get().getBiddingId().equals(biddingId)) {
+            throw new ResponseStatusException(CONFLICT, "The post already has another accepted bidding");
 
         } else {
             BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
-            validator.validatePrincipal(principalId, biddingEntity.getRespondent().getUserId());
+            validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
 
-            BiddingStatusEntity acceptedStatusEntity = validator.validateAndGetBiddingStatus(BiddingStatusEnum.ACCEPTED);
+            PostStatusEntity statusInProgress = postStatusRepository.findByPostStatusId(IN_PROGRESS.getValue());
+            postEntity.setPostStatus(statusInProgress);
+            postRepository.save(postEntity);
+
             biddingEntity.setBiddingStatus(acceptedStatusEntity);
-
             biddingService.saveBidding(biddingEntity);
             biddingService.sendBiddingAcceptedToQueue(biddingEntity);
 
@@ -66,19 +81,28 @@ public class BiddingControllerPrivateV1 {
         }
     }
 
-    // TODO: Analyse how to do this
-    // When the smart contract was closed, this is not as simple as just removing the acceptance
-    @DeleteMapping("/{biddingId}/accept")
-    public ResponseEntity<Void> removeAcceptBidding(@PathVariable UUID biddingId) {
+    // TODO: Analyse: When the smart contract was closed, this is not as simple as just removing the acceptance
+    @DeleteMapping("/{biddingId}/accepted")
+    public ResponseEntity<Void> removeAcceptBidding(
+            @PathVariable UUID postId,
+            @PathVariable UUID biddingId) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
+        PostEntity postEntity = validator.validateAndGetPost(postId);
+        if (postEntity.getPostStatus().getPostStatusId() != IN_PROGRESS.getValue()) {
+            throw new ResponseStatusException(CONFLICT, "The post status is not IN_PROGRESS");
+        }
 
         BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
-        validator.validatePrincipal(principalId, biddingEntity.getRespondent().getUserId());
+        validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
 
-        BiddingStatusEntity pendingStatusEntity = validator.validateAndGetBiddingStatus(BiddingStatusEnum.PENDING);
+        PostStatusEntity statusOpen = postStatusRepository.findByPostStatusId(OPEN.getValue());
+        postEntity.setPostStatus(statusOpen);
+        postRepository.save(postEntity);
+
+        BiddingStatusEntity pendingStatusEntity = biddingStatusRepository.findByBiddingStatusId(BiddingStatusEnum.PENDING.getValue());
         biddingEntity.setBiddingStatus(pendingStatusEntity);
-
         biddingService.saveBidding(biddingEntity);
+        biddingService.sendBiddingRemoveAcceptedToQueue(biddingEntity);
 
         return noContent().build();
     }
@@ -94,7 +118,7 @@ public class BiddingControllerPrivateV1 {
 
         UserEntity respondentEntity = validator.validateAndGetRespondent(respondentId);
         PostEntity postEntity = validator.validateAndGetPost(postId);
-        BiddingStatusEntity biddingStatusEntity = validator.validateAndGetBiddingStatus(BiddingStatusEnum.PENDING);
+        BiddingStatusEntity biddingStatusEntity = biddingStatusRepository.findByBiddingStatusId(BiddingStatusEnum.PENDING.getValue());
         CurrencyEntity currencyEntity = validator.validateAndGetCurrency(biddingDto.getCurrencyCode());
 
         Optional<BiddingEntity> biddingEntityOpt = biddingService.findByPostAndRespondentAndBiddingStatus(

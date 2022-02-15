@@ -2,10 +2,7 @@ package be.zwoop.service.bidding;
 
 import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
 import be.zwoop.amqp.domain.post.PostUpdateType;
-import be.zwoop.amqp.domain.post.feature.BiddingAcceptedDto;
-import be.zwoop.amqp.domain.post.feature.BiddingAddedDto;
-import be.zwoop.amqp.domain.post.feature.BiddingChangedDto;
-import be.zwoop.amqp.domain.post.feature.BiddingRemovedDto;
+import be.zwoop.amqp.domain.post.feature.*;
 import be.zwoop.amqp.post.PostUpdateSender;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
@@ -106,10 +103,28 @@ public class BiddingServiceImpl implements BiddingService{
                         .postUpdateType(PostUpdateType.BIDDING_ACCEPTED)
                         .postUpdateDto(
                                 BiddingAcceptedDto.builder()
-                                        .nickName(biddingEntity.getPost().getAsker().getNickName())
                                         .biddingId(biddingEntity.getBiddingId())
+                                        .userId(biddingEntity.getPost().getAsker().getUserId())
+                                        .nickName(biddingEntity.getPost().getAsker().getNickName())
                                         .build())
                         .build());
     }
+
+    @Override
+    public void sendBiddingRemoveAcceptedToQueue(BiddingEntity biddingEntity) {
+        postUpdateSender.sendToQueue(
+            PostUpdateFeatureDto.builder()
+                    .postId(biddingEntity.getPost().getPostId())
+                    .postUpdateType(PostUpdateType.BIDDING_REMOVE_ACCEPTED)
+                    .postUpdateDto(
+                            BiddingRemoveAcceptedDto.builder()
+                                .biddingId(biddingEntity.getBiddingId())
+                                .userId(biddingEntity.getPost().getAsker().getUserId())
+                                .nickName(biddingEntity.getPost().getAsker().getNickName())
+                            .build())
+                    .build()
+        );
+    }
+
 
 }
