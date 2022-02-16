@@ -26,6 +26,7 @@ public class RabbitPostUpdateListener {
             case BIDDING_REMOVED -> topicPostService.sendBiddingRemoved(receivedDto.getPostId(), (BiddingRemovedDto) receivedDto.getPostUpdateDto());
             case BIDDING_CHANGED -> topicPostService.sendBiddingChanged(receivedDto.getPostId(), (BiddingChangedDto) receivedDto.getPostUpdateDto());
             case BIDDING_ACCEPTED -> topicPostService.sendBiddingAccepted(receivedDto.getPostId(), (BiddingAcceptedDto) receivedDto.getPostUpdateDto());
+            case BIDDING_REMOVE_ACCEPTED -> topicPostService.sendBiddingRemoveAccepted(receivedDto.getPostId(), (BiddingRemoveAcceptedDto) receivedDto.getPostUpdateDto());
         }
     }
 }

@@ -7,9 +7,9 @@ import java.util.UUID;
 public interface TopicPostService {
 
     void sendPostChanged(UUID postId, PostChangedDto post);
-    void sendBiddingAdded(UUID postId, BiddingAddedDto dto);
-    void sendBiddingChanged(UUID postId, BiddingChangedDto dto);
-    void sendBiddingRemoved(UUID postId, BiddingRemovedDto dto);
-    void sendBiddingAccepted(UUID postId, BiddingAcceptedDto dto);
-
+    void sendBiddingAdded(UUID postId, BiddingAddedDto biddingAddedDto);
+    void sendBiddingChanged(UUID postId, BiddingChangedDto biddingChangedDto);
+    void sendBiddingRemoved(UUID postId, BiddingRemovedDto biddingRemovedDto);
+    void sendBiddingAccepted(UUID postId, BiddingAcceptedDto biddingAcceptedDto);
+    void sendBiddingRemoveAccepted(UUID postId, BiddingRemoveAcceptedDto biddingRemoveAcceptedDto);
 }

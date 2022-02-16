@@ -68,6 +68,16 @@ public class TopicPostServiceImpl implements TopicPostService {
                         .build());
     }
 
+    @Override
+    public void sendBiddingRemoveAccepted(UUID postId, BiddingRemoveAcceptedDto biddingRemoveAcceptedDto) {
+        wsTemplate.convertAndSend(
+                postUpdatesDestination(postId.toString()),
+                PostUpdateFeatureDto.builder()
+                        .postUpdateType(BIDDING_REMOVE_ACCEPTED)
+                        .postUpdateDto(biddingRemoveAcceptedDto)
+                        .build());
+    }
+
     private String postUpdatesDestination(String postId) {
         return "/topic/" + postId + ".post.updates";
     }

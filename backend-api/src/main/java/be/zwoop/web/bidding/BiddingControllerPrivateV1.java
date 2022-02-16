@@ -83,6 +83,7 @@ public class BiddingControllerPrivateV1 {
 
     // TODO: Analyse: When the smart contract was closed, this is not as simple as just removing the acceptance
     @DeleteMapping("/{biddingId}/accepted")
+    @Transactional
     public ResponseEntity<Void> removeAcceptBidding(
             @PathVariable UUID postId,
             @PathVariable UUID biddingId) {
@@ -108,6 +109,7 @@ public class BiddingControllerPrivateV1 {
     }
 
     @PutMapping("/respondent/{respondentId}")
+    @Transactional
     public ResponseEntity<Void> saveBiddingForPost(
             @PathVariable UUID postId,
             @PathVariable UUID respondentId,
@@ -150,6 +152,7 @@ public class BiddingControllerPrivateV1 {
     }
 
     @DeleteMapping("/respondent/{respondentId}")
+    @Transactional
     public ResponseEntity<Void> deleteBiddingForPost(
             @PathVariable UUID postId,
             @PathVariable UUID respondentId) {
