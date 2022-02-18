@@ -5,12 +5,11 @@ import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
-import be.zwoop.web.post.dto.PostDto;
 import be.zwoop.service.post.PostService;
+import be.zwoop.web.post.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,7 +33,6 @@ public class PostControllerPrivateV1 {
     private final PostService postService;
 
     @PostMapping
-    @Transactional
     public ResponseEntity<Void> createPost(@Valid @RequestBody PostDto postDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         Optional<UserEntity> askerEntityOpt = postService.findAskerByUserId(principalId);
@@ -81,7 +79,7 @@ public class PostControllerPrivateV1 {
 
         if (postService.hasPostChanged(toUpdate, postDto)) {
             postService.updatePost(toUpdate, postDto);
-            postService.sendPostChangedToQueue(toUpdate);
+            postService.sendPostChangedNotification(toUpdate);
         }
 
         return noContent().build();

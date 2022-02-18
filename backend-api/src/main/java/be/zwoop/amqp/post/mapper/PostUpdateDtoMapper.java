@@ -2,7 +2,7 @@ package be.zwoop.amqp.post.mapper;
 
 import be.zwoop.amqp.domain.common.TagDto;
 import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
-import be.zwoop.amqp.domain.post.feature.PostChangedDto;
+import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.tag.TagEntity;
 import org.springframework.stereotype.Component;

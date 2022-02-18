@@ -155,6 +155,37 @@ CREATE TABLE IF NOT EXISTS "Bidding"(
     FOREIGN KEY (bidding_status_id) REFERENCES "BiddingStatus"(bidding_status_id)
 );
 
+-- Create DealStatus table
+CREATE TABLE IF NOT EXISTS "DealStatus"(
+    deal_status_id INT NOT NULL,
+    deal_status TEXT NOT NULL,
+
+    PRIMARY KEY (deal_status_id)
+);
+
+-- Create Deal table
+CREATE TABLE IF NOT EXISTS "Deal"(
+    deal_id UUID NOT NULL DEFAULT gen_random_uuid(),
+    post_id UUID NOT NULL,
+    asker_id UUID NOT NULL,
+    respondent_id UUID NOT NULL,
+    deal_status_id INT NOT NULL DEFAULT 1,
+    deal_price REAL NOT NULL,
+    currency_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    created_by UUID NOT NULL,
+    updated_at TIMESTAMP,
+    updated_by UUID,
+
+    PRIMARY KEY (deal_id),
+    UNIQUE(post_id),
+    FOREIGN KEY (post_id) REFERENCES "Post"(post_id),
+    FOREIGN KEY (respondent_id) REFERENCES "User"(user_id),
+    FOREIGN KEY (asker_id) REFERENCES "User"(user_id),
+    FOREIGN KEY (currency_id) REFERENCES "Currency"(currency_id),
+    FOREIGN KEY (deal_status_id) REFERENCES "DealStatus"(deal_status_id)
+);
+
 -- Create AnswerStatus table
 CREATE TABLE IF NOT EXISTS "AnswerStatus"(
     answer_status_id INT NOT NULL,
@@ -170,7 +201,6 @@ CREATE TABLE IF NOT EXISTS "Answer" (
     respondent_id UUID NOT NULL,
     answer_text TEXT NOT NULL,
     answer_status_id INT NOT NULL DEFAULT 1,
-    closing_price REAL,
     created_at TIMESTAMP NOT NULL,
     created_by UUID NOT NULL,
     updated_at TIMESTAMP,
@@ -209,15 +239,3 @@ CREATE TABLE IF NOT EXISTS "NotificationType"(
 
    PRIMARY KEY (notification_type_id)
 );
-
--- Create Notification table
-CREATE TABLE IF NOT EXISTS "Notification"(
-    notification_id UUID NOT NULL DEFAULT gen_random_uuid(),
-    notification_type_id INT NOT NULL,
-    dest_user_id UUID NOT NULL,
-
-    PRIMARY KEY (notification_id),
-    FOREIGN KEY (notification_type_id) REFERENCES "NotificationType"(notification_type_id),
-    FOREIGN KEY (dest_user_id) REFERENCES "User"(user_id)
-);
-

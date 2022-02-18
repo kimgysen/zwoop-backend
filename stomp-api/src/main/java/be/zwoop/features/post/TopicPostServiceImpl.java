@@ -1,10 +1,13 @@
 package be.zwoop.features.post;
 
+import be.zwoop.amqp.domain.post.feature.bidding.*;
+import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealOpenedDto;
+import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
-import be.zwoop.amqp.domain.post.feature.*;
 
 import java.util.UUID;
 

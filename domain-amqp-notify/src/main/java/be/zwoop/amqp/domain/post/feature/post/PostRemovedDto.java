@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.post.feature;
+package be.zwoop.amqp.domain.post.feature.post;
 
 import be.zwoop.amqp.domain.common.TagDto;
 import lombok.Builder;

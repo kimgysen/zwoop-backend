@@ -1,6 +1,7 @@
 package be.zwoop.amqp.post;
 
 import org.springframework.amqp.core.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,11 +41,11 @@ public class RabbitPostConfig {
     }
 
     @Bean
-    Binding bindDeadLetterQueueWithDeadLetterExchange(
+    Binding bindPostUpdateDeadLetterQueueWithDeadLetterExchange(
             final Queue postUpdatesDeadLetterQueue,
-            final DirectExchange postUpdateDeadLetterExchange) {
+            final DirectExchange postUpdatesDeadLetterExchange) {
         return BindingBuilder.bind(postUpdatesDeadLetterQueue)
-                .to(postUpdateDeadLetterExchange)
+                .to(postUpdatesDeadLetterExchange)
                 .with(RABBIT_POST_UPDATES_QUEUE);
     }
 

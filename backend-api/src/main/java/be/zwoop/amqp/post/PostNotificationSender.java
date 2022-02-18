@@ -5,11 +5,12 @@ import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class PostUpdateSender {
+public class PostNotificationSender {
 
     private final RabbitTemplate template;
     private final Queue postUpdatesQueue;
@@ -17,7 +18,7 @@ public class PostUpdateSender {
     private final String RABBIT_MESSAGE_SOURCE_HEADER = "backend-api";
 
 
-    public void sendToQueue(PostUpdateFeatureDto<?> sendDto) {
+    public void sendPostEventNotification(PostUpdateFeatureDto<?> sendDto) {
         template.convertAndSend(
                 postUpdatesQueue.getName(),
                 sendDto,
@@ -28,5 +29,6 @@ public class PostUpdateSender {
                     return m;
                 });
     }
+
 
 }

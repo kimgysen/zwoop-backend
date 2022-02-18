@@ -14,6 +14,9 @@ import be.zwoop.repository.post.PostStatusRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
 import be.zwoop.service.bidding.BiddingService;
+import be.zwoop.service.deal.DealService;
+import be.zwoop.service.post.PostService;
+import be.zwoop.service.state_manager.StateManager;
 import be.zwoop.web.bidding.dto.BiddingDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
+import static be.zwoop.domain.enum_type.BiddingStatusEnum.ACCEPTED;
 import static be.zwoop.domain.enum_type.PostStatusEnum.IN_PROGRESS;
 import static be.zwoop.domain.enum_type.PostStatusEnum.OPEN;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -39,77 +43,15 @@ import static org.springframework.http.ResponseEntity.noContent;
 public class BiddingControllerPrivateV1 {
 
     private final AuthenticationFacade authenticationFacade;
+    private final StateManager stateManager;
+
     private final BiddingStatusRepository biddingStatusRepository;
-    private final PostStatusRepository postStatusRepository;
-    private final PostRepository postRepository;
     private final BiddingControllerValidator validator;
     private final BiddingService biddingService;
+    private final DealService dealService;
 
-
-    // TODO: Accept should implement transactional smart contract handling
-    @PutMapping("/{biddingId}/accepted")
-    @Transactional
-    public ResponseEntity<Void> acceptBidding(
-            @PathVariable UUID postId,
-            @PathVariable UUID biddingId) {
-
-        UUID principalId = authenticationFacade.getAuthenticatedUserId();
-
-        PostEntity postEntity = validator.validateAndGetPost(postId);
-        BiddingStatusEntity acceptedStatusEntity = biddingStatusRepository.findByBiddingStatusId(BiddingStatusEnum.ACCEPTED.getValue());
-
-        Optional<BiddingEntity> acceptedBiddingEntityOpt = biddingService.findByPostAndBiddingStatus(
-                postEntity, acceptedStatusEntity);
-
-        if (acceptedBiddingEntityOpt.isPresent()
-                && !acceptedBiddingEntityOpt.get().getBiddingId().equals(biddingId)) {
-            throw new ResponseStatusException(CONFLICT, "The post already has another accepted bidding");
-
-        } else {
-            BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
-            validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
-
-            PostStatusEntity statusInProgress = postStatusRepository.findByPostStatusId(IN_PROGRESS.getValue());
-            postEntity.setPostStatus(statusInProgress);
-            postRepository.save(postEntity);
-
-            biddingEntity.setBiddingStatus(acceptedStatusEntity);
-            biddingService.saveBidding(biddingEntity);
-            biddingService.sendBiddingAcceptedToQueue(biddingEntity);
-
-            return noContent().build();
-        }
-    }
-
-    // TODO: Analyse: When the smart contract was closed, this is not as simple as just removing the acceptance
-    @DeleteMapping("/{biddingId}/accepted")
-    @Transactional
-    public ResponseEntity<Void> removeAcceptBidding(
-            @PathVariable UUID postId,
-            @PathVariable UUID biddingId) {
-        UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        PostEntity postEntity = validator.validateAndGetPost(postId);
-        if (postEntity.getPostStatus().getPostStatusId() != IN_PROGRESS.getValue()) {
-            throw new ResponseStatusException(CONFLICT, "The post status is not IN_PROGRESS");
-        }
-
-        BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
-        validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
-
-        PostStatusEntity statusOpen = postStatusRepository.findByPostStatusId(OPEN.getValue());
-        postEntity.setPostStatus(statusOpen);
-        postRepository.save(postEntity);
-
-        BiddingStatusEntity pendingStatusEntity = biddingStatusRepository.findByBiddingStatusId(BiddingStatusEnum.PENDING.getValue());
-        biddingEntity.setBiddingStatus(pendingStatusEntity);
-        biddingService.saveBidding(biddingEntity);
-        biddingService.sendBiddingRemoveAcceptedToQueue(biddingEntity);
-
-        return noContent().build();
-    }
 
     @PutMapping("/respondent/{respondentId}")
-    @Transactional
     public ResponseEntity<Void> saveBiddingForPost(
             @PathVariable UUID postId,
             @PathVariable UUID respondentId,
@@ -135,7 +77,7 @@ public class BiddingControllerPrivateV1 {
                     .currency(currencyEntity)
                     .build();
             biddingService.saveBidding(biddingEntity);
-            biddingService.sendBiddingAddedToQueue(biddingEntity);
+            biddingService.sendBiddingAddedNotification(biddingEntity);
 
         } else {
             BiddingEntity biddingEntity = biddingEntityOpt.get();
@@ -143,7 +85,7 @@ public class BiddingControllerPrivateV1 {
             if (!biddingDto.getAskPrice().equals(biddingEntity.getAskPrice())) {
                 biddingEntity.setAskPrice(biddingDto.getAskPrice());
                 biddingService.saveBidding(biddingEntity);
-                biddingService.sendBiddingChangedToQueue(biddingEntity);
+                biddingService.sendBiddingChangedNotification(biddingEntity);
             }
 
         }
@@ -152,7 +94,6 @@ public class BiddingControllerPrivateV1 {
     }
 
     @DeleteMapping("/respondent/{respondentId}")
-    @Transactional
     public ResponseEntity<Void> deleteBiddingForPost(
             @PathVariable UUID postId,
             @PathVariable UUID respondentId) {
@@ -167,7 +108,7 @@ public class BiddingControllerPrivateV1 {
         if (biddingEntityOpt.isPresent()) {
             BiddingEntity biddingEntity = biddingEntityOpt.get();
             biddingService.removeBidding(biddingEntity);
-            biddingService.sendBiddingRemovedToQueue(biddingEntity);
+            biddingService.sendBiddingRemovedNotification(biddingEntity);
 
         } else {
             throw new ResponseStatusException(NOT_FOUND);
@@ -176,6 +117,57 @@ public class BiddingControllerPrivateV1 {
         return noContent().build();
     }
 
+    // TODO: Accept should implement transactional smart contract handling
+    @PutMapping("/{biddingId}/accepted")
+    public ResponseEntity<Void> acceptBidding(
+            @PathVariable UUID postId,
+            @PathVariable UUID biddingId) {
 
+        UUID principalId = authenticationFacade.getAuthenticatedUserId();
+
+        PostEntity postEntity = validator.validateAndGetPost(postId);
+        BiddingStatusEntity acceptedStatusEntity = biddingStatusRepository.findByBiddingStatusId(ACCEPTED.getValue());
+
+        Optional<BiddingEntity> acceptedBiddingEntityOpt = biddingService.findByPostAndBiddingStatus(
+                postEntity, acceptedStatusEntity);
+
+        if (acceptedBiddingEntityOpt.isPresent()
+                && !acceptedBiddingEntityOpt.get().getBiddingId().equals(biddingId)) {
+            throw new ResponseStatusException(CONFLICT, "The post already has another accepted bidding");
+
+        } else {
+            BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
+            validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
+
+            stateManager.acceptBidding(postEntity, biddingEntity);
+
+            biddingService.sendBiddingAcceptedNotification(biddingEntity);
+            dealService.sendDealOpenedNotification(postEntity, biddingEntity);
+
+            return noContent().build();
+        }
+    }
+
+    // TODO: Analyse: When the smart contract was closed, this is not as simple as just removing the acceptance
+    @DeleteMapping("/{biddingId}/accepted")
+    public ResponseEntity<Void> removeAcceptBidding(
+            @PathVariable UUID postId,
+            @PathVariable UUID biddingId) {
+        UUID principalId = authenticationFacade.getAuthenticatedUserId();
+        PostEntity postEntity = validator.validateAndGetPost(postId);
+        if (postEntity.getPostStatus().getPostStatusId() != IN_PROGRESS.getValue()) {
+            throw new ResponseStatusException(CONFLICT, "The post status is not IN_PROGRESS");
+        }
+
+        BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
+        validator.validatePrincipal(principalId, postEntity.getAsker().getUserId());
+
+        stateManager.removeAcceptBidding(postEntity, biddingEntity);
+
+        biddingService.sendBiddingRemoveAcceptedNotification(biddingEntity);
+        dealService.sendDealRemovedNotification(postEntity, biddingEntity);
+
+        return noContent().build();
+    }
 
 }

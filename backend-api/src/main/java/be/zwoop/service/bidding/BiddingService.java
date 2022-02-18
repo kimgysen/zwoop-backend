@@ -1,5 +1,6 @@
 package be.zwoop.service.bidding;
 
+import be.zwoop.domain.enum_type.BiddingStatusEnum;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingStatusEntity;
 import be.zwoop.repository.post.PostEntity;
@@ -13,10 +14,12 @@ public interface BiddingService {
     Optional<BiddingEntity> findByPostAndRespondent(PostEntity postEntity, UserEntity respondentEntity);
     void saveBidding(BiddingEntity biddingEntity);
     void removeBidding(BiddingEntity biddingEntity);
+    void updateBiddingStatus(BiddingEntity biddingEntity, BiddingStatusEnum biddingStatus);
 
-    void sendBiddingAddedToQueue(BiddingEntity biddingEntity);
-    void sendBiddingChangedToQueue(BiddingEntity biddingEntity);
-    void sendBiddingRemovedToQueue(BiddingEntity biddingEntity);
-    void sendBiddingAcceptedToQueue(BiddingEntity biddingEntity);
-    void sendBiddingRemoveAcceptedToQueue(BiddingEntity biddingEntity);
+    void sendBiddingAddedNotification(BiddingEntity biddingEntity);
+    void sendBiddingChangedNotification(BiddingEntity biddingEntity);
+    void sendBiddingRemovedNotification(BiddingEntity biddingEntity);
+    void sendBiddingAcceptedNotification(BiddingEntity biddingEntity);
+    void sendBiddingRemoveAcceptedNotification(BiddingEntity biddingEntity);
+
 }

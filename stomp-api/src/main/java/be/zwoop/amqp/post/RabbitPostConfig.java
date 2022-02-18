@@ -35,16 +35,16 @@ public class RabbitPostConfig {
     }
 
     @Bean
-    DirectExchange postUpdateDeadLetterExchange() {
+    DirectExchange postUpdatesDeadLetterExchange() {
         return new DirectExchange(RABBIT_POST_UPDATES_DEAD_LETTER_EXCHANGE);
     }
 
     @Bean
     Binding bindDeadLetterQueueWithDeadLetterExchange(
             final Queue postUpdatesDeadLetterQueue,
-            final DirectExchange postUpdateDeadLetterExchange) {
+            final DirectExchange postUpdatesDeadLetterExchange) {
         return BindingBuilder.bind(postUpdatesDeadLetterQueue)
-                .to(postUpdateDeadLetterExchange)
+                .to(postUpdatesDeadLetterExchange)
                 .with(RABBIT_POST_UPDATES_QUEUE);
     }
 

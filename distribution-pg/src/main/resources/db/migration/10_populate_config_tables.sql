@@ -25,6 +25,11 @@ INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(3, 'CLOSED');
 INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(1, 'PENDING');
 INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(2, 'ACCEPTED');
 
+-- DealStatus
+INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(1, 'OPEN');
+INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(2, 'CANCELLED');
+INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(3, 'PAID');
+
 -- AnswerStatus
 INSERT INTO "AnswerStatus" (answer_status_id, answer_status) VALUES(1, 'PENDING');
 INSERT INTO "AnswerStatus" (answer_status_id, answer_status) VALUES(2, 'ACCEPTED');

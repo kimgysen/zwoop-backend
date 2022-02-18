@@ -1,5 +1,6 @@
 package be.zwoop.service.post;
 
+import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.web.post.dto.PostDto;
@@ -14,5 +15,7 @@ public interface PostService {
     PostEntity createPost(PostDto postDto, UserEntity askerEntity);
     void updatePost(PostEntity toUpdate, PostDto postDto);
     boolean hasPostChanged(PostEntity postEntity, PostDto postDto);
-    void sendPostChangedToQueue(PostEntity postEntity);
+    void updatePostStatus(PostEntity postEntity, PostStatusEnum postStatus);
+
+    void sendPostChangedNotification(PostEntity postEntity);
 }

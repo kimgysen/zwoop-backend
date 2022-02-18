@@ -2,7 +2,7 @@ package be.zwoop.service.post;
 
 
 import be.zwoop.amqp.domain.common.TagDto;
-import be.zwoop.amqp.post.PostUpdateSender;
+import be.zwoop.amqp.post.PostNotificationSender;
 import be.zwoop.amqp.post.mapper.PostUpdateDtoMapper;
 import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.currency.CurrencyEntity;
@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     private final PostStatusRepository postStatusRepository;
     private final TagRepository tagRepository;
     private final PostUpdateDtoMapper postUpdateDtoMapper;
-    private final PostUpdateSender postUpdateSender;
+    private final PostNotificationSender postNotificationSender;
 
 
     @Override
@@ -94,20 +94,21 @@ public class PostServiceImpl implements PostService {
         List<TagEntity> tagEntities = tagRepository.findAllByTagIdIn(
                 collectTagIdsByPostDto(postDto));
         toUpdate.setTags(tagEntities);
+
         postRepository.saveAndFlush(toUpdate);
     }
 
     @Override
-    public void sendPostChangedToQueue(PostEntity toUpdate) {
+    public void sendPostChangedNotification(PostEntity toUpdate) {
         try {
-            postUpdateSender.sendToQueue(
+            postNotificationSender.sendPostEventNotification(
                     postUpdateDtoMapper.mapEntityToTopicDto(
                                     toUpdate.getPostId(), toUpdate));
         } catch(Exception e) {
             log.error("Error sending queue update for post: " + toUpdate.getPostId()
                     + " with error: " + e.getMessage());
         }
-    };
+    }
 
     @Override
     public boolean hasPostChanged(PostEntity postEntity, PostDto postDto) {
@@ -117,6 +118,13 @@ public class PostServiceImpl implements PostService {
                 || !collectTagIdsByPostEntity(postEntity)
                         .equals(collectTagIdsByPostDto(postDto));
     }
+
+    @Override
+    public void updatePostStatus(PostEntity postEntity, PostStatusEnum postStatus) {
+        PostStatusEntity statusOpen = postStatusRepository.findByPostStatusId(postStatus.getValue());
+        postEntity.setPostStatus(statusOpen);
+        postRepository.save(postEntity);
+    };
 
     private List<Long> collectTagIdsByPostEntity(PostEntity postEntity) {
         return postEntity.getTags()

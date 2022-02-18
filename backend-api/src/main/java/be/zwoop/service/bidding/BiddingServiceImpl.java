@@ -2,11 +2,13 @@ package be.zwoop.service.bidding;
 
 import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
 import be.zwoop.amqp.domain.post.PostUpdateType;
-import be.zwoop.amqp.domain.post.feature.*;
-import be.zwoop.amqp.post.PostUpdateSender;
+import be.zwoop.amqp.domain.post.feature.bidding.*;
+import be.zwoop.amqp.post.PostNotificationSender;
+import be.zwoop.domain.enum_type.BiddingStatusEnum;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
 import be.zwoop.repository.bidding.BiddingStatusEntity;
+import be.zwoop.repository.bidding.BiddingStatusRepository;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
 import lombok.AllArgsConstructor;
@@ -19,7 +21,8 @@ import java.util.Optional;
 public class BiddingServiceImpl implements BiddingService{
 
     private final BiddingRepository biddingRepository;
-    private final PostUpdateSender postUpdateSender;
+    private final BiddingStatusRepository biddingStatusRepository;
+    private final PostNotificationSender postNotificationSender;
 
     @Override
     public Optional<BiddingEntity> findByPostAndBiddingStatus(PostEntity postEntity, BiddingStatusEntity biddingStatusEntity) {
@@ -46,11 +49,18 @@ public class BiddingServiceImpl implements BiddingService{
     @Override
     public void removeBidding(BiddingEntity biddingEntity) {
         biddingRepository.delete(biddingEntity);
+    }
+
+    @Override
+    public void updateBiddingStatus(BiddingEntity biddingEntity, BiddingStatusEnum biddingStatus) {
+        BiddingStatusEntity acceptedStatusEntity = biddingStatusRepository.findByBiddingStatusId(biddingStatus.getValue());
+        biddingEntity.setBiddingStatus(acceptedStatusEntity);
+        biddingRepository.saveAndFlush(biddingEntity);
     };
 
     @Override
-    public void sendBiddingAddedToQueue(BiddingEntity biddingEntity) {
-        postUpdateSender.sendToQueue(
+    public void sendBiddingAddedNotification(BiddingEntity biddingEntity) {
+        postNotificationSender.sendPostEventNotification(
                 PostUpdateFeatureDto.builder()
                         .postId(biddingEntity.getPost().getPostId())
                         .postUpdateType(PostUpdateType.BIDDING_ADDED)
@@ -65,8 +75,8 @@ public class BiddingServiceImpl implements BiddingService{
     }
 
     @Override
-    public void sendBiddingChangedToQueue(BiddingEntity biddingEntity) {
-        postUpdateSender.sendToQueue(
+    public void sendBiddingChangedNotification(BiddingEntity biddingEntity) {
+        postNotificationSender.sendPostEventNotification(
                 PostUpdateFeatureDto.builder()
                         .postId(biddingEntity.getPost().getPostId())
                         .postUpdateType(PostUpdateType.BIDDING_CHANGED)
@@ -81,8 +91,8 @@ public class BiddingServiceImpl implements BiddingService{
     }
 
     @Override
-    public void sendBiddingRemovedToQueue(BiddingEntity biddingEntity) {
-        postUpdateSender.sendToQueue(
+    public void sendBiddingRemovedNotification(BiddingEntity biddingEntity) {
+        postNotificationSender.sendPostEventNotification(
                 PostUpdateFeatureDto.builder()
                         .postId(biddingEntity.getPost().getPostId())
                         .postUpdateType(PostUpdateType.BIDDING_REMOVED)
@@ -96,8 +106,8 @@ public class BiddingServiceImpl implements BiddingService{
     }
 
     @Override
-    public void sendBiddingAcceptedToQueue(BiddingEntity biddingEntity) {
-        postUpdateSender.sendToQueue(
+    public void sendBiddingAcceptedNotification(BiddingEntity biddingEntity) {
+        postNotificationSender.sendPostEventNotification(
                 PostUpdateFeatureDto.builder()
                         .postId(biddingEntity.getPost().getPostId())
                         .postUpdateType(PostUpdateType.BIDDING_ACCEPTED)
@@ -111,8 +121,8 @@ public class BiddingServiceImpl implements BiddingService{
     }
 
     @Override
-    public void sendBiddingRemoveAcceptedToQueue(BiddingEntity biddingEntity) {
-        postUpdateSender.sendToQueue(
+    public void sendBiddingRemoveAcceptedNotification(BiddingEntity biddingEntity) {
+        postNotificationSender.sendPostEventNotification(
             PostUpdateFeatureDto.builder()
                     .postId(biddingEntity.getPost().getPostId())
                     .postUpdateType(PostUpdateType.BIDDING_REMOVE_ACCEPTED)
@@ -125,6 +135,5 @@ public class BiddingServiceImpl implements BiddingService{
                     .build()
         );
     }
-
 
 }
