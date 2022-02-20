@@ -4,6 +4,7 @@ import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,10 @@ public class DealEntity extends BaseEntity {
     private UUID dealId;
 
     @NotNull
-    @ManyToOne
+    @OneToOne
+    @MapsId
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private PostEntity post;
 
     @NotNull

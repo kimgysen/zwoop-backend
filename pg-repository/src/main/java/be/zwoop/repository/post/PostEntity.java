@@ -4,6 +4,7 @@ import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
+import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import lombok.Data;
@@ -65,5 +66,8 @@ public class PostEntity extends BaseEntity {
             inverseJoinColumns = { @JoinColumn(name = "tag_id") }
     )
     private List<TagEntity> tags;
+
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private DealEntity deal;
 
 }

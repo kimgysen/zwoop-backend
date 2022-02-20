@@ -89,6 +89,7 @@ public class DealServiceImpl implements DealService {
                                 DealCancelledDto
                                         .builder()
                                         .postId(postEntity.getPostId())
+                                        .postTitle(postEntity.getPostTitle())
                                         .askerId(postEntity.getAsker().getUserId())
                                         .respondentId(biddingEntity.getRespondent().getUserId())
                                         .build())

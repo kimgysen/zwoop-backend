@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum DealStatusEnum {
 
     OPEN(1),
-    PENDING(2);
+    CANCELLED(2),
+    PAID(3);
 
     @Getter
     private final int value;

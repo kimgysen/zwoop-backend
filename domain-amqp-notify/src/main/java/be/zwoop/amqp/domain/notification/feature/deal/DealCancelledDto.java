@@ -10,6 +10,7 @@ import java.util.UUID;
 @Data
 public class DealCancelledDto implements Serializable {
     UUID postId;
+    String postTitle;
     UUID askerId;
     UUID respondentId;
 }
