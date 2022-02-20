@@ -15,6 +15,7 @@ import be.zwoop.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -55,10 +56,13 @@ public class DealServiceImpl implements DealService {
         dealRepository.saveAndFlush(dealEntity);
     }
 
+    @Transactional
     @Override
     public void removeDealByPost(PostEntity postEntity) {
-        Optional<DealEntity> dealOpt = dealRepository.findByPost(postEntity);
-        dealOpt.ifPresent(dealRepository::delete);
+        DealEntity dealEntity = postEntity.getDeal();
+        if (dealEntity != null) {
+            dealRepository.deleteByDealId(dealEntity.getDealId());
+        }
     }
 
     @Override
