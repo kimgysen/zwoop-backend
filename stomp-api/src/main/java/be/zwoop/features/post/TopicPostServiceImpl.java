@@ -1,17 +1,18 @@
 package be.zwoop.features.post;
 
-import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
-import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
-import be.zwoop.amqp.domain.post.feature.bidding.*;
-import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
+import be.zwoop.amqp.domain.model.DealDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingAddedDto;
+import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingChangedDto;
+import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingRemovedDto;
+import be.zwoop.amqp.domain.post_update.feature.post.PostChangedDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import be.zwoop.amqp.domain.post.PostUpdateDto;
 
 import java.util.UUID;
 
-import static be.zwoop.amqp.domain.post.PostUpdateType.*;
+import static be.zwoop.amqp.domain.post_update.PostUpdateType.*;
 
 
 @AllArgsConstructor
@@ -66,22 +67,22 @@ public class TopicPostServiceImpl implements TopicPostService {
 
 
     @Override
-    public void sendDealInit(UUID postId, DealInitDto dealInitDto) {
+    public void sendDealInit(UUID postId, DealDto dealDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(DEAL_INIT)
-                        .dto(dealInitDto)
+                        .dto(dealDto)
                         .build());
     }
 
     @Override
-    public void sendDealCancelled(UUID postId, DealCancelledDto dealCancelledDto) {
+    public void sendDealCancelled(UUID postId, DealDto dealDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(DEAL_CANCELLED)
-                        .dto(dealCancelledDto)
+                        .dto(dealDto)
                         .build());
     }
 

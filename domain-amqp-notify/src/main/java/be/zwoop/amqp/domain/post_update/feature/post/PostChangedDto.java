@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.post.feature.post;
+package be.zwoop.amqp.domain.post_update.feature.post;
 
 import be.zwoop.amqp.domain.model.TagDto;
 import be.zwoop.amqp.domain.model.UserDto;

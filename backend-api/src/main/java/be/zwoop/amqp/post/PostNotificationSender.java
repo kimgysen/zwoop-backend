@@ -1,7 +1,7 @@
 package be.zwoop.amqp.post;
 
 
-import be.zwoop.amqp.domain.post.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

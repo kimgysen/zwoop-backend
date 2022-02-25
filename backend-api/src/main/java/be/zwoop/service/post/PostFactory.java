@@ -58,7 +58,6 @@ public class PostFactory {
                 .currency(currencyEntity)
                 .tags(tagEntities)
                 .build();
-
     }
 
     public List<Long> collectTagIdsByPostDto(PostDto postDto) {

@@ -2,8 +2,8 @@ package be.zwoop.amqp.post.mapper;
 
 import be.zwoop.amqp.domain.model.TagDto;
 import be.zwoop.amqp.domain.model.UserDto;
-import be.zwoop.amqp.domain.post.PostUpdateDto;
-import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.feature.post.PostChangedDto;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
-import static be.zwoop.amqp.domain.post.PostUpdateType.POST_CHANGED;
+import static be.zwoop.amqp.domain.post_update.PostUpdateType.POST_CHANGED;
 import static java.util.stream.Collectors.toList;
 
 @Component

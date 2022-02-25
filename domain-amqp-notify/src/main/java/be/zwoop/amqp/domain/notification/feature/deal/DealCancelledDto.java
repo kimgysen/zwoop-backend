@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.post.feature.bidding;
+package be.zwoop.amqp.domain.notification.feature.deal;
 
 import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class BiddingRemovedDto implements Serializable {
-    UUID biddingId;
+public class DealCancelledDto implements Serializable {
+    UUID dealId;
+    UserDto op;
     UserDto consultant;
 }

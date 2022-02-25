@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.post.feature.answer;
+package be.zwoop.amqp.domain.post_update.feature.answer;
 
 
 import be.zwoop.amqp.domain.model.UserDto;
@@ -9,9 +9,7 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class AnswerAddedDto {
+public class AnswerRemovedDto {
     UUID answerId;
     UserDto consultant;
-    String answerText;
-
 }

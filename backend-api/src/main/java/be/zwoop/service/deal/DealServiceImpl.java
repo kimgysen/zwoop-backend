@@ -1,11 +1,8 @@
 package be.zwoop.service.deal;
 
-import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
-import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
-import be.zwoop.amqp.domain.model.UserDto;
 import be.zwoop.amqp.domain.notification.NotificationDto;
-import be.zwoop.amqp.domain.post.PostUpdateDto;
-import be.zwoop.amqp.domain.post.PostUpdateType;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateType;
 import be.zwoop.amqp.notification.NotificationSender;
 import be.zwoop.amqp.post.PostNotificationSender;
 import be.zwoop.domain.enum_type.PostStatusEnum;
@@ -66,6 +63,7 @@ public class DealServiceImpl implements DealService {
     }
 
     public void removeDeal(DealEntity deal) {
+        postStateService.unsetInitDealState(deal.getBidding().getPost());
         dealRepository.delete(deal);
     }
 
@@ -83,7 +81,8 @@ public class DealServiceImpl implements DealService {
         notificationSender.sendNotification(
                 NotificationDto.builder()
                     .notificationType(DEAL_INIT)
-                    .dto(dealEntity)
+                    .dto(dealFactory
+                            .buildDealInitDto(dealEntity))
                     .build());
 
         postNotificationSender.sendPostEventNotification(
@@ -91,7 +90,7 @@ public class DealServiceImpl implements DealService {
                         .postId(postEntity.getPostId())
                         .postUpdateType(PostUpdateType.DEAL_INIT)
                         .dto(dealFactory
-                                .buildDealInitDto(dealEntity))
+                                .buildDealDto(dealEntity))
                         .build());
     }
 
@@ -110,8 +109,9 @@ public class DealServiceImpl implements DealService {
         postNotificationSender.sendPostEventNotification(
                 PostUpdateDto.builder()
                         .postId(postEntity.getPostId())
-                        .postUpdateType(PostUpdateType.DEAL_INIT)
-                        .dto(dealEntity)
+                        .postUpdateType(PostUpdateType.DEAL_CANCELLED)
+                        .dto(dealFactory
+                                .buildDealDto(dealEntity))
                         .build());
     }
 

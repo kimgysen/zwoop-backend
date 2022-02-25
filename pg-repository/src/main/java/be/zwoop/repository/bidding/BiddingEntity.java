@@ -4,6 +4,7 @@ import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.UUID;
 
 @Table(name = "\"Bidding\"")
@@ -31,6 +32,7 @@ public class BiddingEntity extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private PostEntity post;
 
     @NotNull

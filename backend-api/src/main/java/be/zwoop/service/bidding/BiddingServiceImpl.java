@@ -1,7 +1,7 @@
 package be.zwoop.service.bidding;
 
-import be.zwoop.amqp.domain.post.PostUpdateDto;
-import be.zwoop.amqp.domain.post.PostUpdateType;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateType;
 import be.zwoop.amqp.post.PostNotificationSender;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;

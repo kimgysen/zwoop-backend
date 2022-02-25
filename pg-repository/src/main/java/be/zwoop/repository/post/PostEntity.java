@@ -16,6 +16,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,7 @@ import java.util.UUID;
 @SuperBuilder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PostEntity extends BaseEntity {
+public class PostEntity extends BaseEntity  {
 
     @Id
     @GeneratedValue

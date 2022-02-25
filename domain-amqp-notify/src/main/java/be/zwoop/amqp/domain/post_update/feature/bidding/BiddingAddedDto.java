@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.common.feature.deal;
+package be.zwoop.amqp.domain.post_update.feature.bidding;
 
 import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
@@ -10,12 +10,9 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class DealInitDto implements Serializable {
-    UUID dealId;
-    UUID postId;
-    String postTitle;
-    UserDto op;
+public class BiddingAddedDto implements Serializable {
+    UUID biddingId;
     UserDto consultant;
-    BigDecimal dealPrice;
+    BigDecimal askPrice;
     String currencyCode;
 }

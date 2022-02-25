@@ -1,6 +1,6 @@
 package be.zwoop.web.deal;
 
-import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.user.UserEntity;
@@ -45,7 +45,7 @@ public class DealControllerPrivateV1 {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createDeal(@Valid CreateDealDto createDealDto) {
+    public ResponseEntity<Void> createDeal(@Valid @RequestBody CreateDealDto createDealDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         UserEntity principal = validator.validateAndGetUser(principalId);
 

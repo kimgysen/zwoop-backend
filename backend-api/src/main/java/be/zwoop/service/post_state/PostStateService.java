@@ -11,12 +11,11 @@ public interface PostStateService {
 
     Optional<PostStateEntity> findByPost(PostEntity postEntity);
 
-    void setInitDealState(PostEntity post, DealEntity dealEntity);
-    void setAnsweredState(PostEntity post, AnswerEntity answer);
-    void setAnswerAcceptedState(PostEntity post);
-    void setPaidState(PostEntity post);
+    void setInitDealState(PostEntity postEntity, DealEntity dealEntity);
+    void setAnsweredState(PostEntity postEntity, AnswerEntity answerEntity);
+    void setAnswerAcceptedState(PostEntity postEntity);
+    void setPaidState(PostEntity postEntity);
 
-    void unsetInitPostState(PostEntity post);
-    void unsetInitDealState(PostEntity post);
+    void unsetInitDealState(PostEntity postEntity);
     void unsetAnsweredState(PostEntity postEntity);
 }

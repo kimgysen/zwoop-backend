@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static be.zwoop.domain.enum_type.PostStatusEnum.DEAL_INIT;
+import static be.zwoop.domain.enum_type.PostStatusEnum.POST_INIT;
 
 
 @Service
@@ -55,12 +56,14 @@ public class PostStateServiceImpl implements PostStateService {
     }
 
     @Override
-    public void unsetInitPostState(PostEntity post) {
+    public void unsetInitDealState(PostEntity postEntity) {
+        PostStatusEntity postInit = postStatusRepository.findByPostStatusId(POST_INIT.getValue());
+        PostStateEntity postState = postEntity.getPostState();
 
-    }
+        postState.setPostStatus(postInit);
+        postState.setDeal(null);
 
-    @Override
-    public void unsetInitDealState(PostEntity post) {
+        postStateRepository.saveAndFlush(postState);
 
     }
 

@@ -1,11 +1,12 @@
 package be.zwoop.amqp.post;
 
 
-import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
-import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
-import be.zwoop.amqp.domain.post.PostUpdateDto;
-import be.zwoop.amqp.domain.post.feature.bidding.*;
-import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
+import be.zwoop.amqp.domain.model.DealDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
+import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.feature.bidding.*;
+import be.zwoop.amqp.domain.post_update.feature.post.PostChangedDto;
 import be.zwoop.features.post.TopicPostService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -32,8 +33,8 @@ public class RabbitPostUpdateListener {
             case BIDDING_ADDED -> topicPostService.sendBiddingAdded(postId, (BiddingAddedDto) receivedDto.getDto());
             case BIDDING_REMOVED -> topicPostService.sendBiddingRemoved(postId, (BiddingRemovedDto) receivedDto.getDto());
             case BIDDING_CHANGED -> topicPostService.sendBiddingChanged(postId, (BiddingChangedDto) receivedDto.getDto());
-            case DEAL_INIT -> topicPostService.sendDealInit(postId, (DealInitDto) receivedDto.getDto());
-            case DEAL_CANCELLED -> topicPostService.sendDealCancelled(postId, (DealCancelledDto) receivedDto.getDto());
+            case DEAL_INIT -> topicPostService.sendDealInit(postId, (DealDto) receivedDto.getDto());
+            case DEAL_CANCELLED -> topicPostService.sendDealCancelled(postId, (DealDto) receivedDto.getDto());
 
         }
     }

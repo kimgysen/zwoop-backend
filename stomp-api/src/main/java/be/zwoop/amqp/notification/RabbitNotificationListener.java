@@ -2,8 +2,8 @@ package be.zwoop.amqp.notification;
 
 
 import be.zwoop.amqp.domain.notification.NotificationDto;
-import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
-import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
+import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
 import be.zwoop.features.notification.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

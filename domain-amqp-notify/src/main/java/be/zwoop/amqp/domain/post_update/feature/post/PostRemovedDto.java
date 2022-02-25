@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.post.feature.post;
+package be.zwoop.amqp.domain.post_update.feature.post;
 
 import lombok.Builder;
 import lombok.Data;
