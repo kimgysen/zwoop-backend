@@ -1,4 +1,4 @@
-package be.zwoop.repository.post;
+package be.zwoop.repository.post_status;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,9 @@ public class PostStatusEntity {
     @Column(name = "post_status_id")
     private int postStatusId;
 
-    @Column(name = "post_status")
-    private String PostStatus;
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "description")
+    private String description;
 }

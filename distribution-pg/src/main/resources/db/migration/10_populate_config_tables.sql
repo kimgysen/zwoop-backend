@@ -17,20 +17,9 @@ INSERT INTO "AuthProvider" (auth_provider_id, auth_provider) VALUES (5, 'FACEBOO
 INSERT INTO "Currency" (currency_id, currency_code) VALUES(1, 'BNB');
 
 -- PostStatus
-INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(1, 'OPEN');
-INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(2, 'IN_PROGRESS');
-INSERT INTO "PostStatus" (post_status_id, post_status) VALUES(3, 'CLOSED');
-
--- BiddingStatus
-INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(1, 'PENDING');
-INSERT INTO "BiddingStatus" (bidding_status_id, bidding_status) VALUES(2, 'ACCEPTED');
-
--- DealStatus
-INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(1, 'OPEN');
-INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(2, 'CANCELLED');
-INSERT INTO "DealStatus" (deal_status_id, deal_status) VALUES(3, 'PAID');
-
--- AnswerStatus
-INSERT INTO "AnswerStatus" (answer_status_id, answer_status) VALUES(1, 'PENDING');
-INSERT INTO "AnswerStatus" (answer_status_id, answer_status) VALUES(2, 'ACCEPTED');
-
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(1, 'POST_INIT', 'Post uploaded');
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(2, 'DEAL_INIT', 'Bidding accepted and deal initialized');
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(3, 'ANSWERED', 'Post answered');
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(4, 'ANSWER_ACCEPTED', 'Answer accepted');
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(5, 'PAID', 'Answer paid');
+INSERT INTO "PostStatus" (post_status_id, status, description) VALUES(6, 'REVIEWED', 'Post review written by OP');

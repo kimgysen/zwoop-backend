@@ -35,13 +35,8 @@ public class BiddingEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "respondent_id")
-    private UserEntity respondent;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bidding_status_id")
-    private BiddingStatusEntity biddingStatus;
+    @JoinColumn(name = "consultant_id")
+    private UserEntity consultant;
 
     @Column(name = "ask_price", scale = 3)
     private BigDecimal askPrice;

@@ -1,5 +1,7 @@
 package be.zwoop.features.post;
 
+import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
+import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
 import be.zwoop.amqp.domain.post.feature.bidding.*;
 import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
 
@@ -12,7 +14,7 @@ public interface TopicPostService {
     void sendBiddingAdded(UUID postId, BiddingAddedDto biddingAddedDto);
     void sendBiddingChanged(UUID postId, BiddingChangedDto biddingChangedDto);
     void sendBiddingRemoved(UUID postId, BiddingRemovedDto biddingRemovedDto);
-    void sendBiddingAccepted(UUID postId, BiddingAcceptedDto biddingAcceptedDto);
-    void sendBiddingRemoveAccepted(UUID postId, BiddingRemoveAcceptedDto biddingRemoveAcceptedDto);
+    void sendDealInit(UUID postId, DealInitDto dealInitDto);
+    void sendDealCancelled(UUID postId, DealCancelledDto dealCancelledDto);
 
 }

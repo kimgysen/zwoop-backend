@@ -1,6 +1,7 @@
 package be.zwoop.amqp.domain.post.feature.post;
 
-import be.zwoop.amqp.domain.common.TagDto;
+import be.zwoop.amqp.domain.model.TagDto;
+import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Builder
 @Data
 public class PostChangedDto implements Serializable {
-    String nickName;
+    UserDto op;
     String postTitle;
     String postText;
     BigDecimal bidPrice;

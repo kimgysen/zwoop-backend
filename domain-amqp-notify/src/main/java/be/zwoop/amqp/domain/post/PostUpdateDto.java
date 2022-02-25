@@ -8,8 +8,8 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class PostUpdateFeatureDto<T> implements Serializable {
+public class PostUpdateDto<T> implements Serializable {
     PostUpdateType postUpdateType;
     UUID postId;
-    T postUpdateDto;
+    T dto;
 }

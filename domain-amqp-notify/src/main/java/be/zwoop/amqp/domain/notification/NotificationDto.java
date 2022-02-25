@@ -1,5 +1,6 @@
 package be.zwoop.amqp.domain.notification;
 
+import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
 import lombok.Data;
 

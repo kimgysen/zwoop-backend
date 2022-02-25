@@ -1,11 +1,10 @@
-package be.zwoop.web.bidding;
+package be.zwoop.web.deal;
+
 
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
-import be.zwoop.repository.currency.CurrencyEntity;
-import be.zwoop.repository.currency.CurrencyRepository;
-import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post.PostRepository;
+import be.zwoop.repository.deal.DealEntity;
+import be.zwoop.repository.deal.DealRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
@@ -19,13 +18,12 @@ import static org.springframework.http.HttpStatus.*;
 
 @Component
 @AllArgsConstructor
-public class BiddingControllerValidator {
+
+public class DealControllerValidator {
 
     private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final DealRepository dealRepository;
     private final BiddingRepository biddingRepository;
-    private final CurrencyRepository currencyRepository;
-
 
     UserEntity validateAndGetUser(UUID userId) {
         Optional<UserEntity> userOpt = userRepository.findById(userId);
@@ -35,30 +33,20 @@ public class BiddingControllerValidator {
         return userOpt.get();
     }
 
-
-    PostEntity validateAndGetPost(UUID postId) {
-        Optional<PostEntity> postOpt = postRepository.findById(postId);
-        if (postOpt.isEmpty()) {
-            throw new ResponseStatusException(BAD_REQUEST, "Save bidding: Post id " + postId + " was not found.");
-        }
-        return postOpt.get();
-    }
-
     BiddingEntity validateAndGetBiddingEntity(UUID biddingId) {
         Optional<BiddingEntity> biddingEntityOpt = biddingRepository.findById(biddingId);
         if (biddingEntityOpt.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND);
+            throw new ResponseStatusException(BAD_REQUEST);
         }
         return biddingEntityOpt.get();
     }
 
-    CurrencyEntity validateAndGetCurrency(String currencyCode) {
-        Optional<CurrencyEntity> currencyOpt = currencyRepository.findByCurrencyCode(currencyCode);
-        if (currencyOpt.isEmpty()) {
-            throw new ResponseStatusException(CONFLICT, "Save bidding: Currency code " + currencyCode + " was not found.");
+    DealEntity validateAndGetDealEntity(UUID dealId) {
+        Optional<DealEntity> dealEntityOpt = dealRepository.findById(dealId);
+        if (dealEntityOpt.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND);
         }
-
-        return currencyOpt.get();
+        return dealEntityOpt.get();
     }
 
 }

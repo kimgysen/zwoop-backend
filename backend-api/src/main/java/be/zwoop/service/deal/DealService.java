@@ -9,10 +9,11 @@ import java.util.UUID;
 
 public interface DealService {
     List<DealEntity> findOpenDealsForUser(UUID userId);
-    void saveDeal(PostEntity postEntity, BiddingEntity biddingEntity);
-    void removeDealByPost(PostEntity postEntity);
+    DealEntity saveDeal(BiddingEntity biddingEntity);
+    void removeDeal(DealEntity deal);
+    //void removeDeal(UUID dealId);
 
-    void sendDealOpenedNotification(PostEntity postEntity, BiddingEntity biddingEntity);
-    void sendDealRemovedNotification(PostEntity postEntity, BiddingEntity biddingEntity);
+    void sendDealInitNotification(DealEntity dealEntity);
+    void sendDealRemovedNotification(DealEntity dealEntity);
 
 }

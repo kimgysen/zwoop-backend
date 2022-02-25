@@ -1,10 +1,10 @@
 package be.zwoop.repository.post;
 
 import be.zwoop.repository.BaseEntity;
-import be.zwoop.repository.answer.AnswerEntity;
-import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.deal.DealEntity;
+import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststate.PostStateEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import lombok.Data;
@@ -36,8 +36,8 @@ public class PostEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "asker_id")
-    private UserEntity asker;
+    @JoinColumn(name = "original_poster_id")
+    private UserEntity op;
 
     @NotNull
     @Column(name = "post_title")
@@ -54,10 +54,6 @@ public class PostEntity extends BaseEntity {
     @JoinColumn(name = "currency_id")
     private CurrencyEntity currency;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_status_id")
-    private PostStatusEntity postStatus;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(
@@ -68,6 +64,6 @@ public class PostEntity extends BaseEntity {
     private List<TagEntity> tags;
 
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-    private DealEntity deal;
+    private PostStateEntity postState;
 
 }

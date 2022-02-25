@@ -1,4 +1,4 @@
-package be.zwoop.amqp.domain.common;
+package be.zwoop.amqp.domain.model;
 
 import lombok.Builder;
 import lombok.Data;

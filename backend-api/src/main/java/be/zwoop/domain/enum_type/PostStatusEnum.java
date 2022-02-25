@@ -6,9 +6,11 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum PostStatusEnum {
-    OPEN(1),
-    IN_PROGRESS(2),
-    CLOSED(3);
+    POST_INIT(1),
+    DEAL_INIT(2),
+    ANSWERED(3),
+    ANSWER_ACCEPTED(4),
+    PAID(5);
 
     @Getter
     private final int value;

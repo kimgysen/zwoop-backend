@@ -1,4 +1,5 @@
-package be.zwoop.amqp.domain.post.feature.bidding;
+package be.zwoop.amqp.domain.model;
+
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +9,8 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class BiddingAcceptedDto implements Serializable {
-    UUID biddingId;
+public class UserDto implements Serializable {
     UUID userId;
     String nickName;
+    String avatar;
 }

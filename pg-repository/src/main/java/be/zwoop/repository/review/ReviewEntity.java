@@ -20,18 +20,18 @@ import java.util.UUID;
 public class ReviewEntity extends BaseEntity {
 
     @Id
-    @Column
+    @Column(name = "review_id")
     private UUID reviewId;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "reviewer_id")
-    private UserEntity reviewer;
+    @JoinColumn(name = "op_id")
+    private UserEntity op;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "reviewee_id")
-    private UserEntity reviewee;
+    @JoinColumn(name = "consultant_id")
+    private UserEntity consultant;
 
     @NotNull
     @Column(name = "review_text")

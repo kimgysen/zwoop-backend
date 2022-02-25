@@ -3,6 +3,7 @@ package be.zwoop.repository.answer;
 import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -30,19 +31,11 @@ public class AnswerEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "respondent_id")
-    private UserEntity respondent;
+    @JoinColumn(name = "consultant_id")
+    private UserEntity consultant;
 
     @NotNull
     @Column(name = "answer_text")
     private String answerText;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "answer_status_id")
-    private AnswerStatusEntity answerStatus;
-
-    @Column(name = "closing_price")
-    private double closingPrice;
 
 }

@@ -1,10 +1,12 @@
 package be.zwoop.amqp.post.mapper;
 
-import be.zwoop.amqp.domain.common.TagDto;
-import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
+import be.zwoop.amqp.domain.model.TagDto;
+import be.zwoop.amqp.domain.model.UserDto;
+import be.zwoop.amqp.domain.post.PostUpdateDto;
 import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.tag.TagEntity;
+import be.zwoop.repository.user.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,18 +28,23 @@ public class PostUpdateDtoMapper {
                 .collect(toList());
     }
 
-    public PostUpdateFeatureDto<PostChangedDto> mapEntityToTopicDto(UUID postId, PostEntity postEntity) {
+    public PostUpdateDto<PostChangedDto> mapEntityToTopicDto(UUID postId, PostEntity postEntity) {
+        UserEntity opEntity = postEntity.getOp();
         PostChangedDto postChangedDto = PostChangedDto.builder()
-                .nickName(postEntity.getAsker().getNickName())
+                .op(UserDto.builder()
+                        .userId(opEntity.getUserId())
+                        .nickName(opEntity.getNickName())
+                        .avatar(opEntity.getProfilePic())
+                        .build())
                 .postTitle(postEntity.getPostTitle())
                 .postText(postEntity.getPostText())
                 .bidPrice(postEntity.getBidPrice())
                 .tags(mapTagEntityListToDtoList(postEntity.getTags()))
                 .build();
-        return PostUpdateFeatureDto.<PostChangedDto>builder()
+        return PostUpdateDto.<PostChangedDto>builder()
                 .postId(postId)
                 .postUpdateType(POST_CHANGED)
-                .postUpdateDto(postChangedDto)
+                .dto(postChangedDto)
                 .build();
     }
 

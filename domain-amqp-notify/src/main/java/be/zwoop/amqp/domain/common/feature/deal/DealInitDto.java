@@ -1,5 +1,6 @@
-package be.zwoop.amqp.domain.notification.feature.deal;
+package be.zwoop.amqp.domain.common.feature.deal;
 
+import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,13 +10,12 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class DealOpenedDto implements Serializable {
+public class DealInitDto implements Serializable {
+    UUID dealId;
     UUID postId;
     String postTitle;
-    UUID askerId;
-    String askerNickName;
-    UUID respondentId;
-    String respondentNickName;
+    UserDto op;
+    UserDto consultant;
     BigDecimal dealPrice;
     String currencyCode;
 }

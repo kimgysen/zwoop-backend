@@ -1,13 +1,13 @@
 package be.zwoop.features.post;
 
+import be.zwoop.amqp.domain.common.feature.deal.DealCancelledDto;
+import be.zwoop.amqp.domain.common.feature.deal.DealInitDto;
 import be.zwoop.amqp.domain.post.feature.bidding.*;
-import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
-import be.zwoop.amqp.domain.notification.feature.deal.DealOpenedDto;
 import be.zwoop.amqp.domain.post.feature.post.PostChangedDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import be.zwoop.amqp.domain.post.PostUpdateFeatureDto;
+import be.zwoop.amqp.domain.post.PostUpdateDto;
 
 import java.util.UUID;
 
@@ -24,10 +24,10 @@ public class TopicPostServiceImpl implements TopicPostService {
     public void sendPostChanged(UUID postId, PostChangedDto postChangedDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
+                PostUpdateDto.builder()
                         .postId(postId)
                         .postUpdateType(POST_CHANGED)
-                        .postUpdateDto(postChangedDto)
+                        .dto(postChangedDto)
                         .build());
     }
 
@@ -35,9 +35,10 @@ public class TopicPostServiceImpl implements TopicPostService {
     public void sendBiddingAdded(UUID postId, BiddingAddedDto biddingAddedDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
+                PostUpdateDto.builder()
+                        .postId(postId)
                         .postUpdateType(BIDDING_ADDED)
-                        .postUpdateDto(biddingAddedDto)
+                        .dto(biddingAddedDto)
                         .build());
     }
 
@@ -45,9 +46,10 @@ public class TopicPostServiceImpl implements TopicPostService {
     public void sendBiddingChanged(UUID postId, BiddingChangedDto biddingChangedDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
+                PostUpdateDto.builder()
                         .postUpdateType(BIDDING_CHANGED)
-                        .postUpdateDto(biddingChangedDto)
+                        .postId(postId)
+                        .dto(biddingChangedDto)
                         .build());
     }
 
@@ -55,31 +57,34 @@ public class TopicPostServiceImpl implements TopicPostService {
     public void sendBiddingRemoved(UUID postId, BiddingRemovedDto biddingRemovedDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
+                PostUpdateDto.builder()
+                        .postId(postId)
                         .postUpdateType(BIDDING_REMOVED)
-                        .postUpdateDto(biddingRemovedDto)
+                        .dto(biddingRemovedDto)
+                        .build());
+    }
+
+
+    @Override
+    public void sendDealInit(UUID postId, DealInitDto dealInitDto) {
+        wsTemplate.convertAndSend(
+                postUpdatesDestination(postId.toString()),
+                PostUpdateDto.builder()
+                        .postUpdateType(DEAL_INIT)
+                        .dto(dealInitDto)
                         .build());
     }
 
     @Override
-    public void sendBiddingAccepted(UUID postId, BiddingAcceptedDto biddingAcceptedDto) {
+    public void sendDealCancelled(UUID postId, DealCancelledDto dealCancelledDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
-                        .postUpdateType(BIDDING_ACCEPTED)
-                        .postUpdateDto(biddingAcceptedDto)
+                PostUpdateDto.builder()
+                        .postUpdateType(DEAL_CANCELLED)
+                        .dto(dealCancelledDto)
                         .build());
     }
 
-    @Override
-    public void sendBiddingRemoveAccepted(UUID postId, BiddingRemoveAcceptedDto biddingRemoveAcceptedDto) {
-        wsTemplate.convertAndSend(
-                postUpdatesDestination(postId.toString()),
-                PostUpdateFeatureDto.builder()
-                        .postUpdateType(BIDDING_REMOVE_ACCEPTED)
-                        .postUpdateDto(biddingRemoveAcceptedDto)
-                        .build());
-    }
 
     private String postUpdatesDestination(String postId) {
         return "/topic/" + postId + ".post.updates";

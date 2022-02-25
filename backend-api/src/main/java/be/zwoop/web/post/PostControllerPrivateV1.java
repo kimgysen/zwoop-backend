@@ -16,9 +16,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static be.zwoop.domain.enum_type.PostStatusEnum.POST_INIT;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
@@ -35,13 +37,13 @@ public class PostControllerPrivateV1 {
     @PostMapping
     public ResponseEntity<Void> createPost(@Valid @RequestBody PostDto postDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        Optional<UserEntity> askerEntityOpt = postService.findAskerByUserId(principalId);
-        if (askerEntityOpt.isEmpty())
-            throw new ResponseStatusException(BAD_REQUEST, "Asker doesn\'t exist for UUID: " + principalId.toString());
+        Optional<UserEntity> opEntityOpt = postService.findByUserId(principalId);
+        if (opEntityOpt.isEmpty())
+            throw new ResponseStatusException(BAD_REQUEST, "Op doesn\'t exist for UUID: " + principalId.toString());
 
-        UserEntity askerEntity = askerEntityOpt.get();
+        UserEntity askerEntity = opEntityOpt.get();
 
-        Optional<PostEntity> postEntityOpt = postService.findByTitleAndAsker(postDto.getTitle(), askerEntity);
+        Optional<PostEntity> postEntityOpt = postService.findByTitleAndOp(postDto.getTitle(), askerEntity);
         if (postEntityOpt.isPresent()) {
             throw new ResponseStatusException(CONFLICT, "Post already exists with id: " + postEntityOpt.get().getPostId());
         }
@@ -59,9 +61,9 @@ public class PostControllerPrivateV1 {
     public ResponseEntity<Void> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable UUID postId) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
 
-        Optional<UserEntity> principalEntityOpt = postService.findAskerByUserId(principalId);
+        Optional<UserEntity> principalEntityOpt = postService.findByUserId(principalId);
         if (principalEntityOpt.isEmpty())
-            throw new ResponseStatusException(BAD_REQUEST, "Asker doesn\'t exist for UUID: " + principalId.toString());
+            throw new ResponseStatusException(BAD_REQUEST, "Op doesn\'t exist for UUID: " + principalId.toString());
         UserEntity principalEntity = principalEntityOpt.get();
 
         Optional<PostEntity> postEntityOpt = postService.findByPostId(postId);
@@ -69,12 +71,12 @@ public class PostControllerPrivateV1 {
             throw new ResponseStatusException(NOT_FOUND);
 
         PostEntity toUpdate = postEntityOpt.get();
-        if (!toUpdate.getAsker().getUserId().equals(principalEntity.getUserId())) {
+        if (!toUpdate.getOp().getUserId().equals(principalEntity.getUserId())) {
             throw new ResponseStatusException(UNAUTHORIZED);
         }
 
-        if (!toUpdate.getPostStatus().getPostStatus().equals(PostStatusEnum.OPEN.name())) {
-            throw new ResponseStatusException(CONFLICT, "Cannot update a post that is doesn\'t have OPEN status.");
+        if (!Objects.equals(toUpdate.getPostState().getPostStatus().getStatus(), POST_INIT.name())) {
+            throw new ResponseStatusException(CONFLICT, "Cannot update a post that is doesn\'t have INIT status.");
         }
 
         if (postService.hasPostChanged(toUpdate, postDto)) {
