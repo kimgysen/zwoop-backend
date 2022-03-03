@@ -1,6 +1,5 @@
-package be.zwoop.service.post;
+package be.zwoop.service.post.db;
 
-import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.tag.TagEntity;
@@ -12,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PostService {
+public interface PostDbService {
     Optional<UserEntity> findByUserId(UUID principalId);
     Optional<PostEntity> findByTitleAndOp(String title, UserEntity opEntity);
     Optional<PostEntity> findByPostId(UUID postId);
@@ -24,5 +23,4 @@ public interface PostService {
     void updatePost(PostEntity toUpdate, PostDto postDto);
     boolean hasPostChanged(PostEntity postEntity, PostDto postDto);
 
-    void sendPostChangedNotification(PostEntity postEntity);
 }

@@ -26,18 +26,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @AllArgsConstructor
 @Component
 public class PostFactory {
-
-    private final PostStatusRepository postStatusRepository;
     private final CurrencyRepository currencyRepository;
     private final TagRepository tagRepository;
-
-    public PostStateEntity buildInitPostState(PostEntity postEntity) {
-        PostStatusEntity postStatus = postStatusRepository.findByPostStatusId(POST_INIT.getValue());
-        return PostStateEntity.builder()
-                .post(postEntity)
-                .postStatus(postStatus)
-                .build();
-    }
 
     public PostEntity buildPostFromDto(PostDto postDto, UserEntity opEntity) {
         Optional<CurrencyEntity> currencyEntityOpt = currencyRepository.findByCurrencyCode(postDto.getCurrencyCode());

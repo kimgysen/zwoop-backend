@@ -9,6 +9,6 @@ public enum PostUpdateType {
     DEAL_INIT,
     DEAL_CANCELLED,
     ANSWER_ADDED,
-    ANSWER_REMOVED,
-    ANSWER_CHANGED
+    ANSWER_CHANGED,
+    ANSWER_REMOVED
 }

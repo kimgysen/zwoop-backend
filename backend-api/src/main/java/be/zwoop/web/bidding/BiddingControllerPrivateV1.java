@@ -7,8 +7,8 @@ import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.poststate.PostStateEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
-import be.zwoop.service.bidding.BiddingService;
-import be.zwoop.service.deal.DealService;
+import be.zwoop.service.bidding.db.BiddingDbService;
+import be.zwoop.service.bidding.notification.BiddingNotificationService;
 import be.zwoop.web.bidding.dto.CreateBiddingDto;
 import be.zwoop.web.bidding.dto.UpdateBiddingDto;
 import lombok.AllArgsConstructor;
@@ -36,13 +36,14 @@ public class BiddingControllerPrivateV1 {
 
     private final AuthenticationFacade authenticationFacade;
     private final BiddingControllerValidator validator;
-    private final BiddingService biddingService;
-    private final DealService dealService;
+    private final BiddingNotificationService biddingNotificationService;
+    private final BiddingDbService biddingDbService;
+
 
     @PostMapping
     public ResponseEntity<Void> createBidding(@Valid @RequestBody CreateBiddingDto createBiddingDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        UserEntity principal = validator.validateAndGetUser(principalId);
+        UserEntity principal = validator.validateAndGetPrincipal(principalId);
 
         PostEntity postEntity = validator.validateAndGetPost(createBiddingDto.getPostId());
         CurrencyEntity currencyEntity = validator.validateAndGetCurrency(createBiddingDto.getCurrencyCode());
@@ -50,10 +51,10 @@ public class BiddingControllerPrivateV1 {
 
         if (!Objects.equals(
                 postStateEntity.getPostStatus().getStatus(), PostStatusEnum.POST_INIT.name())) {
-            throw new ResponseStatusException(BAD_REQUEST, "Create bidding: post is not in POST_INIT state");
+            throw new ResponseStatusException(CONFLICT, "Create bidding: post is not in POST_INIT state");
         }
 
-        Optional<BiddingEntity> biddingEntityOpt = biddingService.findByPostAndConsultant(postEntity, principal);
+        Optional<BiddingEntity> biddingEntityOpt = biddingDbService.findByPostAndConsultant(postEntity, principal);
 
         if (biddingEntityOpt.isPresent()) {
             throw new ResponseStatusException(CONFLICT, "Create bidding: bidding for consultant '" + principal.getUserId() + "' already exists.");
@@ -65,15 +66,14 @@ public class BiddingControllerPrivateV1 {
                 .askPrice(createBiddingDto.getAskPrice())
                 .currency(currencyEntity)
                 .build();
-        BiddingEntity savedBidding = biddingService.saveBidding(biddingToSave);
-        biddingService.sendBiddingAddedNotification(savedBidding);
+        BiddingEntity savedBidding = biddingDbService.saveBidding(biddingToSave);
+        biddingNotificationService.sendBiddingAddedNotification(savedBidding);
 
         URI uri = UriComponentsBuilder
                 .fromPath(("/bidding/{id}"))
                 .buildAndExpand(savedBidding.getBiddingId()).toUri();
 
         return created(uri).build();
-
     }
 
     @PutMapping("/{biddingId}")
@@ -81,17 +81,25 @@ public class BiddingControllerPrivateV1 {
             @PathVariable UUID biddingId,
             @Valid @RequestBody UpdateBiddingDto updateBiddingDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        UserEntity principal = validator.validateAndGetUser(principalId);
+        UserEntity principal = validator.validateAndGetPrincipal(principalId);
 
         BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
+        PostEntity postEntity = biddingEntity.getPost();
+        PostStateEntity postStateEntity = postEntity.getPostState();
+
+        if (!Objects.equals(
+                postStateEntity.getPostStatus().getStatus(), PostStatusEnum.POST_INIT.name())) {
+            throw new ResponseStatusException(BAD_REQUEST, "Update bidding: post is not in POST_INIT state");
+        }
+
         if (!biddingEntity.getConsultant().equals(principal)) {
             throw new ResponseStatusException(UNAUTHORIZED);
         }
 
         if (!Objects.equals(biddingEntity.getAskPrice(), updateBiddingDto.getAskPrice())) {
             biddingEntity.setAskPrice(updateBiddingDto.getAskPrice());
-            biddingService.saveBidding(biddingEntity);
-            biddingService.sendBiddingChangedNotification(biddingEntity);
+            biddingDbService.saveBidding(biddingEntity);
+            biddingNotificationService.sendBiddingChangedNotification(biddingEntity);
         }
 
         return noContent().build();
@@ -100,15 +108,23 @@ public class BiddingControllerPrivateV1 {
     @DeleteMapping("/{biddingId}")
     public ResponseEntity<Void> deleteBidding(@PathVariable UUID biddingId) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        UserEntity principal = validator.validateAndGetUser(principalId);
+        UserEntity principal = validator.validateAndGetPrincipal(principalId);
 
         BiddingEntity biddingEntity = validator.validateAndGetBiddingEntity(biddingId);
+        PostEntity postEntity = biddingEntity.getPost();
+        PostStateEntity postStateEntity = postEntity.getPostState();
+
         if (!Objects.equals(biddingEntity.getConsultant(), principal)) {
             throw new ResponseStatusException(UNAUTHORIZED);
         }
 
-        biddingService.removeBidding(biddingEntity);
-        biddingService.sendBiddingRemovedNotification(biddingEntity);
+        if (!Objects.equals(
+                postStateEntity.getPostStatus().getStatus(), PostStatusEnum.POST_INIT.name())) {
+            throw new ResponseStatusException(BAD_REQUEST, "Update bidding: post is not in POST_INIT state");
+        }
+
+        biddingDbService.removeBidding(biddingEntity);
+        biddingNotificationService.sendBiddingRemovedNotification(biddingEntity);
 
         return noContent().build();
     }

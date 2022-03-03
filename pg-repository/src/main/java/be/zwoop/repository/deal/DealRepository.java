@@ -22,13 +22,18 @@ public interface DealRepository extends JpaRepository<DealEntity, UUID> {
         on ps.deal = d
         join BiddingEntity b
         on d.bidding = b
-        where ps.postStatus = :postStatus
+        join PostStatusEntity pst
+        on ps.postStatus = pst
+        where (
+            pst.status = 'DEAL_INIT'
+            or pst.status = 'ANSWERED'
+        )
         and (
             p.op = :user
             or b.consultant = :user
         )
         order by d.createdAt asc
     """)
-    List<DealEntity> findOpenDealsForUser(PostStatusEntity postStatus, UserEntity user);
+    List<DealEntity> findOpenDealsForUser(UserEntity user);
 
 }

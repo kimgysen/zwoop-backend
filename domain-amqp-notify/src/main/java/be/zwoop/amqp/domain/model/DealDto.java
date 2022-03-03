@@ -10,8 +10,6 @@ import java.util.UUID;
 @Builder
 @Data
 public class DealDto implements Serializable {
-
     private UUID dealId;
     private BiddingDto bidding;
-
 }

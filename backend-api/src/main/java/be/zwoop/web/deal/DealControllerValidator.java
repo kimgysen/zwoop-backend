@@ -25,8 +25,8 @@ public class DealControllerValidator {
     private final DealRepository dealRepository;
     private final BiddingRepository biddingRepository;
 
-    UserEntity validateAndGetUser(UUID userId) {
-        Optional<UserEntity> userOpt = userRepository.findById(userId);
+    UserEntity validateAndGetPrincipal(UUID principalId) {
+        Optional<UserEntity> userOpt = userRepository.findById(principalId);
         if (userOpt.isEmpty()) {
             throw new ResponseStatusException(UNAUTHORIZED);
         }

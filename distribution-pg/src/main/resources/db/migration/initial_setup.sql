@@ -148,21 +148,12 @@ CREATE TABLE IF NOT EXISTS "Deal"(
     FOREIGN KEY (bidding_id) REFERENCES "Bidding"(bidding_id)
 );
 
--- Create AnswerStatus table
-CREATE TABLE IF NOT EXISTS "AnswerStatus"(
-    answer_status_id INT NOT NULL,
-    answer_status TEXT NOT NULL,
-
-    PRIMARY KEY (answer_status_id)
-);
-
 -- Create Answer table
 CREATE TABLE IF NOT EXISTS "Answer" (
     answer_id UUID NOT NULL DEFAULT gen_random_uuid(),
     post_id UUID NOT NULL,
     consultant_id UUID NOT NULL,
     answer_text TEXT NOT NULL,
-    answer_status_id INT NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL,
     created_by UUID NOT NULL,
     updated_at TIMESTAMP,
@@ -171,8 +162,7 @@ CREATE TABLE IF NOT EXISTS "Answer" (
     PRIMARY KEY (answer_id),
     UNIQUE (post_id, consultant_id),
     FOREIGN KEY (post_id) REFERENCES "Post"(post_id),
-    FOREIGN KEY (consultant_id) REFERENCES "User"(user_id),
-    FOREIGN KEY (answer_status_id) REFERENCES "AnswerStatus"(answer_status_id)
+    FOREIGN KEY (consultant_id) REFERENCES "User"(user_id)
 );
 
 -- Create Review table

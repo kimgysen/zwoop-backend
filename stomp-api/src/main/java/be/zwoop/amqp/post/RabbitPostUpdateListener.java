@@ -5,6 +5,9 @@ import be.zwoop.amqp.domain.model.DealDto;
 import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
 import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
 import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerAddedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerChangedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerRemovedDto;
 import be.zwoop.amqp.domain.post_update.feature.bidding.*;
 import be.zwoop.amqp.domain.post_update.feature.post.PostChangedDto;
 import be.zwoop.features.post.TopicPostService;
@@ -35,7 +38,9 @@ public class RabbitPostUpdateListener {
             case BIDDING_CHANGED -> topicPostService.sendBiddingChanged(postId, (BiddingChangedDto) receivedDto.getDto());
             case DEAL_INIT -> topicPostService.sendDealInit(postId, (DealDto) receivedDto.getDto());
             case DEAL_CANCELLED -> topicPostService.sendDealCancelled(postId, (DealDto) receivedDto.getDto());
-
+            case ANSWER_ADDED -> topicPostService.sendAnswerAdded(postId, (AnswerAddedDto) receivedDto.getDto());
+            case ANSWER_CHANGED -> topicPostService.sendAnswerChanged(postId, (AnswerChangedDto) receivedDto.getDto());
+            case ANSWER_REMOVED -> topicPostService.sendAnswerRemoved(postId, (AnswerRemovedDto) receivedDto.getDto());
         }
     }
 }

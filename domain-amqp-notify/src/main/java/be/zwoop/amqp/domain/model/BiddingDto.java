@@ -10,7 +10,6 @@ import java.util.UUID;
 @Builder
 @Data
 public class BiddingDto implements Serializable {
-
     private UUID biddingId;
     private UserDto consultant;
     private BigDecimal askPrice;

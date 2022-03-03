@@ -20,13 +20,16 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class AnswerEntity extends BaseEntity {
+
     @Id
+    @GeneratedValue
     @Column(name = "answer_id")
     private UUID answerId;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private PostEntity post;
 
     @NotNull

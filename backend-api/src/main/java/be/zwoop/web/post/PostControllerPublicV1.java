@@ -4,10 +4,9 @@ package be.zwoop.web.post;
 import be.zwoop.domain.enum_type.PostFeedTypeEnum;
 import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post.PostRepository;
 import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.post_status.PostStatusRepository;
-import be.zwoop.service.post.PostService;
+import be.zwoop.service.post.db.PostDbService;
 import be.zwoop.web.exception.RequestParamException;
 import be.zwoop.web.post.dto.ValidFeedParamDto;
 import lombok.AllArgsConstructor;
@@ -32,17 +31,17 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(value = "/api/v1/public/post")
 public class PostControllerPublicV1 {
 
-    private final PostService postService;
+    private final PostDbService postDbService;
     private final PostControllerValidationHelper validator;
     private final PostStatusRepository postStatusRepository;
 
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostEntity> getPost(@PathVariable UUID postId) {
-        Optional<PostEntity> postEntity = postService.findByPostId(postId);
+        Optional<PostEntity> postEntityOpt = postDbService.findByPostId(postId);
 
-        if (postEntity.isPresent()) {
-            return ok(postEntity.get());
+        if (postEntityOpt.isPresent()) {
+            return ok(postEntityOpt.get());
 
         } else {
             throw new ResponseStatusException(NOT_FOUND);
@@ -65,10 +64,10 @@ public class PostControllerPublicV1 {
             switch (feedType) {
                 case FEED_BY_TAG -> {
                     ValidFeedParamDto byTagParams = validator.validateTagName(tagNameOpt);
-                    postFeedPage = postService
+                    postFeedPage = postDbService
                             .getFeedByTag(byTagParams.getTagEntity(), postStatusEntity, pageable);
                 }
-                default -> postFeedPage = postService.getFeed(postStatusEntity, pageable);
+                default -> postFeedPage = postDbService.getFeed(postStatusEntity, pageable);
             }
 
         } catch (RequestParamException e) {

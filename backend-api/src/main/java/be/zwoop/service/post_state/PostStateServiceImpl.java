@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static be.zwoop.domain.enum_type.PostStatusEnum.DEAL_INIT;
-import static be.zwoop.domain.enum_type.PostStatusEnum.POST_INIT;
+import static be.zwoop.domain.enum_type.PostStatusEnum.*;
 
 
 @Service
@@ -23,6 +22,7 @@ import static be.zwoop.domain.enum_type.PostStatusEnum.POST_INIT;
 public class PostStateServiceImpl implements PostStateService {
     private final PostStateRepository postStateRepository;
     private final PostStatusRepository postStatusRepository;
+    private final PostStateFactory postStateFactory;
 
     @Override
     public Optional<PostStateEntity> findByPost(PostEntity postEntity) {
@@ -30,7 +30,13 @@ public class PostStateServiceImpl implements PostStateService {
     }
 
     @Override
-    public void setInitDealState(PostEntity postEntity, DealEntity dealEntity) {
+    public void saveInitPostState(PostEntity postEntity) {
+        PostStateEntity postStateEntity = postStateFactory.buildPostState(postEntity, POST_INIT);
+        postStateRepository.saveAndFlush(postStateEntity);
+    }
+
+    @Override
+    public void saveInitDealState(PostEntity postEntity, DealEntity dealEntity) {
         PostStatusEntity dealInit = postStatusRepository.findByPostStatusId(DEAL_INIT.getValue());
         PostStateEntity postState = postEntity.getPostState();
 
@@ -41,22 +47,28 @@ public class PostStateServiceImpl implements PostStateService {
     }
 
     @Override
-    public void setAnsweredState(PostEntity post, AnswerEntity answer) {
+    public void saveAnsweredState(PostEntity postEntity, AnswerEntity answerEntity) {
+        PostStatusEntity answered = postStatusRepository.findByPostStatusId(ANSWERED.getValue());
+        PostStateEntity postState = postEntity.getPostState();
+
+        postState.setPostStatus(answered);
+        postState.setAnswer(answerEntity);
+
+        postStateRepository.saveAndFlush(postState);
+    }
+
+    @Override
+    public void saveAnswerAcceptedState(PostEntity postEntity) {
 
     }
 
     @Override
-    public void setAnswerAcceptedState(PostEntity post) {
+    public void savePaidState(PostEntity post) {
 
     }
 
     @Override
-    public void setPaidState(PostEntity post) {
-
-    }
-
-    @Override
-    public void unsetInitDealState(PostEntity postEntity) {
+    public void rollbackInitDealState(PostEntity postEntity) {
         PostStatusEntity postInit = postStatusRepository.findByPostStatusId(POST_INIT.getValue());
         PostStateEntity postState = postEntity.getPostState();
 
@@ -68,7 +80,13 @@ public class PostStateServiceImpl implements PostStateService {
     }
 
     @Override
-    public void unsetAnsweredState(PostEntity postEntity) {
+    public void rollbackAnsweredState(PostEntity postEntity) {
+        PostStatusEntity postInit = postStatusRepository.findByPostStatusId(DEAL_INIT.getValue());
+        PostStateEntity postState = postEntity.getPostState();
 
+        postState.setPostStatus(postInit);
+        postState.setAnswer(null);
+
+        postStateRepository.saveAndFlush(postState);
     }
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Builder
 @Data
-public class AnswerAddedDto implements Serializable {
+public class AnswerChangedDto implements Serializable {
     UUID answerId;
     UserDto op;
     UserDto consultant;

@@ -1,13 +1,14 @@
 package be.zwoop.web.bidding;
 
 import be.zwoop.repository.bidding.BiddingEntity;
-import be.zwoop.repository.bidding.BiddingRepository;
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post.PostRepository;
-import be.zwoop.service.bidding.BiddingService;
-import be.zwoop.service.post.PostService;
+import be.zwoop.service.bidding.db.BiddingDbService;
+import be.zwoop.service.post.db.PostDbService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -21,20 +22,20 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequestMapping(value = "/api/v1/public/bidding")
 public class BiddingControllerPublicV1 {
 
-    private final PostService postService;
-    private final BiddingService biddingService;
+    private final PostDbService postDbService;
+    private final BiddingDbService biddingDbService;
 
     @GetMapping
     public List<BiddingEntity> getBiddings (
             @RequestParam UUID postId) {
 
-        Optional<PostEntity> postOpt = postService.findByPostId(postId);
+        Optional<PostEntity> postOpt = postDbService.findByPostId(postId);
 
         if (postOpt.isEmpty()) {
             throw new ResponseStatusException(BAD_REQUEST, "Get biddings: Post id '" + postId + "' was not found.");
         }
 
-        return biddingService.findByPost(postOpt.get());
+        return biddingDbService.findByPost(postOpt.get());
     }
 
 }

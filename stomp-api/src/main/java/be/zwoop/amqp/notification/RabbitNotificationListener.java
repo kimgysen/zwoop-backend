@@ -4,6 +4,9 @@ package be.zwoop.amqp.notification;
 import be.zwoop.amqp.domain.notification.NotificationDto;
 import be.zwoop.amqp.domain.notification.feature.deal.DealCancelledDto;
 import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerAddedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerChangedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerRemovedDto;
 import be.zwoop.features.notification.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -29,6 +32,21 @@ public class RabbitNotificationListener {
                 DealCancelledDto dealCancelledDto = (DealCancelledDto) receivedDto.getDto();
                 notificationService.sendNotification(dealCancelledDto.getOp().getUserId(), receivedDto);
                 notificationService.sendNotification(dealCancelledDto.getConsultant().getUserId(), receivedDto);
+            }
+            case ANSWER_ADDED -> {
+                AnswerAddedDto answerAddedDto = (AnswerAddedDto) receivedDto.getDto();
+                notificationService.sendNotification(answerAddedDto.getOp().getUserId(), receivedDto);
+                notificationService.sendNotification(answerAddedDto.getConsultant().getUserId(), receivedDto);
+            }
+            case ANSWER_CHANGED -> {
+                AnswerChangedDto answerChangedDto = (AnswerChangedDto) receivedDto.getDto();
+                notificationService.sendNotification(answerChangedDto.getOp().getUserId(), receivedDto);
+                notificationService.sendNotification(answerChangedDto.getConsultant().getUserId(), receivedDto);
+            }
+            case ANSWER_REMOVED -> {
+                AnswerRemovedDto answerRemovedDto = (AnswerRemovedDto) receivedDto.getDto();
+                notificationService.sendNotification(answerRemovedDto.getOp().getUserId(), receivedDto);
+                notificationService.sendNotification(answerRemovedDto.getConsultant().getUserId(), receivedDto);
             }
         }
     }

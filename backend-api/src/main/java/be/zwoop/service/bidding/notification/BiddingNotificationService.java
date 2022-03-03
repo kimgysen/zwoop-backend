@@ -1,4 +1,4 @@
-package be.zwoop.service.bidding;
+package be.zwoop.service.bidding.notification;
 
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.post.PostEntity;
@@ -8,13 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BiddingService {
-    Optional<BiddingEntity> findByBiddingId(UUID biddingId);
-    Optional<BiddingEntity> findByPostAndConsultant(PostEntity postEntity, UserEntity consultantEntity);
-    List<BiddingEntity> findByPost(PostEntity postEntity);
-    BiddingEntity saveBidding(BiddingEntity biddingEntity);
-    void removeBidding(BiddingEntity biddingEntity);
-
+public interface BiddingNotificationService {
     void sendBiddingAddedNotification(BiddingEntity biddingEntity);
     void sendBiddingChangedNotification(BiddingEntity biddingEntity);
     void sendBiddingRemovedNotification(BiddingEntity biddingEntity);

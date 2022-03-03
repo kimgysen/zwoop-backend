@@ -1,51 +1,20 @@
-package be.zwoop.service.bidding;
+package be.zwoop.service.bidding.notification;
 
 import be.zwoop.amqp.domain.post_update.PostUpdateDto;
 import be.zwoop.amqp.domain.post_update.PostUpdateType;
 import be.zwoop.amqp.post.PostNotificationSender;
 import be.zwoop.repository.bidding.BiddingEntity;
-import be.zwoop.repository.bidding.BiddingRepository;
-import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.user.UserEntity;
+import be.zwoop.service.bidding.BiddingFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 @AllArgsConstructor
 @Component
-public class BiddingServiceImpl implements BiddingService{
+public class BiddingNotificationServiceImpl implements BiddingNotificationService {
 
     private final BiddingFactory biddingFactory;
-    private final BiddingRepository biddingRepository;
     private final PostNotificationSender postNotificationSender;
 
-    @Override
-    public Optional<BiddingEntity> findByBiddingId(UUID biddingId) {
-        return biddingRepository.findById(biddingId);
-    }
-
-    @Override
-    public List<BiddingEntity> findByPost(PostEntity postEntity) {
-        return biddingRepository.findByPostEquals(postEntity);
-    }
-
-    @Override
-    public Optional<BiddingEntity> findByPostAndConsultant(PostEntity postEntity, UserEntity consultantEntity) {
-        return biddingRepository.findByPostEqualsAndConsultantEquals(postEntity, consultantEntity);
-    }
-
-    @Override
-    public BiddingEntity saveBidding(BiddingEntity biddingEntity) {
-        return biddingRepository.saveAndFlush(biddingEntity);
-    }
-
-    @Override
-    public void removeBidding(BiddingEntity biddingEntity) {
-        biddingRepository.delete(biddingEntity);
-    }
 
     @Override
     public void sendBiddingAddedNotification(BiddingEntity biddingEntity) {

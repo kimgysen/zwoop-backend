@@ -2,6 +2,9 @@ package be.zwoop.features.post;
 
 import be.zwoop.amqp.domain.model.DealDto;
 import be.zwoop.amqp.domain.post_update.PostUpdateDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerAddedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerChangedDto;
+import be.zwoop.amqp.domain.post_update.feature.answer.AnswerRemovedDto;
 import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingAddedDto;
 import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingChangedDto;
 import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingRemovedDto;
@@ -83,6 +86,36 @@ public class TopicPostServiceImpl implements TopicPostService {
                 PostUpdateDto.builder()
                         .postUpdateType(DEAL_CANCELLED)
                         .dto(dealDto)
+                        .build());
+    }
+
+    @Override
+    public void sendAnswerAdded(UUID postId, AnswerAddedDto answerAddedDto) {
+        wsTemplate.convertAndSend(
+                postUpdatesDestination(postId.toString()),
+                PostUpdateDto.builder()
+                        .postUpdateType(ANSWER_ADDED)
+                        .dto(answerAddedDto)
+                        .build());
+    }
+
+    @Override
+    public void sendAnswerChanged(UUID postId, AnswerChangedDto answerChangedDto) {
+        wsTemplate.convertAndSend(
+                postUpdatesDestination(postId.toString()),
+                PostUpdateDto.builder()
+                        .postUpdateType(ANSWER_CHANGED)
+                        .dto(answerChangedDto)
+                        .build());
+    }
+
+    @Override
+    public void sendAnswerRemoved(UUID postId, AnswerRemovedDto answerRemovedDto) {
+        wsTemplate.convertAndSend(
+                postUpdatesDestination(postId.toString()),
+                PostUpdateDto.builder()
+                        .postUpdateType(ANSWER_REMOVED)
+                        .dto(answerRemovedDto)
                         .build());
     }
 

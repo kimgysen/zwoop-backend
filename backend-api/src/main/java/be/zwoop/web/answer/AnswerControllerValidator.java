@@ -1,9 +1,7 @@
-package be.zwoop.web.bidding;
+package be.zwoop.web.answer;
 
-import be.zwoop.repository.bidding.BiddingEntity;
-import be.zwoop.repository.bidding.BiddingRepository;
-import be.zwoop.repository.currency.CurrencyEntity;
-import be.zwoop.repository.currency.CurrencyRepository;
+import be.zwoop.repository.answer.AnswerEntity;
+import be.zwoop.repository.answer.AnswerRepository;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post.PostRepository;
 import be.zwoop.repository.user.UserEntity;
@@ -19,12 +17,11 @@ import static org.springframework.http.HttpStatus.*;
 
 @Component
 @AllArgsConstructor
-public class BiddingControllerValidator {
+public class AnswerControllerValidator {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final BiddingRepository biddingRepository;
-    private final CurrencyRepository currencyRepository;
+    private final AnswerRepository answerRepository;
 
 
     UserEntity validateAndGetPrincipal(UUID principalId) {
@@ -43,21 +40,11 @@ public class BiddingControllerValidator {
         return postOpt.get();
     }
 
-    BiddingEntity validateAndGetBiddingEntity(UUID biddingId) {
-        Optional<BiddingEntity> biddingEntityOpt = biddingRepository.findById(biddingId);
-        if (biddingEntityOpt.isEmpty()) {
+    AnswerEntity validateAndGetAnswerEntity(UUID answerId) {
+        Optional<AnswerEntity> answerEntityOpt = answerRepository.findById(answerId);
+        if (answerEntityOpt.isEmpty()) {
             throw new ResponseStatusException(NOT_FOUND);
         }
-        return biddingEntityOpt.get();
+        return answerEntityOpt.get();
     }
-
-    CurrencyEntity validateAndGetCurrency(String currencyCode) {
-        Optional<CurrencyEntity> currencyOpt = currencyRepository.findByCurrencyCode(currencyCode);
-        if (currencyOpt.isEmpty()) {
-            throw new ResponseStatusException(CONFLICT, "Save bidding: Currency code " + currencyCode + " was not found.");
-        }
-
-        return currencyOpt.get();
-    }
-
 }

@@ -5,11 +5,13 @@ import be.zwoop.amqp.domain.model.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Builder
 @Data
-public class AnswerRemovedDto {
+public class AnswerRemovedDto implements Serializable {
     UUID answerId;
+    UserDto op;
     UserDto consultant;
 }
