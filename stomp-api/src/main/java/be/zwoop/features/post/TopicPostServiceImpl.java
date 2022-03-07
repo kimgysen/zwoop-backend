@@ -1,21 +1,17 @@
 package be.zwoop.features.post;
 
-import be.zwoop.amqp.domain.model.DealDto;
-import be.zwoop.amqp.domain.post_update.PostUpdateDto;
-import be.zwoop.amqp.domain.post_update.feature.answer.AnswerAddedDto;
-import be.zwoop.amqp.domain.post_update.feature.answer.AnswerChangedDto;
-import be.zwoop.amqp.domain.post_update.feature.answer.AnswerRemovedDto;
-import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingAddedDto;
-import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingChangedDto;
-import be.zwoop.amqp.domain.post_update.feature.bidding.BiddingRemovedDto;
-import be.zwoop.amqp.domain.post_update.feature.post.PostChangedDto;
+import be.zwoop.domain.model.answer.AnswerDto;
+import be.zwoop.domain.model.bidding.BiddingDto;
+import be.zwoop.domain.model.deal.DealDto;
+import be.zwoop.domain.model.post.PostDto;
+import be.zwoop.domain.post_update.PostUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static be.zwoop.amqp.domain.post_update.PostUpdateType.*;
+import static be.zwoop.domain.post_update.PostUpdateType.*;
 
 
 @AllArgsConstructor
@@ -25,46 +21,46 @@ public class TopicPostServiceImpl implements TopicPostService {
     private final SimpMessagingTemplate wsTemplate;
 
     @Override
-    public void sendPostChanged(UUID postId, PostChangedDto postChangedDto) {
+    public void sendPostChanged(UUID postId, PostDto postDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postId(postId)
                         .postUpdateType(POST_CHANGED)
-                        .dto(postChangedDto)
+                        .dto(postDto)
                         .build());
     }
 
     @Override
-    public void sendBiddingAdded(UUID postId, BiddingAddedDto biddingAddedDto) {
+    public void sendBiddingAdded(UUID postId, BiddingDto biddingDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postId(postId)
                         .postUpdateType(BIDDING_ADDED)
-                        .dto(biddingAddedDto)
+                        .dto(biddingDto)
                         .build());
     }
 
     @Override
-    public void sendBiddingChanged(UUID postId, BiddingChangedDto biddingChangedDto) {
+    public void sendBiddingChanged(UUID postId, BiddingDto biddingDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(BIDDING_CHANGED)
                         .postId(postId)
-                        .dto(biddingChangedDto)
+                        .dto(biddingDto)
                         .build());
     }
 
     @Override
-    public void sendBiddingRemoved(UUID postId, BiddingRemovedDto biddingRemovedDto) {
+    public void sendBiddingRemoved(UUID postId, BiddingDto biddingDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postId(postId)
                         .postUpdateType(BIDDING_REMOVED)
-                        .dto(biddingRemovedDto)
+                        .dto(biddingDto)
                         .build());
     }
 
@@ -90,32 +86,32 @@ public class TopicPostServiceImpl implements TopicPostService {
     }
 
     @Override
-    public void sendAnswerAdded(UUID postId, AnswerAddedDto answerAddedDto) {
+    public void sendAnswerAdded(UUID postId, AnswerDto answerDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(ANSWER_ADDED)
-                        .dto(answerAddedDto)
+                        .dto(answerDto)
                         .build());
     }
 
     @Override
-    public void sendAnswerChanged(UUID postId, AnswerChangedDto answerChangedDto) {
+    public void sendAnswerChanged(UUID postId, AnswerDto answerDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(ANSWER_CHANGED)
-                        .dto(answerChangedDto)
+                        .dto(answerDto)
                         .build());
     }
 
     @Override
-    public void sendAnswerRemoved(UUID postId, AnswerRemovedDto answerRemovedDto) {
+    public void sendAnswerRemoved(UUID postId, AnswerDto answerDto) {
         wsTemplate.convertAndSend(
                 postUpdatesDestination(postId.toString()),
                 PostUpdateDto.builder()
                         .postUpdateType(ANSWER_REMOVED)
-                        .dto(answerRemovedDto)
+                        .dto(answerDto)
                         .build());
     }
 

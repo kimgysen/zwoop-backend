@@ -4,7 +4,6 @@ import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.answer.AnswerRepository;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
-import be.zwoop.service.answer.AnswerFactory;
 import be.zwoop.service.post_state.PostStateService;
 import be.zwoop.web.answer.dto.SaveAnswerDto;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Service
 public class AnswerDbServiceImpl implements AnswerDbService {
-    private final AnswerFactory answerFactory;
     private final AnswerRepository answerRepository;
     private final PostStateService postStateService;
 
@@ -32,7 +30,12 @@ public class AnswerDbServiceImpl implements AnswerDbService {
     @Override
     @Transactional
     public AnswerEntity createAnswer(SaveAnswerDto saveAnswerDto, PostEntity postEntity, UserEntity consultantEntity) {
-        AnswerEntity answerEntity = answerFactory.buildAnswerFromDto(saveAnswerDto, postEntity, consultantEntity);
+        AnswerEntity answerEntity = AnswerEntity.builder()
+                .post(postEntity)
+                .answerText(saveAnswerDto.getAnswerText())
+                .consultant(consultantEntity)
+                .build();
+
         answerRepository.saveAndFlush(answerEntity);
         postStateService.saveAnsweredState(postEntity, answerEntity);
         return answerEntity;

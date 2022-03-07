@@ -3,6 +3,7 @@ package be.zwoop.web.post;
 
 import be.zwoop.domain.enum_type.PostFeedTypeEnum;
 import be.zwoop.domain.enum_type.PostStatusEnum;
+import be.zwoop.domain.model.post.PostDto;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.post_status.PostStatusRepository;
@@ -37,11 +38,11 @@ public class PostControllerPublicV1 {
 
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostEntity> getPost(@PathVariable UUID postId) {
+    public ResponseEntity<PostDto> getPost(@PathVariable UUID postId) {
         Optional<PostEntity> postEntityOpt = postDbService.findByPostId(postId);
 
         if (postEntityOpt.isPresent()) {
-            return ok(postEntityOpt.get());
+            return ok(PostDto.fromEntity(postEntityOpt.get()));
 
         } else {
             throw new ResponseStatusException(NOT_FOUND);
@@ -50,7 +51,7 @@ public class PostControllerPublicV1 {
     }
 
     @GetMapping
-    public Page<PostEntity> getPosts(
+    public Page<PostDto> getPosts(
             @RequestParam(value = "feedType") PostFeedTypeEnum feedType,
             @RequestParam(value = "postStatus") PostStatusEnum postStatusEnum,
             @RequestParam(value = "tagName") Optional<String> tagNameOpt,
@@ -74,6 +75,6 @@ public class PostControllerPublicV1 {
             throw new ResponseStatusException(BAD_REQUEST, e.getMessage());
         }
 
-        return postFeedPage;
+        return PostDto.fromEntityPage(postFeedPage);
     }
 }

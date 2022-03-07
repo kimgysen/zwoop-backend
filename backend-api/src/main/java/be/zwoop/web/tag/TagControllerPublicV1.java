@@ -1,6 +1,7 @@
 package be.zwoop.web.tag;
 
 
+import be.zwoop.domain.model.tag.TagDto;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,11 @@ public class TagControllerPublicV1 {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TagEntity>> getTagsStartingWith(@RequestParam(value = "tagName") String tagName) {
+    public ResponseEntity<List<TagDto>> getTagsStartingWith(@RequestParam(value = "tagName") String tagName) {
 
         List<TagEntity> tagEntities = tagRepository.findByTagNameLike(tagName);
 
-        return ok(tagEntities);
+        return ok(TagDto.fromTagList(tagEntities));
 
     }
 

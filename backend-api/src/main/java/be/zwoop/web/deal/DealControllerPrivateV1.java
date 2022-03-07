@@ -1,14 +1,13 @@
 package be.zwoop.web.deal;
 
-import be.zwoop.amqp.domain.notification.feature.deal.DealInitDto;
 import be.zwoop.domain.enum_type.PostStatusEnum;
+import be.zwoop.domain.model.deal.DealDto;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.poststate.PostStateEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
-import be.zwoop.service.deal.DealFactory;
 import be.zwoop.service.deal.db.DealDbService;
 import be.zwoop.service.deal.notification.DealNotificationService;
 import be.zwoop.web.deal.dto.CreateDealDto;
@@ -25,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
 
@@ -37,20 +37,19 @@ public class DealControllerPrivateV1 {
 
     private final AuthenticationFacade authenticationFacade;
     private final DealControllerValidator validator;
-    private final DealFactory dealFactory;
     private final DealDbService dealDbService;
     private final DealNotificationService dealNotificationService;
 
 
     @GetMapping("/init")
-    public List<DealInitDto> getPrincipalInitDeals() {
+    public List<DealDto> getPrincipalInitDeals() {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
-        List<DealEntity> dealEntities = dealDbService.findOpenDealsForUser(principalId);
-        return dealFactory.buildDealInitDtos(dealEntities);
+        List<DealEntity> dealEntityList = dealDbService.findOpenDealsForUser(principalId);
+        return DealDto.fromEntityList(dealEntityList);
     }
 
     @PostMapping
-    public ResponseEntity<Void> createDeal(@Valid @RequestBody CreateDealDto createDealDto) {
+    public ResponseEntity<DealDto> createDeal(@Valid @RequestBody CreateDealDto createDealDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         UserEntity principal = validator.validateAndGetPrincipal(principalId);
 
@@ -78,7 +77,7 @@ public class DealControllerPrivateV1 {
                 .fromPath(("/deal/{id}"))
                 .buildAndExpand(savedDeal.getDealId()).toUri();
 
-        return created(uri).build();
+        return created(uri).body(DealDto.fromEntity(savedDeal));
     }
 
     @DeleteMapping("/{dealId}")

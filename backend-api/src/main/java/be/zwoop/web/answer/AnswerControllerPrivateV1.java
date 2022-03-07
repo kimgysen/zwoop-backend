@@ -1,6 +1,7 @@
 package be.zwoop.web.answer;
 
 import be.zwoop.domain.enum_type.PostStatusEnum;
+import be.zwoop.domain.model.answer.AnswerDto;
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.post.PostEntity;
@@ -24,8 +25,7 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -38,7 +38,7 @@ public class AnswerControllerPrivateV1 {
     private final AnswerNotificationService answerNotificationService;
 
     @PostMapping
-    public ResponseEntity<Void> createAnswer(@Valid @RequestBody SaveAnswerDto saveAnswerDto) {
+    public ResponseEntity<AnswerDto> createAnswer(@Valid @RequestBody SaveAnswerDto saveAnswerDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
 
         UserEntity principal = validator.validateAndGetPrincipal(principalId);
@@ -67,11 +67,12 @@ public class AnswerControllerPrivateV1 {
                 .fromPath(("/answer/{id}"))
                 .buildAndExpand(answerEntity.getAnswerId()).toUri();
 
-        return created(uri).build();
+        return created(uri).body(
+                AnswerDto.fromEntity(answerEntity));
     }
 
     @PutMapping("/{answerId}")
-    public ResponseEntity<Void> updateAnswer(
+    public ResponseEntity<AnswerDto> updateAnswer(
             @PathVariable UUID answerId,
             @Valid @RequestBody SaveAnswerDto saveAnswerDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
@@ -92,7 +93,7 @@ public class AnswerControllerPrivateV1 {
         answerDbService.updateAnswer(answerEntity, saveAnswerDto);
         answerNotificationService.sendAnswerChangedNotification(answerEntity);
 
-        return noContent().build();
+        return ok(AnswerDto.fromEntity(answerEntity));
     }
 
     @DeleteMapping("/{answerId}")

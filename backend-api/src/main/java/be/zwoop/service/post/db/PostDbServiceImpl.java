@@ -4,16 +4,13 @@ package be.zwoop.service.post.db;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post.PostRepository;
 import be.zwoop.repository.post_status.PostStatusEntity;
-import be.zwoop.repository.poststate.PostStateEntity;
-import be.zwoop.repository.poststate.PostStateRepository;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
 import be.zwoop.service.post.PostFactory;
-import be.zwoop.service.post_state.PostStateFactory;
 import be.zwoop.service.post_state.PostStateService;
-import be.zwoop.web.post.dto.PostDto;
+import be.zwoop.web.post.dto.SavePostDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static be.zwoop.domain.enum_type.PostStatusEnum.POST_INIT;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -67,31 +63,31 @@ public class PostDbServiceImpl implements PostDbService {
 
     @Override
     @Transactional
-    public PostEntity createPost(PostDto postDto, UserEntity opEntity) {
-        PostEntity postEntity = postFactory.buildPostFromDto(postDto, opEntity);
+    public PostEntity createPost(SavePostDto savePostDto, UserEntity opEntity) {
+        PostEntity postEntity = postFactory.buildPostFromDto(savePostDto, opEntity);
         postRepository.saveAndFlush(postEntity);
         postStateService.saveInitPostState(postEntity);
         return postEntity;
     }
 
     @Override
-    public void updatePost(PostEntity toUpdate, PostDto postDto) {
-        toUpdate.setPostTitle(postDto.getTitle());
-        toUpdate.setPostText(postDto.getText());
+    public void updatePost(PostEntity toUpdate, SavePostDto savePostDto) {
+        toUpdate.setPostTitle(savePostDto.getTitle());
+        toUpdate.setPostText(savePostDto.getText());
         List<TagEntity> tagEntities = tagRepository.findAllByTagIdIn(
-                postFactory.collectTagIdsByPostDto(postDto));
+                postFactory.collectTagIdsByPostDto(savePostDto));
         toUpdate.setTags(tagEntities);
 
         postRepository.saveAndFlush(toUpdate);
     }
 
     @Override
-    public boolean hasPostChanged(PostEntity postEntity, PostDto postDto) {
-        return !postEntity.getPostTitle().equals(postDto.getTitle())
-                || !postEntity.getPostText().equals(postDto.getText())
-                || !postEntity.getBidPrice().equals(postDto.getBidPrice())
+    public boolean hasPostChanged(PostEntity postEntity, SavePostDto savePostDto) {
+        return !postEntity.getPostTitle().equals(savePostDto.getTitle())
+                || !postEntity.getPostText().equals(savePostDto.getText())
+                || !postEntity.getBidPrice().equals(savePostDto.getBidPrice())
                 || !collectTagIdsByPostEntity(postEntity)
-                        .equals(postFactory.collectTagIdsByPostDto(postDto));
+                        .equals(postFactory.collectTagIdsByPostDto(savePostDto));
     }
 
     private List<Long> collectTagIdsByPostEntity(PostEntity postEntity) {

@@ -4,7 +4,7 @@ import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
-import be.zwoop.web.post.dto.PostDto;
+import be.zwoop.web.post.dto.SavePostDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,8 +19,8 @@ public interface PostDbService {
     Page<PostEntity> getFeed(PostStatusEntity postStatus, Pageable pageable);
     Page<PostEntity> getFeedByTag(TagEntity tagEntity, PostStatusEntity postStatus, Pageable pageable);
 
-    PostEntity createPost(PostDto postDto, UserEntity opEntity);
-    void updatePost(PostEntity toUpdate, PostDto postDto);
-    boolean hasPostChanged(PostEntity postEntity, PostDto postDto);
+    PostEntity createPost(SavePostDto savePostDto, UserEntity opEntity);
+    void updatePost(PostEntity toUpdate, SavePostDto savePostDto);
+    boolean hasPostChanged(PostEntity postEntity, SavePostDto savePostDto);
 
 }

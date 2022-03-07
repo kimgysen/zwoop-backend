@@ -1,15 +1,10 @@
 package be.zwoop.service.deal.db;
 
-import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.deal.DealRepository;
-import be.zwoop.repository.post_status.PostStatusEntity;
-import be.zwoop.repository.post_status.PostStatusRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
-import be.zwoop.service.deal.DealFactory;
-import be.zwoop.service.deal.db.DealDbService;
 import be.zwoop.service.post_state.PostStateService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,9 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DealDbServiceImpl implements DealDbService {
 
-    private final DealFactory dealFactory;
     private final DealRepository dealRepository;
-    private final PostStatusRepository postStatusRepository;
     private final UserRepository userRepository;
     private final PostStateService postStateService;
 
@@ -45,7 +38,9 @@ public class DealDbServiceImpl implements DealDbService {
     @Override
     @Transactional
     public DealEntity saveDeal(BiddingEntity biddingEntity) {
-        DealEntity dealEntity = dealFactory.buildDealEntity(biddingEntity);
+        DealEntity dealEntity = DealEntity.builder()
+                .bidding(biddingEntity)
+                .build();
         DealEntity saved = dealRepository.saveAndFlush(dealEntity);
         postStateService.saveInitDealState(biddingEntity.getPost(), dealEntity);
         return saved;

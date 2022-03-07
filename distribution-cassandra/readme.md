@@ -67,3 +67,22 @@ CREATE TABLE IF NOT EXISTS inbox_items (
     PRIMARY KEY ((userId, partnerId, postId))
 );
 ```
+```
+CREATE KEYSPACE zwoop_notification
+WITH REPLICATION = {
+    'class' : 'SimpleStrategy',
+    'replication_factor' : 1
+};
+```
+```
+USE zwoop_notification
+CREATE TABLE IF NOT EXISTS notifications (
+    userId text,
+    notificationType text,
+    notificationText text,
+    redirectPath text,
+    notificationDate timestamp,
+    PRIMARY KEY ((userId), notificationDate)
+);
+```
+

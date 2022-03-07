@@ -1,6 +1,7 @@
 package be.zwoop.web.bidding;
 
 import be.zwoop.domain.enum_type.PostStatusEnum;
+import be.zwoop.domain.model.bidding.BiddingDto;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
 import be.zwoop.repository.post.PostEntity;
@@ -25,8 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -41,7 +41,7 @@ public class BiddingControllerPrivateV1 {
 
 
     @PostMapping
-    public ResponseEntity<Void> createBidding(@Valid @RequestBody CreateBiddingDto createBiddingDto) {
+    public ResponseEntity<BiddingDto> createBidding(@Valid @RequestBody CreateBiddingDto createBiddingDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         UserEntity principal = validator.validateAndGetPrincipal(principalId);
 
@@ -73,11 +73,12 @@ public class BiddingControllerPrivateV1 {
                 .fromPath(("/bidding/{id}"))
                 .buildAndExpand(savedBidding.getBiddingId()).toUri();
 
-        return created(uri).build();
+        return created(uri).body(
+                BiddingDto.fromEntity(savedBidding));
     }
 
     @PutMapping("/{biddingId}")
-    public ResponseEntity<Void> updateBidding(
+    public ResponseEntity<BiddingDto> updateBidding(
             @PathVariable UUID biddingId,
             @Valid @RequestBody UpdateBiddingDto updateBiddingDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
@@ -102,7 +103,7 @@ public class BiddingControllerPrivateV1 {
             biddingNotificationService.sendBiddingChangedNotification(biddingEntity);
         }
 
-        return noContent().build();
+        return ok(BiddingDto.fromEntity(biddingEntity));
     }
 
     @DeleteMapping("/{biddingId}")

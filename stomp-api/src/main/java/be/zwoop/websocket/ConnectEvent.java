@@ -46,7 +46,7 @@ public class ConnectEvent implements ApplicationListener<SessionConnectEvent> {
             case POST_PRIVATE_CHAT -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);
                 wsUtil.storeInSession(SESSION_POST_ID, postId, headers);
-                connectService.savePresenceStatusPrivateChat("be.zwoop.amqp.domain.post-" + postId, principal);
+                connectService.savePresenceStatusPrivateChat("be.zwoop.domain.post-" + postId, principal);
             }
             case POST_INBOX -> {
                 String postId = wsUtil.getNativeHeader(HEADER_POST_ID, headers);

@@ -6,7 +6,7 @@ import be.zwoop.repository.user.UserEntity;
 import be.zwoop.security.AuthenticationFacade;
 import be.zwoop.service.post.db.PostDbService;
 import be.zwoop.service.post.notification.PostNotificationService;
-import be.zwoop.web.post.dto.PostDto;
+import be.zwoop.web.post.dto.SavePostDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class PostControllerPrivateV1 {
     private final PostNotificationService postNotificationService;
 
     @PostMapping
-    public ResponseEntity<Void> createPost(@Valid @RequestBody PostDto postDto) {
+    public ResponseEntity<Void> createPost(@Valid @RequestBody SavePostDto savePostDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         Optional<UserEntity> opEntityOpt = postDbService.findByUserId(principalId);
         if (opEntityOpt.isEmpty())
@@ -44,12 +44,12 @@ public class PostControllerPrivateV1 {
 
         UserEntity askerEntity = opEntityOpt.get();
 
-        Optional<PostEntity> postEntityOpt = postDbService.findByTitleAndOp(postDto.getTitle(), askerEntity);
+        Optional<PostEntity> postEntityOpt = postDbService.findByTitleAndOp(savePostDto.getTitle(), askerEntity);
         if (postEntityOpt.isPresent()) {
             throw new ResponseStatusException(CONFLICT, "Post already exists with id: " + postEntityOpt.get().getPostId());
         }
 
-        PostEntity savedPost = postDbService.createPost(postDto, askerEntity);
+        PostEntity savedPost = postDbService.createPost(savePostDto, askerEntity);
 
         URI uri = UriComponentsBuilder
                 .fromPath(("/post/{id}"))
@@ -59,7 +59,7 @@ public class PostControllerPrivateV1 {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable UUID postId) {
+    public ResponseEntity<Void> updatePost(@Valid @RequestBody SavePostDto savePostDto, @PathVariable UUID postId) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
 
         Optional<UserEntity> principalEntityOpt = postDbService.findByUserId(principalId);
@@ -80,8 +80,8 @@ public class PostControllerPrivateV1 {
             throw new ResponseStatusException(CONFLICT, "Cannot update a post that is doesn\'t have INIT status.");
         }
 
-        if (postDbService.hasPostChanged(toUpdate, postDto)) {
-            postDbService.updatePost(toUpdate, postDto);
+        if (postDbService.hasPostChanged(toUpdate, savePostDto)) {
+            postDbService.updatePost(toUpdate, savePostDto);
             postNotificationService.sendPostChangedNotification(toUpdate);
         }
 
