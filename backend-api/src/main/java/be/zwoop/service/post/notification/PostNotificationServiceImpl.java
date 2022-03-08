@@ -1,8 +1,8 @@
 package be.zwoop.service.post.notification;
 
 
-import be.zwoop.amqp.post_notification.PostNotificationSender;
-import be.zwoop.amqp.post_notification.mapper.PostUpdateDtoMapper;
+import be.zwoop.amqp.topic.post_notification.PostNotificationSender;
+import be.zwoop.amqp.topic.post_notification.mapper.PostUpdateDtoMapper;
 import be.zwoop.repository.post.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

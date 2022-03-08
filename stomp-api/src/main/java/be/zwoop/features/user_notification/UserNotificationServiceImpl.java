@@ -1,6 +1,7 @@
 package be.zwoop.features.user_notification;
 
-import be.zwoop.domain.user_notification.UserNotificationDto;
+import be.zwoop.domain.notification.queue.NotificationDto;
+import be.zwoop.domain.notification.queue.user_notification.UserNotificationDto;
 import be.zwoop.features.user_notification.repository.cassandra.UserNotificationEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,11 +22,11 @@ public class UserNotificationServiceImpl implements UserNotificationService {
     }
 
     @Override
-    public void sendUserNotification(UUID userId, UserNotificationDto userNotificationDto) {
+    public void sendUserNotification(UUID userId, NotificationDto<?> notificationDto) {
         wsTemplate.convertAndSendToUser(
                 userId.toString(),
                 notificationDestination(),
-                userNotificationDto);
+                notificationDto);
     }
 
     private String notificationDestination() {

@@ -1,4 +1,4 @@
-package be.zwoop.domain.post_update;
+package be.zwoop.domain.notification.topic.post_update;
 
 import lombok.Builder;
 import lombok.Data;

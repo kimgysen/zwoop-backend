@@ -1,6 +1,6 @@
-package be.zwoop.amqp.user_notification;
+package be.zwoop.amqp.queue.user_notification;
 
-import be.zwoop.domain.user_notification.UserNotificationDto;
+import be.zwoop.domain.notification.queue.NotificationDto;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,7 +15,7 @@ public class UserNotificationSender {
     private final String RABBIT_MESSAGE_SOURCE_HEADER = "backend-api";
 
 
-    public void sendUserNotification(UserNotificationDto sendDto) {
+    public void sendUserNotification(NotificationDto sendDto) {
         template.convertAndSend(
                 notificationsQueue.getName(),
                 sendDto,

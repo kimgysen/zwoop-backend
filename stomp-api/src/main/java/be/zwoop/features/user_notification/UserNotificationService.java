@@ -1,10 +1,10 @@
 package be.zwoop.features.user_notification;
 
-import be.zwoop.domain.user_notification.UserNotificationDto;
+import be.zwoop.domain.notification.queue.NotificationDto;
 
 import java.util.UUID;
 
 public interface UserNotificationService {
-    void sendUserNotification(UUID userId, UserNotificationDto userNotificationDto);
+    void sendUserNotification(UUID userId, NotificationDto<?> notificationDto);
 
 }

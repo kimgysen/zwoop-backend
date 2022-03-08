@@ -1,4 +1,4 @@
-package be.zwoop.domain.post_update;
+package be.zwoop.domain.notification.topic.post_update;
 
 public enum PostUpdateType {
     POST_CHANGED,

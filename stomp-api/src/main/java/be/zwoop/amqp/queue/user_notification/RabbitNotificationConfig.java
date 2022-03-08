@@ -1,13 +1,11 @@
-package be.zwoop.amqp.user_notification;
+package be.zwoop.amqp.queue.user_notification;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
 public class RabbitNotificationConfig {
     public static final String RABBIT_NOTIFICATIONS_QUEUE = "rabbit.notifications.queue-name";
     public static final String RABBIT_NOTIFICATIONS_DEAD_LETTER_QUEUE = "rabbit.notifications.dead.letter.queue";

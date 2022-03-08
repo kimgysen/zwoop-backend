@@ -1,4 +1,4 @@
-package be.zwoop.amqp.post_notification;
+package be.zwoop.amqp.topic.post_notification;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;

@@ -4,14 +4,14 @@ import be.zwoop.domain.model.answer.AnswerDto;
 import be.zwoop.domain.model.bidding.BiddingDto;
 import be.zwoop.domain.model.deal.DealDto;
 import be.zwoop.domain.model.post.PostDto;
-import be.zwoop.domain.post_update.PostUpdateDto;
+import be.zwoop.domain.notification.topic.post_update.PostUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static be.zwoop.domain.post_update.PostUpdateType.*;
+import static be.zwoop.domain.notification.topic.post_update.PostUpdateType.*;
 
 
 @AllArgsConstructor

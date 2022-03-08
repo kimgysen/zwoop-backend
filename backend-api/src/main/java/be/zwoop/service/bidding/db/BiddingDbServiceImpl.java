@@ -1,6 +1,6 @@
 package be.zwoop.service.bidding.db;
 
-import be.zwoop.amqp.post_notification.PostNotificationSender;
+import be.zwoop.amqp.topic.post_notification.PostNotificationSender;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
 import be.zwoop.repository.post.PostEntity;

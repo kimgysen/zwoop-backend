@@ -1,12 +1,14 @@
 package be.zwoop.service.answer.notification;
 
-import be.zwoop.amqp.post_notification.PostNotificationSender;
-import be.zwoop.amqp.user_notification.UserNotificationSender;
+import be.zwoop.amqp.queue.user_notification.UserNotificationSender;
+import be.zwoop.amqp.topic.post_notification.PostNotificationSender;
 import be.zwoop.domain.model.answer.AnswerDto;
 import be.zwoop.domain.model.user.UserDto;
-import be.zwoop.domain.post_update.PostUpdateDto;
-import be.zwoop.domain.post_update.PostUpdateType;
-import be.zwoop.domain.user_notification.UserNotificationDto;
+import be.zwoop.domain.notification.queue.NotificationDto;
+import be.zwoop.domain.notification.queue.UserNotificationType;
+import be.zwoop.domain.notification.queue.user_notification.UserNotificationDto;
+import be.zwoop.domain.notification.topic.post_update.PostUpdateDto;
+import be.zwoop.domain.notification.topic.post_update.PostUpdateType;
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
@@ -15,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static be.zwoop.domain.user_notification.UserNotificationType.*;
+import static be.zwoop.domain.notification.queue.UserNotificationType.ANSWER_ADDED;
+import static be.zwoop.domain.notification.queue.UserNotificationType.ANSWER_REMOVED;
 
 @Service
 @AllArgsConstructor
@@ -31,13 +34,19 @@ public class AnswerNotificationServiceImpl implements AnswerNotificationService 
         UserEntity opEntity = postEntity.getOp();
         UserEntity consultantEntity = answerEntity.getConsultant();
 
+        UserNotificationDto userNotificationDto = UserNotificationDto.builder()
+                .user(UserDto.fromUserEntity(opEntity))
+                .notificationType(UserNotificationType.ANSWER_ADDED.name())
+                .notificationText(consultantEntity.getNickName() + " added an answer")
+                .redirectPath("/post/" + postEntity.getPostId())
+                .notificationDate(LocalDateTime.now())
+                .build();
+
         userNotificationSender.sendUserNotification(
-                UserNotificationDto.builder()
-                        .user(UserDto.fromUserEntity(opEntity))
+                NotificationDto.builder()
+                        .userId(opEntity.getUserId())
                         .userNotificationType(ANSWER_ADDED)
-                        .notificationText(consultantEntity.getNickName() + " added an answer")
-                        .redirectPath("/post/" + postEntity.getPostId())
-                        .notificationDate(LocalDateTime.now())
+                        .dto(userNotificationDto)
                         .build());
 
         postNotificationSender.sendPostUpdateNotification(
@@ -54,13 +63,19 @@ public class AnswerNotificationServiceImpl implements AnswerNotificationService 
         UserEntity opEntity = postEntity.getOp();
         UserEntity consultantEntity = answerEntity.getConsultant();
 
+        UserNotificationDto userNotificationDto = UserNotificationDto.builder()
+                .user(UserDto.fromUserEntity(opEntity))
+                .notificationType(UserNotificationType.ANSWER_CHANGED.name())
+                .notificationText(consultantEntity.getNickName() + " changed the answer")
+                .redirectPath("/post/" + postEntity.getPostId())
+                .notificationDate(LocalDateTime.now())
+                .build();
+
         userNotificationSender.sendUserNotification(
-                UserNotificationDto.builder()
-                        .user(UserDto.fromUserEntity(opEntity))
-                        .userNotificationType(ANSWER_CHANGED)
-                        .notificationText(consultantEntity.getNickName() + " changed the answer")
-                        .redirectPath("/post/" + postEntity.getPostId())
-                        .notificationDate(LocalDateTime.now())
+                NotificationDto.builder()
+                        .userId(opEntity.getUserId())
+                        .userNotificationType(ANSWER_ADDED)
+                        .dto(userNotificationDto)
                         .build());
 
         postNotificationSender.sendPostUpdateNotification(
@@ -77,14 +92,19 @@ public class AnswerNotificationServiceImpl implements AnswerNotificationService 
         UserEntity opEntity = postEntity.getOp();
         UserEntity consultantEntity = answerEntity.getConsultant();
 
+        UserNotificationDto userNotificationDto = UserNotificationDto.builder()
+                .user(UserDto.fromUserEntity(opEntity))
+                .notificationType(UserNotificationType.ANSWER_REMOVED.name())
+                .notificationText(consultantEntity.getNickName() + " removed the answer")
+                .redirectPath("/post/" + postEntity.getPostId())
+                .notificationDate(LocalDateTime.now())
+                .build();
 
         userNotificationSender.sendUserNotification(
-                UserNotificationDto.builder()
-                        .user(UserDto.fromUserEntity(opEntity))
+                NotificationDto.builder()
+                        .userId(opEntity.getUserId())
                         .userNotificationType(ANSWER_REMOVED)
-                        .notificationText(consultantEntity.getNickName() + " removed the answer")
-                        .redirectPath("/post/" + postEntity.getPostId())
-                        .notificationDate(LocalDateTime.now())
+                        .dto(userNotificationDto)
                         .build());
 
         postNotificationSender.sendPostUpdateNotification(

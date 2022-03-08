@@ -1,11 +1,11 @@
-package be.zwoop.amqp.post_notification;
+package be.zwoop.amqp.topic.post_notification;
 
 
 import be.zwoop.domain.model.answer.AnswerDto;
 import be.zwoop.domain.model.bidding.BiddingDto;
 import be.zwoop.domain.model.deal.DealDto;
 import be.zwoop.domain.model.post.PostDto;
-import be.zwoop.domain.post_update.PostUpdateDto;
+import be.zwoop.domain.notification.topic.post_update.PostUpdateDto;
 import be.zwoop.features.post.TopicPostService;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static be.zwoop.amqp.post_notification.RabbitPostConfig.RABBIT_POST_UPDATES_QUEUE;
+import static be.zwoop.amqp.topic.post_notification.RabbitPostConfig.RABBIT_POST_UPDATES_QUEUE;
 
 @Service
 @AllArgsConstructor

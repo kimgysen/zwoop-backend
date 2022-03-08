@@ -1,6 +1,6 @@
 package be.zwoop.features.user_notification.repository.cassandra;
 
-import be.zwoop.domain.user_notification.UserNotificationType;
+import be.zwoop.domain.notification.queue.UserNotificationType;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;

@@ -1,4 +1,4 @@
-package be.zwoop.domain.user_notification;
+package be.zwoop.domain.notification.queue;
 
 public enum UserNotificationType {
     BIDDING_ADDED,
@@ -14,5 +14,4 @@ public enum UserNotificationType {
     ANSWER_ACCEPTED,
 
     SMART_CONTRACT_PAID
-
 }
