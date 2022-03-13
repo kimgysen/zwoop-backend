@@ -1,4 +1,4 @@
-package be.zwoop.repository.post_status;
+package be.zwoop.repository.poststatus;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -12,7 +12,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -38,8 +37,8 @@ public class UserEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "profile_pic")
-    private String profilePic;
+    @Column(name = "avatar")
+    private String avatar;
 
     @Column(name = "nick_name")
     private String nickName;

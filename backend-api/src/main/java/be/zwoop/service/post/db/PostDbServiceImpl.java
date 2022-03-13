@@ -3,13 +3,13 @@ package be.zwoop.service.post.db;
 
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.post.PostRepository;
-import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.tag.TagRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
-import be.zwoop.service.post.PostFactory;
-import be.zwoop.service.post_state.PostStateService;
+import be.zwoop.service.post.factory.PostFactory;
+import be.zwoop.service.poststate.PostStateService;
 import be.zwoop.web.post.dto.SavePostDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

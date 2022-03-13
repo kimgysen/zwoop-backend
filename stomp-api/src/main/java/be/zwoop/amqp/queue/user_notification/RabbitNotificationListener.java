@@ -19,7 +19,6 @@ public class RabbitNotificationListener {
         switch (receivedDto.getUserNotificationType()) {
             case DEAL_INIT, DEAL_CANCELLED -> notificationService.sendUserNotification(receivedDto.getUserId(), receivedDto);
             default -> {
-                // Save notification
                 notificationService.sendUserNotification(receivedDto.getUserId(), receivedDto);
             }
         }

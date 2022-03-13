@@ -74,7 +74,7 @@ public class AuthControllerV1 {
                     .accessToken(genJwt)
                     .userId(userEntity.getUserId().toString())
                     .firstName(userEntity.getFirstName())
-                    .profilePic(userEntity.getProfilePic())
+                    .avatar(userEntity.getAvatar())
                     .build();
             return ok(respDto);
         }
@@ -102,7 +102,7 @@ public class AuthControllerV1 {
                         .nickName(nickName)
                         .firstName(registerDto.getFirstName())
                         .lastName(registerDto.getLastName())
-                        .profilePic(registerDto.getProfilePic())
+                        .avatar(registerDto.getAvatar())
                         .email(registerDto.getEmail())
                         .roles(Set.of(roleEntity))
                         .active(true)
@@ -128,7 +128,7 @@ public class AuthControllerV1 {
                     .accessToken(genJwt)
                     .userId(savedUser.getUserId().toString())
                     .firstName(savedUser.getFirstName())
-                    .profilePic(savedUser.getProfilePic())
+                    .avatar(savedUser.getAvatar())
                     .build();
 
             return ok(respDto);

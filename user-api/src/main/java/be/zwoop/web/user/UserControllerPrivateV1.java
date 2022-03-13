@@ -1,5 +1,6 @@
 package be.zwoop.web.user;
 
+import be.zwoop.domain.model.user.UserFullDto;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
 import be.zwoop.security.AuthenticationFacade;
@@ -27,7 +28,7 @@ public class UserControllerPrivateV1 {
     private final UserRepository userRepository;
 
     @PutMapping("/{userId}/nickname")
-    public ResponseEntity<UserEntity> updateNickName(@PathVariable String userId, @RequestBody UpdateNickDto nickDto) {
+    public ResponseEntity<UserFullDto> updateNickName(@PathVariable String userId, @RequestBody UpdateNickDto nickDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(principalId, false, true);
         validateUser(principalId, userEntityOpt);
@@ -43,12 +44,12 @@ public class UserControllerPrivateV1 {
         userEntity.setNickName(nickName);
         userRepository.saveAndFlush(userEntity);
 
-        return ok(userEntity);
+        return ok(UserFullDto.fromEntity(userEntity));
     }
 
 
     @PutMapping("/{userId}/about")
-    public ResponseEntity<UserEntity> updateAboutText(@PathVariable String userId, @RequestBody UpdateAboutDto aboutDto) {
+    public ResponseEntity<UserFullDto> updateAboutText(@PathVariable String userId, @RequestBody UpdateAboutDto aboutDto) {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(principalId, false, true);
         validateUser(principalId, userEntityOpt);
@@ -57,7 +58,7 @@ public class UserControllerPrivateV1 {
         userEntity.setAboutText(aboutDto.getAboutText());
         userRepository.saveAndFlush(userEntity);
 
-        return ok(userEntity);
+        return ok(UserFullDto.fromEntity(userEntity));
     }
 
     private void validateUser(UUID principalId, Optional<UserEntity> userEntityOpt) {

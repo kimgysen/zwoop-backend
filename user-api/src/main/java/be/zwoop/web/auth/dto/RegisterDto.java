@@ -14,7 +14,7 @@ public class RegisterDto {
     private String authId;
 
     @NotEmpty
-    private String profilePic;
+    private String avatar;
 
     @NotEmpty
     private String firstName;

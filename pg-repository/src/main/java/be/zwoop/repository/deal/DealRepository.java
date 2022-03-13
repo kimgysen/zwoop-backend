@@ -1,6 +1,5 @@
 package be.zwoop.repository.deal;
 
-import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

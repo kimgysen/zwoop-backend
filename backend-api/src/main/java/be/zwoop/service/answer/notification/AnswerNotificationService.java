@@ -6,5 +6,5 @@ public interface AnswerNotificationService {
     void sendAnswerAddedNotification(AnswerEntity answerEntity);
     void sendAnswerChangedNotification(AnswerEntity answerEntity);
     void sendAnswerRemovedNotification(AnswerEntity answerEntity);
-
+    void sendAnswerAcceptedNotification(AnswerEntity answerEntity);
 }

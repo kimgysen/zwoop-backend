@@ -1,4 +1,4 @@
-package be.zwoop.service.post_state;
+package be.zwoop.service.poststate;
 
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.deal.DealEntity;

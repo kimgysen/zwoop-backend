@@ -4,7 +4,7 @@ import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.answer.AnswerRepository;
 import be.zwoop.repository.post.PostEntity;
 import be.zwoop.repository.user.UserEntity;
-import be.zwoop.service.post_state.PostStateService;
+import be.zwoop.service.poststate.PostStateService;
 import be.zwoop.web.answer.dto.SaveAnswerDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +52,11 @@ public class AnswerDbServiceImpl implements AnswerDbService {
     public void removeAnswer(AnswerEntity answerEntity) {
         postStateService.rollbackAnsweredState(answerEntity.getPost());
         answerRepository.delete(answerEntity);
+    }
+
+    @Override
+    public void acceptAnswer(AnswerEntity answerEntity) {
+        postStateService.saveAnswerAcceptedState(answerEntity.getPost());
     }
 
 }

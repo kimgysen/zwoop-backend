@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum CurrencyEnum {
-    BNB(1);
+    BUSD(1);
 
     @Getter
     private final int value;

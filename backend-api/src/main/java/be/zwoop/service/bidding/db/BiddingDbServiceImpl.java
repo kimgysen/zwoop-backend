@@ -1,6 +1,5 @@
 package be.zwoop.service.bidding.db;
 
-import be.zwoop.amqp.topic.post_notification.PostNotificationSender;
 import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.bidding.BiddingRepository;
 import be.zwoop.repository.post.PostEntity;
@@ -17,7 +16,6 @@ import java.util.UUID;
 public class BiddingDbServiceImpl implements BiddingDbService {
 
     private final BiddingRepository biddingRepository;
-    private final PostNotificationSender postNotificationSender;
 
     @Override
     public Optional<BiddingEntity> findByBiddingId(UUID biddingId) {

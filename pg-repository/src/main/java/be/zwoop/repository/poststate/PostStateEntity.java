@@ -5,7 +5,7 @@ import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.answer.AnswerEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
 import be.zwoop.repository.review.ReviewEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

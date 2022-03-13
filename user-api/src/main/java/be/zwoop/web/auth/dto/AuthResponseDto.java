@@ -10,5 +10,5 @@ public class AuthResponseDto {
     private final String accessToken;
     private final String userId;
     private final String firstName;
-    private final String profilePic;
+    private final String avatar;
 }

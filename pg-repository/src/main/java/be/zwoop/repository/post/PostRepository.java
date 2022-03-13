@@ -1,6 +1,6 @@
 package be.zwoop.repository.post;
 
-import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import org.springframework.data.domain.Page;

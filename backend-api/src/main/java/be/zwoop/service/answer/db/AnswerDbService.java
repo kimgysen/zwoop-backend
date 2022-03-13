@@ -13,4 +13,5 @@ public interface AnswerDbService {
     AnswerEntity createAnswer(SaveAnswerDto saveAnswerDto, PostEntity postEntity, UserEntity consultantEntity);
     void updateAnswer(AnswerEntity toUpdate, SaveAnswerDto updateDto);
     void removeAnswer(AnswerEntity answerEntity);
+    void acceptAnswer(AnswerEntity answerEntity);
 }

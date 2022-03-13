@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "User"(
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email CITEXT UNIQUE,
-    profile_pic TEXT,
+    avatar TEXT,
     nick_name TEXT UNIQUE NOT NULL,
     about_text TEXT,
     is_blocked BOOLEAN DEFAULT FALSE,
@@ -216,8 +216,33 @@ CREATE TABLE IF NOT EXISTS "PostState" (
 
 -- Create NotificationType table
 CREATE TABLE IF NOT EXISTS "NotificationType"(
-   notification_type_id INT NOT NULL,
-   notification_type TEXT NOT NULL,
+    notification_type_id INT NOT NULL,
+    notification_type TEXT NOT NULL,
+    description TEXT NOT NULL,
 
-   PRIMARY KEY (notification_type_id)
+    PRIMARY KEY (notification_type_id)
+);
+
+CREATE TABLE IF NOT EXISTS "UserNotificationCount"(
+    user_id UUID NOT NULL,
+    unread_count INT DEFAULT 0,
+
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES "User"(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS "UserNotification"(
+    user_notification_id UUID NOT NULL,
+    sender_id UUID NULL,
+    receiver_id UUID NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    redirect_param TEXT,
+    meta_info TEXT,
+    notification_type_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+
+    PRIMARY KEY (user_notification_id),
+    FOREIGN KEY (sender_id) REFERENCES "User"(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES "User"(user_id),
+    FOREIGN KEY (notification_type_id) REFERENCES "NotificationType"(notification_type_id)
 );

@@ -1,5 +1,7 @@
 package be.zwoop.web.user;
 
+import be.zwoop.domain.model.tag.TagDto;
+import be.zwoop.domain.model.user.UserFullDto;
 import be.zwoop.repository.authprovider.AuthProviderEntity;
 import be.zwoop.repository.authprovider.AuthProviderRepository;
 import be.zwoop.repository.tag.TagEntity;
@@ -34,7 +36,7 @@ public class UserControllerPublicV1 {
     private final UserRepository userRepository;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserEntity> getUserByoAuthId(
+    public ResponseEntity<UserFullDto> getUserByoAuthId(
             @RequestParam(value = "oauthId") String oauthId,
             @RequestParam(value = "authProviderId") int authProviderId) {
 
@@ -51,17 +53,16 @@ public class UserControllerPublicV1 {
                 throw new ResponseStatusException(NOT_FOUND);
 
             } else {
-                return ok(
-                        userAuthProviderEntityOpt
-                            .get()
-                            .getUserEntity()
-                );
+                UserEntity userEntity = userAuthProviderEntityOpt
+                        .get()
+                        .getUserEntity();
+                return ok(UserFullDto.fromEntity(userEntity));
             }
         }
     }
 
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable UUID userId) {
+    public ResponseEntity<UserFullDto> getUserById(@PathVariable UUID userId) {
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
 
         if (userEntityOpt.isEmpty()) {
@@ -69,25 +70,25 @@ public class UserControllerPublicV1 {
         } else {
             UserEntity userEntity = userEntityOpt.get();
             userEntity.setEmail(null);
-            return ok(userEntity);
+            return ok(UserFullDto.fromEntity(userEntity));
         }
     }
 
     @GetMapping(value = "/{userId}/tags")
-    public ResponseEntity<Set<TagEntity>> getTags(@PathVariable UUID userId) {
+    public ResponseEntity<Set<TagDto>> getTags(@PathVariable UUID userId) {
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
 
         if (userEntityOpt.isPresent()) {
             UserEntity userEntity = userEntityOpt.get();
 
-            return ok(userEntity.getTags());
+            return ok(TagDto.fromTagSet(userEntity.getTags()));
         }
 
         throw new ResponseStatusException(NOT_FOUND);
     }
 
     @GetMapping(value = "/{userId}/{tag}")
-    public ResponseEntity<TagEntity> tagExists(
+    public ResponseEntity<TagDto> tagExists(
             @PathVariable UUID userId,
             @PathVariable String tag) {
         Optional<UserEntity> userEntityOpt = userRepository.findByUserIdAndBlockedAndActive(userId, false, true);
@@ -102,7 +103,7 @@ public class UserControllerPublicV1 {
                     .orElse(null);
 
             if (foundTagEntity != null) {
-                return ok(foundTagEntity);
+                return ok(TagDto.fromEntity(foundTagEntity));
             }
         }
 

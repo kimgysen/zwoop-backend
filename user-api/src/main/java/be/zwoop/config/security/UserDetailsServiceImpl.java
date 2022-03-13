@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     "",
                     grantedAuthorities,
                     userEntity.getNickName(),
-                    userEntity.getProfilePic()
+                    userEntity.getAvatar()
             );
 
         } else {

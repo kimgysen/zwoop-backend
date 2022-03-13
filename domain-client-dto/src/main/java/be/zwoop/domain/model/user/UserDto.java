@@ -19,7 +19,7 @@ public class UserDto implements Serializable {
         return UserDto.builder()
                 .userId(userEntity.getUserId())
                 .nickName(userEntity.getNickName())
-                .avatar(userEntity.getProfilePic())
+                .avatar(userEntity.getAvatar())
                 .build();
     }
 }

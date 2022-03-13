@@ -1,10 +1,10 @@
-package be.zwoop.service.post_state;
+package be.zwoop.service.poststate;
 
 import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post_status.PostStatusEntity;
-import be.zwoop.repository.post_status.PostStatusRepository;
 import be.zwoop.repository.poststate.PostStateEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

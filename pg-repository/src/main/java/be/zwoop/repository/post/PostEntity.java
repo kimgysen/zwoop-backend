@@ -2,8 +2,6 @@ package be.zwoop.repository.post;
 
 import be.zwoop.repository.BaseEntity;
 import be.zwoop.repository.currency.CurrencyEntity;
-import be.zwoop.repository.deal.DealEntity;
-import be.zwoop.repository.post_status.PostStatusEntity;
 import be.zwoop.repository.poststate.PostStateEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
@@ -16,7 +14,6 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;

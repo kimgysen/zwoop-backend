@@ -1,4 +1,4 @@
-package be.zwoop.service.post;
+package be.zwoop.service.post.factory;
 
 import be.zwoop.domain.model.tag.TagDto;
 import be.zwoop.repository.currency.CurrencyEntity;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @AllArgsConstructor
 @Component
-public class PostFactory {
+public class PostFactoryImpl implements PostFactory {
     private final CurrencyRepository currencyRepository;
     private final TagRepository tagRepository;
 

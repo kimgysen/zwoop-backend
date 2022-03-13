@@ -1,6 +1,6 @@
 package be.zwoop.domain.model.post_status;
 
-import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
 import lombok.Builder;
 import lombok.Getter;
 

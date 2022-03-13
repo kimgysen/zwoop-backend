@@ -1,14 +1,12 @@
-package be.zwoop.service.post_state;
+package be.zwoop.service.poststate;
 
-import be.zwoop.domain.enum_type.PostStatusEnum;
 import be.zwoop.repository.answer.AnswerEntity;
-import be.zwoop.repository.bidding.BiddingEntity;
 import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post_status.PostStatusEntity;
-import be.zwoop.repository.post_status.PostStatusRepository;
 import be.zwoop.repository.poststate.PostStateEntity;
 import be.zwoop.repository.poststate.PostStateRepository;
+import be.zwoop.repository.poststatus.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +57,11 @@ public class PostStateServiceImpl implements PostStateService {
 
     @Override
     public void saveAnswerAcceptedState(PostEntity postEntity) {
+        PostStatusEntity answerAccepted = postStatusRepository.findByPostStatusId(ANSWER_ACCEPTED.getValue());
+        PostStateEntity postState = postEntity.getPostState();
 
+        postState.setPostStatus(answerAccepted);
+        postStateRepository.saveAndFlush(postState);
     }
 
     @Override

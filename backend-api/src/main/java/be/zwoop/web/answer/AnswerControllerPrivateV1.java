@@ -119,4 +119,22 @@ public class AnswerControllerPrivateV1 {
         return noContent().build();
     }
 
+    @PutMapping("/{answerId}/accept")
+    public ResponseEntity<Void> acceptAnswer(@PathVariable UUID answerId) {
+        UUID principalId = authenticationFacade.getAuthenticatedUserId();
+        UserEntity principal = validator.validateAndGetPrincipal(principalId);
+
+        AnswerEntity answerEntity = validator.validateAndGetAnswerEntity(answerId);
+        PostEntity postEntity = answerEntity.getPost();
+
+        if (!Objects.equals(postEntity.getOp(), principal)) {
+            throw new ResponseStatusException(UNAUTHORIZED);
+        }
+
+        answerDbService.acceptAnswer(answerEntity);
+
+        return noContent().build();
+    }
+
+
 }

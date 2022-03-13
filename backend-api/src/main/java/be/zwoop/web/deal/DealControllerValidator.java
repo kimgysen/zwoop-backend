@@ -18,7 +18,6 @@ import static org.springframework.http.HttpStatus.*;
 
 @Component
 @AllArgsConstructor
-
 public class DealControllerValidator {
 
     private final UserRepository userRepository;

@@ -1,7 +1,7 @@
 package be.zwoop.service.post.db;
 
 import be.zwoop.repository.post.PostEntity;
-import be.zwoop.repository.post_status.PostStatusEntity;
+import be.zwoop.repository.poststatus.PostStatusEntity;
 import be.zwoop.repository.tag.TagEntity;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.web.post.dto.SavePostDto;

@@ -5,7 +5,7 @@ import be.zwoop.repository.deal.DealEntity;
 import be.zwoop.repository.deal.DealRepository;
 import be.zwoop.repository.user.UserEntity;
 import be.zwoop.repository.user.UserRepository;
-import be.zwoop.service.post_state.PostStateService;
+import be.zwoop.service.poststate.PostStateService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

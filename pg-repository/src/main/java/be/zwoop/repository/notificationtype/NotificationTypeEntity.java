@@ -1,4 +1,4 @@
-package be.zwoop.repository.post_status;
+package be.zwoop.repository.notificationtype;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,18 +8,19 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "\"PostStatus\"")
+@Table(name = "\"NotificationType\"")
 @Entity
 @NoArgsConstructor
 @Data
-public class PostStatusEntity {
+public class NotificationTypeEntity {
     @Id
-    @Column(name = "post_status_id")
-    private int postStatusId;
+    @Column(name = "notification_type_id")
+    private int notificationTypeId;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "notification_type")
+    private String notificationType;
 
     @Column(name = "description")
     private String description;
+
 }
