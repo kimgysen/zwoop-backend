@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -19,7 +19,7 @@ public class UserFullDto {
     String avatar;
     String email;
     String aboutText;
-    List<TagDto> tags;
+    Set<TagDto> tags;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
@@ -32,6 +32,7 @@ public class UserFullDto {
                 .avatar(userEntity.getAvatar())
                 .email(userEntity.getEmail())
                 .aboutText(userEntity.getAboutText())
+                .tags(TagDto.fromTagSet(userEntity.getTags()))
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
                 .build();

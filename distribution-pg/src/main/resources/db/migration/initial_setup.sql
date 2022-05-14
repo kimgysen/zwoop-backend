@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS "UserNotification"(
     user_notification_id UUID NOT NULL,
     sender_id UUID NULL,
     receiver_id UUID NOT NULL,
+    notification_text TEXT,
     is_read BOOLEAN DEFAULT FALSE,
     redirect_param TEXT,
     meta_info TEXT,

@@ -27,8 +27,10 @@ public class UserNotificationDto implements Serializable {
 
     public static UserNotificationDto fromEntity(UserNotificationEntity userNotificationEntity) {
         return UserNotificationDto.builder()
+                .userNotificationId(userNotificationEntity.getUserNotificationId())
                 .sender(UserDto.fromUserEntity(userNotificationEntity.getSender()))
                 .notificationType(userNotificationEntity.getNotificationType().getNotificationType())
+                .notificationText(userNotificationEntity.getNotificationText())
                 .redirectParam(userNotificationEntity.getRedirectParam())
                 .metaInfo(userNotificationEntity.getMetaInfo())
                 .isRead(userNotificationEntity.isRead())

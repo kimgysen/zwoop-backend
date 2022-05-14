@@ -34,12 +34,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.BIDDING_ADDED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(biddingEntity.getConsultant().getNickName() + " added to bidding.")
                 .sender(biddingEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(biddingEntity.getPost().getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -49,12 +50,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.BIDDING_CHANGED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(biddingEntity.getConsultant().getNickName() + " changed bidding.")
                 .sender(biddingEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(postEntity.getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -64,12 +66,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.BIDDING_REMOVED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(biddingEntity.getConsultant().getNickName() + " removed bidding.")
                 .sender(biddingEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(biddingEntity.getPost().getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -79,12 +82,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.DEAL_INIT.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(postEntity.getOp().getNickName() + " accepted your bidding.")
                 .sender(postEntity.getOp())
                 .receiver(dealEntity.getBidding().getConsultant())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(dealEntity.getBidding().getConsultant());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -94,12 +98,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.DEAL_CANCELLED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(postEntity.getOp().getNickName() + " cancelled a deal.")
                 .sender(postEntity.getOp())
                 .receiver(dealEntity.getBidding().getConsultant())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(dealEntity.getBidding().getConsultant());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -109,12 +114,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.ANSWER_ADDED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(answerEntity.getConsultant().getNickName() + " wrote an answer.")
                 .sender(answerEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(answerEntity.getPost().getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -124,12 +130,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.ANSWER_CHANGED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(answerEntity.getConsultant().getNickName() + " changed the answer.")
                 .sender(answerEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(postEntity.getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -139,12 +146,14 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.ANSWER_REMOVED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(answerEntity.getConsultant().getNickName() + " removed the answer.")
+                .metaInfo(postEntity.getPostTitle())
                 .sender(answerEntity.getConsultant())
                 .receiver(answerEntity.getPost().getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(postEntity.getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -154,12 +163,13 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
         NotificationTypeEntity notificationTypeEntity = notificationTypeRepository.findByNotificationTypeId(NotificationTypeEnum.ANSWER_ACCEPTED.getValue());
         UserNotificationEntity userNotificationEntity = getPostNotificationBuilder(postEntity)
                 .notificationType(notificationTypeEntity)
+                .notificationText(answerEntity.getPost().getOp().getNickName() + " accepted your answer.")
                 .sender(answerEntity.getConsultant())
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(postEntity.getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override
@@ -172,9 +182,9 @@ public class UserNotificationDbServiceImpl implements UserNotificationDbService 
                 .sender(null)
                 .receiver(postEntity.getOp())
                 .build();
-        userNotificationRepository.saveAndFlush(userNotificationEntity);
+        UserNotificationEntity saved = userNotificationRepository.saveAndFlush(userNotificationEntity);
         userNotificationCountDbService.incrementUnreadCount(postEntity.getOp());
-        return userNotificationEntity;
+        return saved;
     }
 
     @Override

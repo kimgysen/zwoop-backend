@@ -34,6 +34,9 @@ public class UserNotificationEntity {
     @JoinColumn(name = "receiver_id")
     private UserEntity receiver;
 
+    @Column(name = "notification_text")
+    private String notificationText;
+
     @Column(name = "is_read")
     private boolean isRead;
 

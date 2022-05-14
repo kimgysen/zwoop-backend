@@ -17,8 +17,8 @@ public class RabbitNotificationListener {
     @RabbitListener(queues = RABBIT_NOTIFICATIONS_QUEUE, concurrency = "${rabbit.queue.postupdates.concurrent.listeners}")
     public void receiveMessage(final NotificationDto<?> receivedDto) {
         switch (receivedDto.getUserNotificationType()) {
-            case DEAL_INIT, DEAL_CANCELLED -> notificationService.sendUserNotification(receivedDto.getUserId(), receivedDto);
             default -> {
+                // User notifications for post updates
                 notificationService.sendUserNotification(receivedDto.getUserId(), receivedDto);
             }
         }

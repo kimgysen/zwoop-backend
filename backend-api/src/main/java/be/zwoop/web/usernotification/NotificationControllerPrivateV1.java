@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 @Slf4j
@@ -48,7 +49,7 @@ public class NotificationControllerPrivateV1 {
         UUID principalId = authenticationFacade.getAuthenticatedUserId();
         UserEntity principal = validator.validateAndGetPrincipal(principalId);
         userNotificationCountDbService.resetUnreadCount(principal);
-        return ok().build();
+        return noContent().build();
     }
 
     @GetMapping

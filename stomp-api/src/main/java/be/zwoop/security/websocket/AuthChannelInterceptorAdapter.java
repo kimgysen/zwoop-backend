@@ -15,8 +15,6 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import static be.zwoop.websocket.keys.SessionKeys.SESSION_PRINCIPAL;
-
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
     private static final String AUTHORIZATION_HEADER = "Authorization";
